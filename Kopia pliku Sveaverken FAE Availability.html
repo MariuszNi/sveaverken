@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+    <title>Sveaverken FAE Availability</title>
+    <style>
+        .available {
+            background-color: lightgreen;
+        }
+        .unavailable {
+            background-color: lightcoral;
+        }
+        /* Digital Clock Style */
+        #localTime, #gtm8Time {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #333;
+            color: #0f0;
+            padding: 15px;
+            border: 5px solid #555;
+            box-shadow: 0px 0px 5px #000;
+            display: inline-block;
+            margin: 10px;
+        }
+        #pageTitle {
+            font-family: Arial, sans-serif; 
+            color: #333; 
+            background-color: #ADD8E6; 
+            padding: 10px 20px; 
+            border: 3px solid #333; 
+            border-radius: 10px; 
+            text-align: center; 
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+            margin: 20px 0; 
+        }
+        #clockContainer {
+            text-align: center; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100px; 
+        }
+
+        #clockContainer > div {
+            margin: 0 10px; 
+        }
+        #faeTable {
+            border-collapse: collapse; 
+            width: 80%; 
+            margin-left: auto; 
+            margin-right: auto;
+            border: 2px solid #333; 
+        }
+
+        #faeTable th, #faeTable td {
+            border: 1px solid #333; 
+        }
+
+        #faeTable th {
+            background-color: #f0f0f0; 
+        }
+        #header {
+            text-align: center; 
+        }
+
+        #logo {
+            width: 500px; 
+            height: auto; 
+            margin-right: 20px; 
+            vertical-align: middle; 
+        }
+        #upcomingWeekend {
+			font-family: Arial, sans-serif;
+			margin-top: 20px;
+			text-align: center;
+			box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+			padding: 20px;
+			border: 3px solid #333;
+			border-radius: 10px;
+			background-color: #ADD8E6;
+			box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+		}
+
+    </style>
+</head>
+<body>
+    <div id="header">
+        <img id="logo" src="https://www-sveaverken-com.azureedge.net/web/image/website/5/logo/Sveaverken%20-%20Official%20Website?unique=54b527b" alt="Sveaverken Logo">
+        <h2 id="pageTitle">Sveaverken FAE Availability</h2>
+        <div id="clockContainer">
+            <div>Local Time: <span id="localTime"></span></div>
+            <div>Time (GTM+8): <span id="gtm8Time"></span></div>
+        </div>
+    </div>
+    <table id="faeTable">
+        <tr>
+            <th>Name</th>
+            <th>Work Hours (GTM+8)</th>
+            <th>Status</th>
+        </tr>
+    </table>
+    <div id="upcomingWeekend">
+		<h3>Upcoming Weekend Schedule</h3>
+		<div id="saturdaySchedule"></div>
+		<div id="sundaySchedule"></div>
+	</div>
+
+    <script>
+        const faeData = [
+            { "Engineer": "David.Ding", "Work time(GTM+8)": "10:30-22:00" },
+            { "Engineer": "Dincer.Meydanli", "Work time(GTM+8)": "13:30-02:30" },
+            { "Engineer": "Dogukan Karabuga", "Work time(GTM+8)": "13:30-02:30" },
+            { "Engineer": "Guven.Ulas", "Work time(GTM+8)": "13:30-02:30" },
+            { "Engineer": "Roque Martinez", "Work time(GTM+8)": "22:30-10:00" },
+            { "Engineer": "Xengges Sai", "Work time(GTM+8)": "10:00-22:00" },
+			{ "Engineer": "Xin Yang", "Work time(GTM+8)": "09:30-22:00" },
+            { "Engineer": "Muhammet Aykut", "Work time(GTM+8)": "13:30-2:30" },
+            { "Engineer": "Paulo Campos", "Work time(GTM+8)": "22:00-08:00" },
+			{ "Engineer": "Plinio Castro", "Work time(GTM+8)": "22:30-10:00" },
+            { "Engineer": "Jesus Casassixto", "Work time(GTM+8)": "22:30-10:00" },
+			{ "Engineer": "Alexa Bautista", "Work time(GTM+8)": "14:00-02:00" },
+			{ "Engineer": "Jeffersson Nolasco", "Work time(GTM+8)": "14:00-02:00" },
+            { "Engineer": "Mariusz Niezgoda", "Work time(GTM+8)": "14:30-03:30" }
+        ];
+
+        const schedule = [
+    { date: '2024.6.29', day: 'Saturday', fae: 'Mehmet Sehmus(GMT+3)--Alexa' },
+    { date: '2024.6.30', day: 'Sunday', fae: 'MARIUSZ-PL (GMT+1)--Jeff' },
+    { date: '2024.7.6', day: 'Saturday', fae: 'XIN.YANG-CN(GMT+8)--Alexa' },
+    { date: '2024.7.7', day: 'Sunday', fae: 'GUVEN-TR (GMT+3)--Jeff' },
+    { date: '2024.7.13', day: 'Saturday', fae: 'DİNÇER-TR (GMT+3)--Jeff' },
+    { date: '2024.7.14', day: 'Sunday', fae: 'XENGGES-CN (GMT+8)--Alexa' },
+    { date: '2024.7.20', day: 'Saturday', fae: 'DOĞUKAN-TR (GMT+3)--Alexa' },
+    { date: '2024.7.21', day: 'Sunday', fae: 'Mehmet Sehmus(GMT+3)--Alexa' },
+    { date: '2024.7.27', day: 'Saturday', fae: 'MARIUSZ-PL (GMT+1)--Jeff' },
+    { date: '2024.7.28', day: 'Sunday', fae: 'GUVEN-TR (GMT+3)--Alexa' },
+    { date: '2024.8.3', day: 'Saturday', fae: 'XIN.YANG-CN(GMT+8)--Alexa' },
+    { date: '2024.8.4', day: 'Sunday', fae: 'DİNÇER-TR (GMT+3)--Jeff' },
+    { date: '2024.8.10', day: 'Saturday', fae: 'XENGGES-CN (GMT+8)--Jeff' },
+    { date: '2024.8.11', day: 'Sunday', fae: 'DOĞUKAN-TR (GMT+3)--Alexa' },
+    { date: '2024.8.17', day: 'Saturday', fae: 'Mehmet Sehmus(GMT+3)--Alexa' },
+    { date: '2024.8.18', day: 'Sunday', fae: 'MARIUSZ-PL (GMT+1)--Jeff' },
+    { date: '2024.8.24', day: 'Saturday', fae: 'GUVEN-TR (GMT+3)--Alexa' },
+    { date: '2024.8.25', day: 'Sunday', fae: 'XIN.YANG-CN(GMT+8)--Alexa' },
+    { date: '2024.8.31', day: 'Saturday', fae: 'DİNÇER-TR (GMT+3)--Jeff' },
+    { date: '2024.9.1', day: 'Sunday', fae: 'XENGGES-CN (GMT+8)--Jeff' },
+    { date: '2024.9.7', day: 'Saturday', fae: 'DOĞUKAN-TR (GMT+3)--Alexa' },
+    { date: '2024.9.8', day: 'Sunday', fae: 'Mehmet Sehmus(GMT+3)--Alexa' },
+    { date: '2024.9.14', day: 'Saturday', fae: 'MARIUSZ-PL (GMT+1)--Jeff' },
+    { date: '2024.9.15', day: 'Sunday', fae: 'GUVEN-TR (GMT+3)--Alexa' },
+    { date: '2024.9.21', day: 'Saturday', fae: 'XIN.YANG-CN(GMT+8)--Alexa' },
+    { date: '2024.9.22', day: 'Sunday', fae: 'DİNÇER-TR (GMT+3)--Jeff' },
+    { date: '2024.9.28', day: 'Saturday', fae: 'XENGGES-CN (GMT+8)--Jeff' },
+    { date: '2024.10.5', day: 'Saturday', fae: 'DOĞUKAN-TR (GMT+3)--Alexa' },
+    { date: '2024.10.6', day: 'Sunday', fae: 'Mehmet Sehmus(GMT+3)--Alexa' },
+    { date: '2024.10.12', day: 'Saturday', fae: 'MARIUSZ-PL (GMT+1)--Jeff' },
+    { date: '2024.10.13', day: 'Sunday', fae: 'GUVEN-TR (GMT+3)--Alexa' },
+    { date: '2024.10.19', day: 'Saturday', fae: 'XIN.YANG-CN(GMT+8)--Alexa' },
+    { date: '2024.10.20', day: 'Sunday', fae: 'DİNÇER-TR (GMT+3)--Jeff' },
+    { date: '2024.10.26', day: 'Saturday', fae: 'XENGGES-CN (GMT+8)--Jeff' },
+    { date: '2024.10.27', day: 'Sunday', fae: 'DOĞUKAN-TR (GMT+3)--Alexa' },
+    { date: '2024.11.2', day: 'Saturday', fae: 'Mehmet Sehmus(GMT+3)--Alexa' },
+    { date: '2024.11.3', day: 'Sunday', fae: 'MARIUSZ-PL (GMT+1)--Jeff' },
+    { date: '2024.11.9', day: 'Saturday', fae: 'GUVEN-TR (GMT+3)--Alexa' },
+    { date: '2024.11.10', day: 'Sunday', fae: 'XIN.YANG-CN(GMT+8)--Alexa' },
+    { date: '2024.11.16', day: 'Saturday', fae: 'DİNÇER-TR (GMT+3)--Jeff' },
+    { date: '2024.11.17', day: 'Sunday', fae: 'XENGGES-CN (GMT+8)--Jeff' }
+];
+
+        function displayFAE() {
+            const table = document.getElementById('faeTable');
+
+            faeData.forEach(fae => {
+                let row = table.insertRow();
+                row.className = isFAEAvailable(fae['Work time(GTM+8)']) ? 'available' : 'unavailable';
+
+                let name = row.insertCell(0);
+                let workHours = row.insertCell(1);
+                let status = row.insertCell(2);
+                name.innerHTML = fae['Engineer'];
+
+                workHours.innerHTML = fae['Work time(GTM+8)'];
+                status.innerHTML = row.className === 'available' ? 'Available' : 'Unavailable';
+            });
+        }
+
+        function isFAEAvailable(workHours) {
+            const [startTime, endTime] = workHours.split('-').map(time => {
+                const [hours, minutes] = time.split(':').map(Number);
+                return hours % 24 + minutes / 60;
+            });
+
+            const now = new Date();
+            const currentHourGTM8 = now.getUTCHours() + 8;
+            const currentDecimalHour = currentHourGTM8 % 24 + now.getUTCMinutes() / 60;
+
+            // Obsługa przypadków, gdy czas pracy przechodzi przez północ
+            if (startTime > endTime) { // np. 22:00 - 08:00
+                return currentDecimalHour >= startTime || currentDecimalHour < endTime;
+            } else {
+                return currentDecimalHour >= startTime && currentDecimalHour < endTime;
+            }
+        }
+
+        function updateTimes() {
+            const localTimeElement = document.getElementById('localTime');
+            const gtm8TimeElement = document.getElementById('gtm8Time');
+
+            const localTime = new Date();
+            localTimeElement.textContent = localTime.toLocaleTimeString();
+
+            // Uwzględnienie różnicy czasu letniego
+            const offset = localTime.getTimezoneOffset(); // Różnica czasu lokalnego od UTC w minutach
+            const gtm8Time = new Date(localTime.getTime() + (offset * 60 * 1000) + (8 * 60 * 60 * 1000));
+            gtm8TimeElement.textContent = gtm8Time.toLocaleTimeString();
+
+            setTimeout(updateTimes, 1000); // Aktualizuj co sekundę
+        }
+
+        function displayUpcomingWeekend() {
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const saturday = new Date(today);
+            saturday.setDate(today.getDate() + (6 - today.getDay()));
+            const sunday = new Date(saturday);
+            sunday.setDate(saturday.getDate() + 1);
+
+            const saturdaySchedule = schedule.find(item => new Date(item.date).toDateString() === saturday.toDateString());
+            const sundaySchedule = schedule.find(item => new Date(item.date).toDateString() === sunday.toDateString());
+
+            document.getElementById('saturdaySchedule').innerHTML = saturdaySchedule ? `Saturday: ${saturdaySchedule.fae}` : 'Saturday: No schedule available';
+            document.getElementById('sundaySchedule').innerHTML = sundaySchedule ? `Sunday: ${sundaySchedule.fae}` : 'Sunday: No schedule available';
+        }
+
+        window.onload = function() {
+            displayFAE();
+            updateTimes();
+            displayUpcomingWeekend();
+        };
+    </script>
+</body>
+</html>
