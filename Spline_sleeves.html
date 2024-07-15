@@ -61,21 +61,25 @@
                 console.log('Dane JSON:', jsonData); // Dodano debugowanie
 
                 jsonData.forEach(item => {
-                    const brands = item['Adapt brands'].split(',');
-                    brands.forEach(brand => {
-                        if (!sleeveData.some(data => data.brand === brand.trim())) {
-                            sleeveData.push({ brand: brand.trim(), models: [], details: {} });
-                        }
-                        const brandData = sleeveData.find(data => data.brand === brand.trim());
-                        brandData.models.push(item['Product code']);
-                        brandData.details[item['Product code']] = {
-                            productCode: item['Product code'],
-                            version: item['Version'],
-                            parameter: item['Parameter'],
-                            series: item['Series'],
-                            adapterNumber: item['Name'] // Dodanie numeru adaptera
-                        };
-                    });
+                    if (item['Adapt brands']) {
+                        const brands = item['Adapt brands'].split(',');
+                        brands.forEach(brand => {
+                            if (!sleeveData.some(data => data.brand === brand.trim())) {
+                                sleeveData.push({ brand: brand.trim(), models: [], details: {} });
+                            }
+                            const brandData = sleeveData.find(data => data.brand === brand.trim());
+                            brandData.models.push(item['Product code']);
+                            brandData.details[item['Product code']] = {
+                                productCode: item['Product code'],
+                                version: item['Version'],
+                                parameter: item['Parameter'],
+                                series: item['Series'],
+                                adapterNumber: item['Name'] // Dodanie numeru adaptera
+                            };
+                        });
+                    } else {
+                        console.warn('Brak kolumny "Adapt brands" dla wpisu:', item);
+                    }
                 });
 
                 console.log('Dane adapterów:', sleeveData); // Dodano debugowanie
