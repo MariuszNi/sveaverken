@@ -5,6 +5,71 @@
     <title>Spline Sleeves - Sveaverken</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false // Disable the auto-display widget
+            }, 'google_translate_element');
+        }
+
+        function translatePageToBrowserLanguage() {
+            var userLang = navigator.language || navigator.userLanguage; 
+            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
+            if (supportedLanguages.includes(userLang)) {
+                if (userLang !== 'pl') { // Skip if it's Polish, as the default is Polish
+                    var translateElement = new google.translate.TranslateElement({
+                        pageLanguage: 'pl',
+                        includedLanguages: supportedLanguages.join(','),
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    }, 'google_translate_element');
+
+                    setTimeout(function () {
+                        var iframe = document.querySelector('.goog-te-banner-frame');
+                        if (iframe) {
+                            var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                            if (langSelect) {
+                                langSelect.click();
+                                var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
+                                if (langToClick) {
+                                    langToClick.click();
+                                }
+                            }
+                        }
+                    }, 1000);
+                }
+            } else {
+                // Default to English if the user's language is not supported
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=en]');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
+            }
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
     <header>
