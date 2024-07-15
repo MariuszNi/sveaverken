@@ -44,7 +44,7 @@
         const sleeveData = [];
 
         async function loadExcelData() {
-            const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zamień na URL do pliku na GitHubie
+            const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zaktualizowany URL
             const response = await fetch(url);
             const data = await response.arrayBuffer();
             const workbook = XLSX.read(data, { type: 'array' });
@@ -65,7 +65,8 @@
                         productCode: item['Product code'],
                         version: item['Version'],
                         parameter: item['Parameter'],
-                        series: item['Series']
+                        series: item['Series'],
+                        adapterNumber: item['Name'] // Dodanie numeru adaptera
                     };
                 });
             });
@@ -115,7 +116,7 @@
 
                 sleeveDetails.innerHTML = `
                     <h2>Szczegóły Adaptera</h2>
-                    <p>Numer Adaptera: ${selectedModel}</p>
+                    <p>Numer Adaptera: ${details.adapterNumber}</p>
                     <p>Kod Produktu: ${details.productCode}</p>
                     <p>Wersja: ${details.version}</p>
                     <p>Parametry: ${details.parameter}</p>
