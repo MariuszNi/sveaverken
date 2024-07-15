@@ -44,7 +44,7 @@
         const sleeveData = [];
 
         async function loadExcelData() {
-            const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Splined%20Sleeve%20List.xlsx'; // Zamień na URL do pliku na GitHubie
+            const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zamień na URL do pliku na GitHubie
             const response = await fetch(url);
             const data = await response.arrayBuffer();
             const workbook = XLSX.read(data, { type: 'array' });
