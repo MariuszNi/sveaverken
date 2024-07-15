@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const apiKey = 'AIzaSyBLRzMMAv3iAZWUe4y346bmDOSyYymRR3Y';
+    const apiKey = 'AIzaSyAZ8cK1e60983rHcYECABvmtBIkqhvkuFY';
     const channelIds = [
         'UC8R84d88YJDXLHRwnTrbNbw',  // Polski
         'UCZbU79MK6RxCKSQWfjIj1oQ',  // Turecko/Angielski
