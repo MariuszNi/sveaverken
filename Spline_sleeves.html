@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Spline Sleeves - Sveaverken</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Sveaverken Logo">
+        <nav>
+            <ul>
+                <li><a href="index.html">Strona Główna</a></li>
+                <li><a href="spline_sleeves.html">Spline Sleeves</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="spline-sleeves">
+            <h1>Lista Adapterów Spline Sleeve</h1>
+            <p>Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</p>
+            <div>
+                <label for="brand-select">Marka pojazdu:</label>
+                <select id="brand-select" onchange="updateModelOptions()">
+                    <option value="">--Wybierz markę--</option>
+                    <!-- Opcje marek pojazdów będą generowane dynamicznie przez JavaScript -->
+                </select>
+            </div>
+            <div>
+                <label for="model-select">Model pojazdu:</label>
+                <select id="model-select">
+                    <option value="">--Wybierz model--</option>
+                    <!-- Opcje modeli pojazdów będą generowane dynamicznie przez JavaScript -->
+                </select>
+            </div>
+            <div id="sleeve-details">
+                <!-- Szczegóły adaptera będą wyświetlane tutaj -->
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sveaverken</p>
+    </footer>
+    <script>
+        const sleeveData = [
+            // Przykładowe dane, które będą dynamicznie załadowane do tej struktury
+            { 
+                brand: 'DFISEKI Sprayer', 
+                models: ['GK14', 'TM190'], 
+                details: { productCode: '900200089c0040', version: 'A', parameter: 'N=40,Dei=17.56 ,H=75', series: 'TQ15' }
+            },
+            // Dodaj więcej danych na podstawie przesłanego pliku
+        ];
+
+        function updateModelOptions() {
+            const brandSelect = document.getElementById('brand-select');
+            const modelSelect = document.getElementById('model-select');
+            const sleeveDetails = document.getElementById('sleeve-details');
+
+            const selectedBrand = brandSelect.value;
+
+            // Wyczyść istniejące opcje modelu
+            modelSelect.innerHTML = '<option value="">--Wybierz model--</option>';
+
+            // Znajdź dane dla wybranej marki
+            const brandData = sleeveData.filter(item => item.brand === selectedBrand);
+
+            if (brandData.length > 0) {
+                // Dodaj opcje modeli
+                brandData.forEach(item => {
+                    item.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.text = model;
+                        modelSelect.appendChild(option);
+                    });
+                });
+
+                // Wyświetl szczegóły dla pierwszego modelu
+                if (brandData[0].models.length > 0) {
+                    modelSelect.value = brandData[0].models[0];
+                    showSleeveDetails(brandData[0].details);
+                }
+            } else {
+                // Wyczyść szczegóły jeśli brak danych
+                sleeveDetails.innerHTML = '';
+            }
+        }
+
+        function showSleeveDetails(details) {
+            const sleeveDetails = document.getElementById('sleeve-details');
+            sleeveDetails.innerHTML = `
+                <h2>Szczegóły Adaptera</h2>
+                <p>Kod Produktu: ${details.productCode}</p>
+                <p>Wersja: ${details.version}</p>
+                <p>Parametry: ${details.parameter}</p>
+                <p>Seria: ${details.series}</p>
+            `;
+        }
+
+        // Funkcja inicjująca załadowanie marek do listy rozwijanej
+        function loadBrandOptions() {
+            const brandSelect = document.getElementById('brand-select');
+            const brands = [...new Set(sleeveData.map(item => item.brand))]; // Unikalne marki
+
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.text = brand;
+                brandSelect.appendChild(option);
+            });
+        }
+
+        // Załaduj opcje marek przy załadowaniu strony
+        document.addEventListener('DOMContentLoaded', loadBrandOptions);
+    </script>
+</body>
+</html>
