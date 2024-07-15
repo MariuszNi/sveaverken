@@ -44,34 +44,41 @@
         const sleeveData = [];
 
         async function loadExcelData() {
-            const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zaktualizowany URL
-            const response = await fetch(url);
-            const data = await response.arrayBuffer();
-            const workbook = XLSX.read(data, { type: 'array' });
+            try {
+                const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zaktualizowany URL
+                const response = await fetch(url);
+                const data = await response.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array' });
 
-            const sheetName = workbook.SheetNames[0];
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet);
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-            jsonData.forEach(item => {
-                const brands = item['Adapt brands'].split(',');
-                brands.forEach(brand => {
-                    if (!sleeveData.some(data => data.brand === brand.trim())) {
-                        sleeveData.push({ brand: brand.trim(), models: [], details: {} });
-                    }
-                    const brandData = sleeveData.find(data => data.brand === brand.trim());
-                    brandData.models.push(item['Product code']);
-                    brandData.details[item['Product code']] = {
-                        productCode: item['Product code'],
-                        version: item['Version'],
-                        parameter: item['Parameter'],
-                        series: item['Series'],
-                        adapterNumber: item['Name'] // Dodanie numeru adaptera
-                    };
+                console.log('Dane JSON:', jsonData); // Dodano debugowanie
+
+                jsonData.forEach(item => {
+                    const brands = item['Adapt brands'].split(',');
+                    brands.forEach(brand => {
+                        if (!sleeveData.some(data => data.brand === brand.trim())) {
+                            sleeveData.push({ brand: brand.trim(), models: [], details: {} });
+                        }
+                        const brandData = sleeveData.find(data => data.brand === brand.trim());
+                        brandData.models.push(item['Product code']);
+                        brandData.details[item['Product code']] = {
+                            productCode: item['Product code'],
+                            version: item['Version'],
+                            parameter: item['Parameter'],
+                            series: item['Series'],
+                            adapterNumber: item['Name'] // Dodanie numeru adaptera
+                        };
+                    });
                 });
-            });
 
-            loadBrandOptions();
+                console.log('Dane adapterów:', sleeveData); // Dodano debugowanie
+                loadBrandOptions();
+            } catch (error) {
+                console.error('Błąd ładowania danych z pliku Excel:', error);
+            }
         }
 
         function loadBrandOptions() {
@@ -84,6 +91,8 @@
                 option.text = brand;
                 brandSelect.appendChild(option);
             });
+
+            console.log('Opcje marki załadowane:', brands); // Dodano debugowanie
         }
 
         function updateModelOptions() {
@@ -100,6 +109,8 @@
                     option.text = model;
                     modelSelect.appendChild(option);
                 });
+
+                console.log('Modele załadowane dla marki:', selectedBrand, brandData.models); // Dodano debugowanie
             }
         }
 
@@ -122,6 +133,8 @@
                     <p>Parametry: ${details.parameter}</p>
                     <p>Seria: ${details.series}</p>
                 `;
+
+                console.log('Szczegóły adaptera:', details); // Dodano debugowanie
             } else {
                 sleeveDetails.innerHTML = '';
             }
