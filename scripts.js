@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const apiKey = 'YOUR_YOUTUBE_API_KEY';
+    const apiKey = 'AIzaSyBLRzMMAv3iAZWUe4y346bmDOSyYymRR3Y';
     const channelIds = [
         'UC8R84d88YJDXLHRwnTrbNbw',  // Polski
         'UCZbU79MK6RxCKSQWfjIj1oQ',  // Turecko/Angielski
@@ -14,12 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('video-list-4')
     ];
 
-    channelIds.forEach((channelId, index) => {
+    let fetchPromises = channelIds.map((channelId, index) => {
         const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=50&key=${apiKey}&type=video`;
-
-        console.log('Fetching videos from:', apiUrl);
-
-        fetch(apiUrl)
+        
+        return fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
@@ -41,6 +39,12 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => console.error('Error fetching video data:', error));
     });
+
+    Promise.all(fetchPromises)
+        .then(() => {
+            console.log('All videos fetched successfully');
+        })
+        .catch(error => console.error('Error with fetch promises:', error));
 });
 
 function filterVideos() {
