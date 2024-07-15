@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('video-list-1'),
         document.getElementById('video-list-2'),
         document.getElementById('video-list-3'),
-        document.getElementById('video-list-4')
+        document.getElementById('video-list-4'),
     ];
 
     const cacheKey = 'youtubeVideosCache';
