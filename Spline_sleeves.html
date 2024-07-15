@@ -22,14 +22,8 @@
             <p>Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</p>
             <div>
                 <label for="brand-select">Marka pojazdu:</label>
-                <select id="brand-select" onchange="updateModelOptions()">
+                <select id="brand-select" onchange="showSleeveDetails()">
                     <option value="">--Wybierz markę--</option>
-                </select>
-            </div>
-            <div>
-                <label for="model-select">Model pojazdu:</label>
-                <select id="model-select" onchange="showSleeveDetails()">
-                    <option value="">--Wybierz model--</option>
                 </select>
             </div>
             <div id="sleeve-details">
@@ -82,17 +76,14 @@
                         const brands = item['Adapt brands'].split(',');
                         brands.forEach(brand => {
                             if (!sleeveData.some(data => data.brand === brand.trim())) {
-                                sleeveData.push({ brand: brand.trim(), models: [], details: {} });
+                                sleeveData.push({ brand: brand.trim(), adapters: [] });
                             }
                             const brandData = sleeveData.find(data => data.brand === brand.trim());
-                            brandData.models.push(item['Product code']);
-                            brandData.details[item['Product code']] = {
+                            brandData.adapters.push({
+                                adapterNumber: item['Name'],
                                 productCode: item['Product code'],
-                                version: item['Version'],
-                                parameter: item['Parameter'],
-                                series: item['Series'],
-                                adapterNumber: item['Name'] // Dodanie numeru adaptera
-                            };
+                                series: item['Series']
+                            });
                         });
                     } else {
                         console.warn('Brak kolumny "Adapt brands" dla wpisu:', item);
@@ -126,53 +117,28 @@
             }
         }
 
-        function updateModelOptions() {
+        function showSleeveDetails() {
             try {
                 const brandSelect = document.getElementById('brand-select');
-                const modelSelect = document.getElementById('model-select');
+                const sleeveDetails = document.getElementById('sleeve-details');
                 const selectedBrand = brandSelect.value;
-                modelSelect.innerHTML = '<option value="">--Wybierz model--</option>';
+
+                sleeveDetails.innerHTML = '';
 
                 if (selectedBrand) {
                     const brandData = sleeveData.find(data => data.brand === selectedBrand);
-                    brandData.models.forEach(model => {
-                        const option = document.createElement('option');
-                        option.value = model;
-                        option.text = model;
-                        modelSelect.appendChild(option);
+                    brandData.adapters.forEach(adapter => {
+                        const detailDiv = document.createElement('div');
+                        detailDiv.innerHTML = `
+                            <h2>Szczegóły Adaptera</h2>
+                            <p>Numer Adaptera: ${adapter.adapterNumber}</p>
+                            <p>Kod Produktu: ${adapter.productCode}</p>
+                            <p>Seria: ${adapter.series}</p>
+                        `;
+                        sleeveDetails.appendChild(detailDiv);
                     });
 
-                    console.log('Modele załadowane dla marki:', selectedBrand, brandData.models); // Dodano debugowanie
-                }
-            } catch (error) {
-                console.error('Błąd ładowania opcji modelu:', error);
-                showError('Wystąpił błąd podczas ładowania opcji modelu: ' + error.message);
-            }
-        }
-
-        function showSleeveDetails() {
-            try {
-                const modelSelect = document.getElementById('model-select');
-                const sleeveDetails = document.getElementById('sleeve-details');
-                const selectedModel = modelSelect.value;
-
-                if (selectedModel) {
-                    const brandSelect = document.getElementById('brand-select');
-                    const selectedBrand = brandSelect.value;
-                    const brandData = sleeveData.find(data => data.brand === selectedBrand);
-                    const details = brandData.details[selectedModel];
-
-                    sleeveDetails.innerHTML = `
-                        <h2>Szczegóły Adaptera</h2>
-                        <p>Numer Adaptera: ${details.adapterNumber}</p>
-                        <p>Kod Produktu: ${details.productCode}</p>
-                        <p>Wersja: ${details.version}</p>
-                        <p>Seria: ${details.series}</p>
-                    `;
-
-                    console.log('Szczegóły adaptera:', details); // Dodano debugowanie
-                } else {
-                    sleeveDetails.innerHTML = '';
+                    console.log('Szczegóły adapterów dla marki:', selectedBrand, brandData.adapters); // Dodano debugowanie
                 }
             } catch (error) {
                 console.error('Błąd wyświetlania szczegółów adaptera:', error);
