@@ -3,14 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const channelIds = [
         'UC8R84d88YJDXLHRwnTrbNbw',  // Polski
         'UCZbU79MK6RxCKSQWfjIj1oQ',  // Turecko/Angielski
-        'UC2aryP954fHFb9vld3Hk3OA'  // Angielski
-       
+        'UC2aryP954fHFb9vld3Hk3OA',  // Angielski
+        'UCKRvfdO9-HaR9ix4a-0LrOw'   // Angielski
     ];
 
     const videoColumns = [
         document.getElementById('video-list-1'),
         document.getElementById('video-list-2'),
-        document.getElementById('video-list-3')
+        document.getElementById('video-list-3'),
+        document.getElementById('video-list-4')
     ];
 
     const cacheKey = 'youtubeVideosCache';
