@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const apiKey = 'AIzaSyBLRzMMAv3iAZWUe4y346bmDOSyYymRR3Y';
+    const apiKey = 'YOUR_YOUTUBE_API_KEY';
     const channelIds = [
         'UC8R84d88YJDXLHRwnTrbNbw',  // Polski
         'UCZbU79MK6RxCKSQWfjIj1oQ',  // Turecko/Angielski
@@ -17,11 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
     channelIds.forEach((channelId, index) => {
         const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=50&key=${apiKey}&type=video`;
 
+        console.log('Fetching videos from:', apiUrl);
+
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
+                if (data.error) {
+                    console.error('YouTube API Error:', data.error);
+                    return;
+                }
+
                 data.items.forEach(video => {
                     const videoElement = document.createElement('div');
+                    videoElement.classList.add('video');
                     videoElement.innerHTML = `
                         <a href="https://www.youtube.com/watch?v=${video.id.videoId}" target="_blank">
                             <img src="${video.snippet.thumbnails.medium.url}" alt="${video.snippet.title}">
@@ -34,3 +42,16 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching video data:', error));
     });
 });
+
+function filterVideos() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const videos = document.querySelectorAll('.video');
+    videos.forEach(video => {
+        const title = video.querySelector('h3').innerText.toLowerCase();
+        if (title.includes(searchTerm)) {
+            video.style.display = '';
+        } else {
+            video.style.display = 'none';
+        }
+    });
+}
