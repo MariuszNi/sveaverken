@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const apiKey = 'AIzaSyBLRzMMAv3iAZWUe4y346bmDOSyYymRR3Y';
     const channelIds = [
