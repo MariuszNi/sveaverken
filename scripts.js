@@ -34,3 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching video data:', error));
     });
 });
+
+
+function filterVideos() {
+    const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const videos = document.querySelectorAll('.video');
+    videos.forEach(video => {
+        const title = video.querySelector('h3').innerText.toLowerCase();
+        if (title.includes(searchTerm)) {
+            video.style.display = '';
+        } else {
+            video.style.display = 'none';
+        }
+    });
+}
+
