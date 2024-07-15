@@ -43,6 +43,22 @@
     <script>
         const sleeveData = [];
 
+        function expandMergedCells(sheet) {
+            const mergeRanges = sheet['!merges'] || [];
+            mergeRanges.forEach(range => {
+                const startCell = XLSX.utils.encode_cell({ r: range.s.r, c: range.s.c });
+                const value = sheet[startCell] ? sheet[startCell].v : '';
+                for (let R = range.s.r; R <= range.e.r; ++R) {
+                    for (let C = range.s.c; C <= range.e.c; ++C) {
+                        const cell = XLSX.utils.encode_cell({ r: R, c: C });
+                        if (!sheet[cell]) {
+                            sheet[cell] = { t: 's', v: value };
+                        }
+                    }
+                }
+            });
+        }
+
         async function loadExcelData() {
             try {
                 const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zaktualizowany URL
@@ -56,6 +72,7 @@
 
                 const sheetName = workbook.SheetNames[0];
                 const sheet = workbook.Sheets[sheetName];
+                expandMergedCells(sheet); // Rozszerz scalone komórki
                 const jsonData = XLSX.utils.sheet_to_json(sheet);
 
                 console.log('Dane JSON:', jsonData); // Dodano debugowanie
