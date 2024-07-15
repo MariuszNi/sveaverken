@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     channelIds.forEach((channelId, index) => {
-        const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=50&key=${apiKey}&type=video`;
+        const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=150&key=${apiKey}&type=video`;
 
         fetch(apiUrl)
             .then(response => response.json())
