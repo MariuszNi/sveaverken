@@ -47,6 +47,9 @@
             try {
                 const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zaktualizowany URL
                 const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
+                }
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
 
@@ -78,65 +81,81 @@
                 loadBrandOptions();
             } catch (error) {
                 console.error('Błąd ładowania danych z pliku Excel:', error);
+                alert('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
             }
         }
 
         function loadBrandOptions() {
-            const brandSelect = document.getElementById('brand-select');
-            const brands = [...new Set(sleeveData.map(item => item.brand))];
+            try {
+                const brandSelect = document.getElementById('brand-select');
+                const brands = [...new Set(sleeveData.map(item => item.brand))];
 
-            brands.forEach(brand => {
-                const option = document.createElement('option');
-                option.value = brand;
-                option.text = brand;
-                brandSelect.appendChild(option);
-            });
+                brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.text = brand;
+                    brandSelect.appendChild(option);
+                });
 
-            console.log('Opcje marki załadowane:', brands); // Dodano debugowanie
+                console.log('Opcje marki załadowane:', brands); // Dodano debugowanie
+            } catch (error) {
+                console.error('Błąd ładowania opcji marki:', error);
+                alert('Wystąpił błąd podczas ładowania opcji marki: ' + error.message);
+            }
         }
 
         function updateModelOptions() {
-            const brandSelect = document.getElementById('brand-select');
-            const modelSelect = document.getElementById('model-select');
-            const selectedBrand = brandSelect.value;
-            modelSelect.innerHTML = '<option value="">--Wybierz model--</option>';
+            try {
+                const brandSelect = document.getElementById('brand-select');
+                const modelSelect = document.getElementById('model-select');
+                const selectedBrand = brandSelect.value;
+                modelSelect.innerHTML = '<option value="">--Wybierz model--</option>';
 
-            if (selectedBrand) {
-                const brandData = sleeveData.find(data => data.brand === selectedBrand);
-                brandData.models.forEach(model => {
-                    const option = document.createElement('option');
-                    option.value = model;
-                    option.text = model;
-                    modelSelect.appendChild(option);
-                });
+                if (selectedBrand) {
+                    const brandData = sleeveData.find(data => data.brand === selectedBrand);
+                    brandData.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.text = model;
+                        modelSelect.appendChild(option);
+                    });
 
-                console.log('Modele załadowane dla marki:', selectedBrand, brandData.models); // Dodano debugowanie
+                    console.log('Modele załadowane dla marki:', selectedBrand, brandData.models); // Dodano debugowanie
+                }
+            } catch (error) {
+                console.error('Błąd ładowania opcji modelu:', error);
+                alert('Wystąpił błąd podczas ładowania opcji modelu: ' + error.message);
             }
         }
 
         function showSleeveDetails() {
-            const modelSelect = document.getElementById('model-select');
-            const sleeveDetails = document.getElementById('sleeve-details');
-            const selectedModel = modelSelect.value;
+            try {
+                const modelSelect = document.getElementById('model-select');
+                const sleeveDetails = document.getElementById('sleeve-details');
+                const selectedModel = modelSelect.value;
 
-            if (selectedModel) {
-                const brandSelect = document.getElementById('brand-select');
-                const selectedBrand = brandSelect.value;
-                const brandData = sleeveData.find(data => data.brand === selectedBrand);
-                const details = brandData.details[selectedModel];
+                if (selectedModel) {
+                    const brandSelect = document.getElementById('brand-select');
+                    const selectedBrand = brandSelect.value;
+                    const brandData = sleeveData.find(data => data.brand === selectedBrand);
+                    const details = brandData.details[selectedModel];
 
-                sleeveDetails.innerHTML = `
-                    <h2>Szczegóły Adaptera</h2>
-                    <p>Numer Adaptera: ${details.adapterNumber}</p>
-                    <p>Kod Produktu: ${details.productCode}</p>
-                    <p>Wersja: ${details.version}</p>
-                    <p>Parametry: ${details.parameter}</p>
-                    <p>Seria: ${details.series}</p>
-                `;
+                    sleeveDetails.innerHTML = `
+                        <h2>Szczegóły Adaptera</h2>
+                        <p>Numer Adaptera: ${details.adapterNumber}</p>
+                        <p>Kod Produktu: ${details.productCode}</p>
+                        <p>Wersja: ${details.version}</p>
+                        <p>Parametry: ${details.parameter}</p>
+                        <p>Seria: ${details.series}</p>
+                    `;
 
-                console.log('Szczegóły adaptera:', details); // Dodano debugowanie
-            } else {
-                sleeveDetails.innerHTML = '';
+                    console.log('Szczegóły adaptera:', details); // Dodano debugowanie
+                } else {
+                    sleeveDetails.innerHTML = '';
+                }
+            } catch (error) {
+                console.error('Błąd wyświetlania szczegółów adaptera:', error);
+                alert('Wystąpił błąd podczas wyświetlania szczegółów adaptera: ' + error.message);
             }
         }
 
