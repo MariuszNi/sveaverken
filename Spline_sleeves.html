@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Spline Sleeves - Sveaverken</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
     <header>
@@ -23,14 +24,12 @@
                 <label for="brand-select">Marka pojazdu:</label>
                 <select id="brand-select" onchange="updateModelOptions()">
                     <option value="">--Wybierz markę--</option>
-                    <!-- Opcje marek pojazdów będą generowane dynamicznie przez JavaScript -->
                 </select>
             </div>
             <div>
                 <label for="model-select">Model pojazdu:</label>
-                <select id="model-select">
+                <select id="model-select" onchange="showSleeveDetails()">
                     <option value="">--Wybierz model--</option>
-                    <!-- Opcje modeli pojazdów będą generowane dynamicznie przez JavaScript -->
                 </select>
             </div>
             <div id="sleeve-details">
@@ -42,66 +41,41 @@
         <p>&copy; 2024 Sveaverken</p>
     </footer>
     <script>
-        const sleeveData = [
-            // Przykładowe dane, które będą dynamicznie załadowane do tej struktury
-            { 
-                brand: 'DFISEKI Sprayer', 
-                models: ['GK14', 'TM190'], 
-                details: { productCode: '900200089c0040', version: 'A', parameter: 'N=40,Dei=17.56 ,H=75', series: 'TQ15' }
-            },
-            // Dodaj więcej danych na podstawie przesłanego pliku
-        ];
+        const sleeveData = [];
 
-        function updateModelOptions() {
-            const brandSelect = document.getElementById('brand-select');
-            const modelSelect = document.getElementById('model-select');
-            const sleeveDetails = document.getElementById('sleeve-details');
+        async function loadExcelData() {
+            const url = 'spline_sleeves.html'; // Zamień na URL do pliku na GitHubie
+            const response = await fetch(url);
+            const data = await response.arrayBuffer();
+            const workbook = XLSX.read(data, { type: 'array' });
 
-            const selectedBrand = brandSelect.value;
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-            // Wyczyść istniejące opcje modelu
-            modelSelect.innerHTML = '<option value="">--Wybierz model--</option>';
-
-            // Znajdź dane dla wybranej marki
-            const brandData = sleeveData.filter(item => item.brand === selectedBrand);
-
-            if (brandData.length > 0) {
-                // Dodaj opcje modeli
-                brandData.forEach(item => {
-                    item.models.forEach(model => {
-                        const option = document.createElement('option');
-                        option.value = model;
-                        option.text = model;
-                        modelSelect.appendChild(option);
-                    });
+            jsonData.forEach(item => {
+                const brands = item['Adapt brands'].split(',');
+                brands.forEach(brand => {
+                    if (!sleeveData.some(data => data.brand === brand.trim())) {
+                        sleeveData.push({ brand: brand.trim(), models: [], details: {} });
+                    }
+                    const brandData = sleeveData.find(data => data.brand === brand.trim());
+                    brandData.models.push(item['Product code']);
+                    brandData.details[item['Product code']] = {
+                        productCode: item['Product code'],
+                        version: item['Version'],
+                        parameter: item['Parameter'],
+                        series: item['Series']
+                    };
                 });
+            });
 
-                // Wyświetl szczegóły dla pierwszego modelu
-                if (brandData[0].models.length > 0) {
-                    modelSelect.value = brandData[0].models[0];
-                    showSleeveDetails(brandData[0].details);
-                }
-            } else {
-                // Wyczyść szczegóły jeśli brak danych
-                sleeveDetails.innerHTML = '';
-            }
+            loadBrandOptions();
         }
 
-        function showSleeveDetails(details) {
-            const sleeveDetails = document.getElementById('sleeve-details');
-            sleeveDetails.innerHTML = `
-                <h2>Szczegóły Adaptera</h2>
-                <p>Kod Produktu: ${details.productCode}</p>
-                <p>Wersja: ${details.version}</p>
-                <p>Parametry: ${details.parameter}</p>
-                <p>Seria: ${details.series}</p>
-            `;
-        }
-
-        // Funkcja inicjująca załadowanie marek do listy rozwijanej
         function loadBrandOptions() {
             const brandSelect = document.getElementById('brand-select');
-            const brands = [...new Set(sleeveData.map(item => item.brand))]; // Unikalne marki
+            const brands = [...new Set(sleeveData.map(item => item.brand))];
 
             brands.forEach(brand => {
                 const option = document.createElement('option');
@@ -111,8 +85,48 @@
             });
         }
 
-        // Załaduj opcje marek przy załadowaniu strony
-        document.addEventListener('DOMContentLoaded', loadBrandOptions);
+        function updateModelOptions() {
+            const brandSelect = document.getElementById('brand-select');
+            const modelSelect = document.getElementById('model-select');
+            const selectedBrand = brandSelect.value;
+            modelSelect.innerHTML = '<option value="">--Wybierz model--</option>';
+
+            if (selectedBrand) {
+                const brandData = sleeveData.find(data => data.brand === selectedBrand);
+                brandData.models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.text = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        }
+
+        function showSleeveDetails() {
+            const modelSelect = document.getElementById('model-select');
+            const sleeveDetails = document.getElementById('sleeve-details');
+            const selectedModel = modelSelect.value;
+
+            if (selectedModel) {
+                const brandSelect = document.getElementById('brand-select');
+                const selectedBrand = brandSelect.value;
+                const brandData = sleeveData.find(data => data.brand === selectedBrand);
+                const details = brandData.details[selectedModel];
+
+                sleeveDetails.innerHTML = `
+                    <h2>Szczegóły Adaptera</h2>
+                    <p>Numer Adaptera: ${selectedModel}</p>
+                    <p>Kod Produktu: ${details.productCode}</p>
+                    <p>Wersja: ${details.version}</p>
+                    <p>Parametry: ${details.parameter}</p>
+                    <p>Seria: ${details.series}</p>
+                `;
+            } else {
+                sleeveDetails.innerHTML = '';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadExcelData);
     </script>
 </body>
 </html>
