@@ -12,6 +12,7 @@ let gameInterval;
 let hayBaleInterval;
 let rabbitInterval;
 let stoneInterval;
+let backgroundAnimationInterval;
 let fallSpeed = 5; // Initial falling speed of the hay bales
 let backgroundSpeed = 5; // Initial background scroll speed (milliseconds per frame)
 let backgroundPosition = 0;
@@ -23,9 +24,12 @@ restartButton.addEventListener('click', restartGame);
 
 function moveTractor(event) {
     const tractorLeft = tractor.offsetLeft;
+    const tractorWidth = tractor.clientWidth;
+    const containerWidth = gameContainer.clientWidth;
+    
     if (event.key === 'ArrowLeft' && tractorLeft > 0) {
         tractor.style.left = `${tractorLeft - 10}px`;
-    } else if (event.key === 'ArrowRight' && tractorLeft < gameContainer.clientWidth - tractor.clientWidth) {
+    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) {
         tractor.style.left = `${tractorLeft + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
@@ -107,7 +111,7 @@ function checkCollision() {
 }
 
 function startBackgroundAnimation() {
-    const backgroundAnimationInterval = setInterval(() => {
+    backgroundAnimationInterval = setInterval(() => {
         backgroundPosition += fallSpeed;
         gameContainer.style.backgroundPositionY = `${backgroundPosition}px`;
         moveObjects();
@@ -118,16 +122,12 @@ function startBackgroundAnimation() {
 function startGame() {
     startButton.style.display = 'none';
     restartButton.style.display = 'inline';
-
+    resetGameVariables();
     gameInterval = setInterval(() => {
         time -= 1;
         timeDisplay.textContent = time;
         if (time === 0) {
-            clearInterval(gameInterval);
-            clearInterval(hayBaleInterval);
-            clearInterval(rabbitInterval);
-            clearInterval(stoneInterval);
-            alert(`Game over! Your score is ${score}`);
+            endGame();
         }
     }, 1000);
 
@@ -140,11 +140,27 @@ function startGame() {
     startBackgroundAnimation();
 }
 
-function restartGame() {
+function resetGameVariables() {
     score = 0;
     time = 60;
+    backgroundPosition = 0;
+    fallSpeed = 5;
+    backgroundSpeed = 5;
     scoreDisplay.textContent = score;
     timeDisplay.textContent = time;
     document.querySelectorAll('.hay-bale, .rabbit, .stone').forEach(obj => obj.remove());
+}
+
+function endGame() {
+    clearInterval(gameInterval);
+    clearInterval(hayBaleInterval);
+    clearInterval(rabbitInterval);
+    clearInterval(stoneInterval);
+    clearInterval(backgroundAnimationInterval);
+    alert(`Game over! Your score is ${score}`);
+}
+
+function restartGame() {
+    resetGameVariables();
     startGame();
 }
