@@ -114,8 +114,8 @@
                 jsonData.slice(1).forEach(row => {
                     const [name, coding, version, brand, parameter, series] = row;
                     if (brand) {
-                        const brandList = brand.split(',');
-                        brandList.forEach(brand => brands.add(brand.trim()));
+                        const brandList = brand.split(',').map(b => b.trim());
+                        brandList.forEach(brand => brands.add(brand));
                         sleeveData.push({ name, coding, version, brand: brandList, parameter, series });
                     }
                 });
@@ -156,11 +156,11 @@
                     filteredData.forEach(item => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${item.name}</td>
-                            <td>${item.coding}</td>
-                            <td>${item.version}</td>
-                            <td>${item.parameter}</td>
-                            <td>${item.series}</td>
+                            <td>${item.name || ''}</td>
+                            <td>${item.coding || ''}</td>
+                            <td>${item.version || ''}</td>
+                            <td>${item.parameter || ''}</td>
+                            <td>${item.series || ''}</td>
                         `;
                         table.appendChild(row);
                     });
