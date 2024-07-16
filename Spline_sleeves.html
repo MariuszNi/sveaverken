@@ -21,13 +21,7 @@
             var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
             if (supportedLanguages.includes(userLang)) {
                 if (userLang !== 'pl') {
-                    var translateElement = new google.translate.TranslateElement({
-                        pageLanguage: 'pl',
-                        includedLanguages: supportedLanguages.join(','),
-                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                        autoDisplay: false
-                    }, 'google_translate_element');
-
+                    googleTranslateElementInit();
                     setTimeout(function () {
                         var iframe = document.querySelector('.goog-te-banner-frame');
                         if (iframe) {
@@ -44,13 +38,7 @@
                     }, 1000);
                 }
             } else {
-                var translateElement = new google.translate.TranslateElement({
-                    pageLanguage: 'pl',
-                    includedLanguages: supportedLanguages.join(','),
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false
-                }, 'google_translate_element');
-
+                googleTranslateElementInit();
                 setTimeout(function () {
                     var iframe = document.querySelector('.goog-te-banner-frame');
                     if (iframe) {
@@ -146,6 +134,7 @@
             document.body.appendChild(errorDialog);
         }
     </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
     <header>
