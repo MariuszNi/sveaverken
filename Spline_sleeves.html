@@ -63,8 +63,8 @@
                                 langToClick.click();
                             }
                         }
-                    }
-                }, 1000);
+                    }, 1000);
+                });
             }
         }
 
@@ -83,6 +83,8 @@
                 const workbook = XLSX.read(data, { type: 'array' });
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                console.log('Dane JSON:', jsonData); // Log JSON data to ensure it's loaded correctly
 
                 const adaptedBrands = new Set();
                 const fullData = [];
