@@ -11,16 +11,16 @@
                 pageLanguage: 'pl',
                 includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false // Disable the auto-display widget
+                autoDisplay: false
             }, 'google_translate_element');
         }
 
         function translatePageToBrowserLanguage() {
-            var userLang = navigator.language || navigator.userLanguage; 
-            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
+            var userLang = navigator.language || navigator.userLanguage;
+            userLang = userLang.split('-')[0];
             var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
             if (supportedLanguages.includes(userLang)) {
-                if (userLang !== 'pl') { // Skip if it's Polish, as the default is Polish
+                if (userLang !== 'pl') {
                     var translateElement = new google.translate.TranslateElement({
                         pageLanguage: 'pl',
                         includedLanguages: supportedLanguages.join(','),
@@ -44,7 +44,6 @@
                     }, 1000);
                 }
             } else {
-                // Default to English if the user's language is not supported
                 var translateElement = new google.translate.TranslateElement({
                     pageLanguage: 'pl',
                     includedLanguages: supportedLanguages.join(','),
@@ -64,7 +63,7 @@
                                 langToClick.click();
                             }
                         }
-                    }, 1000);
+                    }
                 }, 1000);
             }
         }
@@ -99,112 +98,74 @@
     <script>
         const sleeveData = [];
 
-        function expandMergedCells(sheet) {
-            const mergeRanges = sheet['!merges'] || [];
-            mergeRanges.forEach(range => {
-                const startCell = XLSX.utils.encode_cell({ r: range.s.r, c: range.s.c });
-                const value = sheet[startCell] ? sheet[startCell].v : '';
-                for (let R = range.s.r; R <= range.e.r; ++R) {
-                    for (let C = range.s.c; C <= range.e.c; ++C) {
-                        const cell = XLSX.utils.encode_cell({ r: R, c: C });
-                        if (!sheet[cell]) {
-                            sheet[cell] = { t: 's', v: value };
-                        }
-                    }
-                }
-            });
-        }
-
         async function loadExcelData() {
             try {
                 const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx';
-                console.log('Pobieranie pliku Excel z URL:', url);
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
                 }
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets['spline'];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
-                expandMergedCells(sheet);
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
-
-                console.log('Dane JSON:', jsonData);
-
-                jsonData.forEach(item => {
-                    if (item['Adapt brands']) {
-                        const brands = item['Adapt brands'].split(',');
-                        brands.forEach(brand => {
-                            if (!sleeveData.some(data => data.brand === brand.trim())) {
-                                sleeveData.push({ brand: brand.trim(), adapters: [] });
-                            }
-                            const brandData = sleeveData.find(data => data.brand === brand.trim());
-                            brandData.adapters.push({
-                                adapterNumber: item['Name'],
-                                productCode: item['Product code'],
-                                series: item['Series']
-                            });
-                        });
-                    } else {
-                        console.warn('Brak kolumny "Adapt brands" dla wpisu:', item);
-                    }
+                const brands = new Set();
+                jsonData.slice(1).forEach(row => {
+                    const [name, coding, version, brand, parameter, series] = row;
+                    const brandList = brand.split(',');
+                    brandList.forEach(brand => brands.add(brand.trim()));
+                    sleeveData.push({ name, coding, version, brand: brandList, parameter, series });
                 });
 
-                console.log('Dane adapterów:', sleeveData);
-                loadBrandOptions();
+                const brandSelect = document.getElementById('brand-select');
+                brands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    brandSelect.appendChild(option);
+                });
+
+                console.log('Dane z pliku Excel załadowane.');
             } catch (error) {
                 console.error('Błąd ładowania danych z pliku Excel:', error);
                 showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
             }
         }
 
-        function loadBrandOptions() {
-            try {
-                const brandSelect = document.getElementById('brand-select');
-                const brands = [...new Set(sleeveData.map(item => item.brand))];
-
-                brands.forEach(brand => {
-                    const option = document.createElement('option');
-                    option.value = brand;
-                    option.text = brand;
-                    brandSelect.appendChild(option);
-                });
-
-                console.log('Opcje marki załadowane:', brands);
-            } catch (error) {
-                console.error('Błąd ładowania opcji marki:', error);
-                showError('Wystąpił błąd podczas ładowania opcji marki: ' + error.message);
-            }
-        }
-
         function showSleeveDetails() {
-            try {
-                const brandSelect = document.getElementById('brand-select');
-                const sleeveDetails = document.getElementById('sleeve-details');
-                const selectedBrand = brandSelect.value;
+            const selectedBrand = document.getElementById('brand-select').value;
+            const detailsDiv = document.getElementById('sleeve-details');
+            detailsDiv.innerHTML = '';
 
-                sleeveDetails.innerHTML = '';
-
-                if (selectedBrand) {
-                    const brandData = sleeveData.find(data => data.brand === selectedBrand);
-                    brandData.adapters.forEach(adapter => {
-                        const detailDiv = document.createElement('div');
-                        detailDiv.innerHTML = `
-                            <h2>Szczegóły Adaptera</h2>
-                            <p>Numer Adaptera: ${adapter.adapterNumber}</p>
-                            <p>Kod Produktu: ${adapter.productCode}</p>
-                            <p>Seria: ${adapter.series}</p>
+            if (selectedBrand) {
+                const filteredData = sleeveData.filter(item => item.brand.includes(selectedBrand));
+                if (filteredData.length > 0) {
+                    const table = document.createElement('table');
+                    table.innerHTML = `
+                        <tr>
+                            <th>Nazwa</th>
+                            <th>Kod produktu</th>
+                            <th>Wersja</th>
+                            <th>Parametr</th>
+                            <th>Seria</th>
+                        </tr>
+                    `;
+                    filteredData.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.name}</td>
+                            <td>${item.coding}</td>
+                            <td>${item.version}</td>
+                            <td>${item.parameter}</td>
+                            <td>${item.series}</td>
                         `;
-                        sleeveDetails.appendChild(detailDiv);
+                        table.appendChild(row);
                     });
-
-                    console.log('Szczegóły adapterów dla marki:', selectedBrand, brandData.adapters);
+                    detailsDiv.appendChild(table);
+                } else {
+                    detailsDiv.textContent = 'Brak danych dla wybranej marki.';
                 }
-            } catch (error) {
-                console.error('Błąd wyświetlania szczegółów adaptera:', error);
-                showError('Wystąpił błąd podczas wyświetlania szczegółów adaptera: ' + error.message);
             }
         }
 
@@ -220,8 +181,6 @@
     <style>
         .error-dialog {
             position: fixed;
-           
-
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
