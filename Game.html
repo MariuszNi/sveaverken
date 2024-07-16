@@ -8,6 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -17,6 +18,7 @@
             display: grid;
             grid-template-columns: repeat(3, 100px);
             gap: 10px;
+            margin-bottom: 20px;
         }
         .cell {
             width: 100px;
@@ -28,13 +30,30 @@
             background-color: white;
             border: 1px solid #ccc;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+        #message {
+            margin: 20px;
+            font-size: 1.5em;
+        }
+        #restart-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .winner-img {
+            display: none;
+            width: 200px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <header>
         <img src="logo.png" alt="Sveaverken Logo">
-        
     </header>
     <main>
         <h1>Tic-Tac-Toe</h1>
@@ -50,6 +69,8 @@
             <div class="cell" data-index="8"></div>
         </div>
         <p id="message"></p>
+        <button id="restart-btn">Restart</button>
+        <img id="winner-img" class="winner-img" src="" alt="Winner Image">
     </main>
     <footer>
         <p>&copy; 2024 Sveaverken</p>
@@ -59,6 +80,8 @@
             const gameBoard = document.getElementById('game-board');
             const cells = document.querySelectorAll('.cell');
             const message = document.getElementById('message');
+            const restartBtn = document.getElementById('restart-btn');
+            const winnerImg = document.getElementById('winner-img');
             let currentPlayer = 'X';
             let board = Array(9).fill(null);
 
@@ -90,6 +113,8 @@
                 const winner = checkWinner();
                 if (winner) {
                     message.textContent = `Wygrywa gracz ${winner}!`;
+                    winnerImg.src = `${winner.toLowerCase()}-winner.png`;
+                    winnerImg.style.display = 'block';
                 } else if (!board.includes(null)) {
                     message.textContent = 'Remis!';
                 } else {
@@ -97,7 +122,16 @@
                 }
             };
 
+            const restartGame = () => {
+                board.fill(null);
+                cells.forEach(cell => cell.textContent = '');
+                currentPlayer = 'X';
+                message.textContent = '';
+                winnerImg.style.display = 'none';
+            };
+
             cells.forEach(cell => cell.addEventListener('click', handleClick));
+            restartBtn.addEventListener('click', restartGame);
         });
     </script>
 </body>
