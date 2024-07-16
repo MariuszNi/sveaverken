@@ -55,8 +55,8 @@ body {
     position: absolute;
     bottom: 10px;
     left: 50%;
-    width: 100px; /* Double the original size */
-    height: 100px; /* Double the original size */
+    width: 80px; /* Double the original size */
+    height: 80px; /* Double the original size */
     background: url('tractor.png') no-repeat center center/contain;
     transform: translateX(-50%);
 }
