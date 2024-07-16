@@ -12,8 +12,8 @@ body {
 
 #game-container {
     position: relative;
-    width: 600px;
-    height: 800px;
+    width: 400px;
+    height: 600px;
     background: url('background.jpg') repeat-y center top/cover;
     overflow: hidden;
     border: 2px solid #555;
@@ -21,18 +21,18 @@ body {
 
 #tractor {
     position: absolute;
-    bottom: 20px;
+    bottom: 10px;
     left: 50%;
-    width: 100px;
-    height: 100px;
+    width: 100px; /* Double the original size */
+    height: 100px; /* Double the original size */
     background: url('tractor.png') no-repeat center center/contain;
     transform: translateX(-50%);
 }
 
 .hay-bale, .rabbit, .stone {
     position: absolute;
-    width: 80px;
-    height: 60px;
+    width: 30px;
+    height: 30px;
     background-size: cover;
 }
 
@@ -71,4 +71,16 @@ body {
 #instructions p {
     margin: 5px;
     font-size: 16px;
+}
+
+#controls {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
 }
