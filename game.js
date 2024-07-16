@@ -27,9 +27,9 @@ function moveTractor(event) {
     const tractorWidth = tractor.clientWidth;
     const containerWidth = gameContainer.clientWidth;
     
-    if (event.key === 'ArrowLeft' && tractorLeft > 0) {
+    if (event.key === 'ArrowLeft' && tractorLeft > 10) {
         tractor.style.left = `${tractorLeft - 10}px`;
-    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) {
+    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth - 10) {
         tractor.style.left = `${tractorLeft + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
@@ -43,7 +43,7 @@ function moveTractor(event) {
 function createHayBale() {
     const hayBale = document.createElement('div');
     hayBale.classList.add('hay-bale');
-    hayBale.style.left = `${Math.random() * (gameContainer.clientWidth - 30)}px`;
+    hayBale.style.left = `${Math.random() * (gameContainer.clientWidth - 60)}px`; // Adjust for larger size
     hayBale.style.top = '0px';
     gameContainer.appendChild(hayBale);
 }
