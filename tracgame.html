@@ -7,24 +7,26 @@
     <link rel="stylesheet" href="styles2.css">
 </head>
 <body>
-    <div id="game-container">
-        <div id="tractor"></div>
+    <div id="controls">
+        <button id="start-button">Start Game</button>
+        <button id="restart-button" style="display: none;">Restart Game</button>
+    </div>
+    <div id="game-layout">
+        <div id="instructions">
+            <h2>Game Instructions</h2>
+            <p>Use Arrow Left/Right keys to move the tractor.</p>
+            <p>Use Arrow Up/Down keys to adjust the speed of falling objects.</p>
+            <p>Catch hay bales for +1 point.</p>
+            <p>Catch the rabbit for +10 points (appears rarely).</p>
+            <p>Avoid the stones, they give -15 points (appear occasionally).</p>
+        </div>
+        <div id="game-container">
+            <div id="tractor"></div>
+        </div>
     </div>
     <div id="scoreboard">
         <p>Score: <span id="score">0</span></p>
         <p>Time: <span id="time">60</span>s</p>
-    </div>
-    <div id="instructions">
-        <h2>Game Instructions</h2>
-        <p>Use Arrow Left/Right keys to move the tractor.</p>
-        <p>Use Arrow Up/Down keys to adjust the speed of falling objects.</p>
-        <p>Catch hay bales for +1 point.</p>
-        <p>Catch the rabbit for +10 points (appears rarely).</p>
-        <p>Avoid the stones, they give -15 points (appear occasionally).</p>
-    </div>
-    <div id="controls">
-        <button id="start-button">Start Game</button>
-        <button id="restart-button" style="display: none;">Restart Game</button>
     </div>
     <script src="game.js"></script>
 </body>
