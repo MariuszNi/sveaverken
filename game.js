@@ -3,6 +3,8 @@ const gameContainer = document.getElementById('game-container');
 const tractor = document.getElementById('tractor');
 const scoreDisplay = document.getElementById('score');
 const timeDisplay = document.getElementById('time');
+const startButton = document.getElementById('start-button');
+const restartButton = document.getElementById('restart-button');
 
 let score = 0;
 let time = 60;
@@ -15,6 +17,9 @@ let backgroundSpeed = 5; // Initial background scroll speed (milliseconds per fr
 let backgroundPosition = 0;
 
 document.addEventListener('keydown', moveTractor);
+
+startButton.addEventListener('click', startGame);
+restartButton.addEventListener('click', restartGame);
 
 function moveTractor(event) {
     const tractorLeft = tractor.offsetLeft;
@@ -111,6 +116,9 @@ function startBackgroundAnimation() {
 }
 
 function startGame() {
+    startButton.style.display = 'none';
+    restartButton.style.display = 'inline';
+
     gameInterval = setInterval(() => {
         time -= 1;
         timeDisplay.textContent = time;
@@ -132,4 +140,11 @@ function startGame() {
     startBackgroundAnimation();
 }
 
-startGame();
+function restartGame() {
+    score = 0;
+    time = 60;
+    scoreDisplay.textContent = score;
+    timeDisplay.textContent = time;
+    document.querySelectorAll('.hay-bale, .rabbit, .stone').forEach(obj => obj.remove());
+    startGame();
+}
