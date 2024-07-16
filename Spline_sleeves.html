@@ -2,14 +2,14 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Spline Sleeves - Sveaverken</title>
+    <title>Lista Adapterów Spline Sleeve</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr',
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                 autoDisplay: false
             }, 'google_translate_element');
@@ -68,107 +68,60 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', translatePageToBrowserLanguage);
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</head>
-<body>
-    <header>
-        <img src="logo.png" alt="Sveaverken Logo">
-        <div id="google_translate_element" style="float: right;"></div>
-    </header>
-    <main>
-        <section id="spline-sleeves">
-            <h1>Lista Adapterów Spline Sleeve</h1>
-            <p>Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</p>
-            <div>
-                <label for="brand-select">Marka pojazdu:</label>
-                <select id="brand-select" onchange="showSleeveDetails()">
-                    <option value="">--Wybierz markę--</option>
-                </select>
-            </div>
-            <div id="sleeve-details">
-                <!-- Szczegóły adaptera będą wyświetlane tutaj -->
-            </div>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Sveaverken</p>
-    </footer>
-    <script>
-        const sleeveData = [];
+        document.addEventListener('DOMContentLoaded', () => {
+            loadExcelData('spline_sleeves', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx');
+            translatePageToBrowserLanguage();
+        });
 
-        async function loadExcelData() {
+        async function loadExcelData(listId, url) {
             try {
-                const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx';
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
                 }
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
-                const sheet = workbook.Sheets['spline'];
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-                const brands = new Set();
+                const adaptedBrands = new Set();
                 jsonData.slice(1).forEach(row => {
-                    const [name, coding, version, brand, parameter, series] = row;
-                    if (brand) {
-                        const brandList = brand.split(',').map(b => b.trim());
-                        brandList.forEach(brand => brands.add(brand));
-                        sleeveData.push({ name, coding, version, brand: brandList, parameter, series });
-                    }
+                    row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
                 });
 
                 const brandSelect = document.getElementById('brand-select');
-                brands.forEach(brand => {
+                adaptedBrands.forEach(brand => {
                     const option = document.createElement('option');
                     option.value = brand;
                     option.textContent = brand;
                     brandSelect.appendChild(option);
                 });
 
-                console.log('Dane z pliku Excel załadowane.');
+                brandSelect.addEventListener('change', () => {
+                    const selectedBrand = brandSelect.value;
+                    const filteredData = jsonData.slice(1).filter(row => row[3].split(',').map(brand => brand.trim()).includes(selectedBrand));
+                    displayTableData(filteredData);
+                });
             } catch (error) {
-                console.error('Błąd ładowania danych z pliku Excel:', error);
                 showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
             }
         }
 
-        function showSleeveDetails() {
-            const selectedBrand = document.getElementById('brand-select').value;
-            const detailsDiv = document.getElementById('sleeve-details');
-            detailsDiv.innerHTML = '';
-
-            if (selectedBrand) {
-                const filteredData = sleeveData.filter(item => item.brand.includes(selectedBrand));
-                if (filteredData.length > 0) {
-                    const table = document.createElement('table');
-                    table.innerHTML = `
-                        <tr>
-                            <th>Nazwa</th>
-                            <th>Kod produktu</th>
-                            <th>Wersja</th>
-                            <th>Parametr</th>
-                            <th>Seria</th>
-                        </tr>
-                    `;
-                    filteredData.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${item.name || ''}</td>
-                            <td>${item.coding || ''}</td>
-                            <td>${item.version || ''}</td>
-                            <td>${item.parameter || ''}</td>
-                            <td>${item.series || ''}</td>
-                        `;
-                        table.appendChild(row);
-                    });
-                    detailsDiv.appendChild(table);
-                } else {
-                    detailsDiv.textContent = 'Brak danych dla wybranej marki.';
-                }
-            }
+        function displayTableData(data) {
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = '';
+            data.forEach(row => {
+                const [name, coding, version, adaptedBrand, parameter, series] = row;
+                const rowElement = document.createElement('tr');
+                rowElement.innerHTML = `
+                    <td>${name || ''}</td>
+                    <td>${coding || ''}</td>
+                    <td>${version || ''}</td>
+                    <td>${parameter || ''}</td>
+                    <td>${series || ''}</td>
+                `;
+                tableBody.appendChild(rowElement);
+            });
         }
 
         function showError(message) {
@@ -177,9 +130,37 @@
             errorDialog.innerHTML = `<p>${message}</p><button onclick="this.parentElement.remove()">Zamknij</button>`;
             document.body.appendChild(errorDialog);
         }
-
-        document.addEventListener('DOMContentLoaded', loadExcelData);
     </script>
+</head>
+<body>
+    <header>
+        <div id="google_translate_element" style="float: right;"></div>
+        <img src="logo.png" alt="Sveaverken Logo">
+    </header>
+    <main>
+        <section id="spline_sleeves">
+            <h1>Lista Adapterów Spline Sleeve</h1>
+            <label for="brand-select">Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</label>
+            <select id="brand-select">
+                <option value="">--Wybierz markę--</option>
+            </select>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nazwa</th>
+                        <th>Kod produktu</th>
+                        <th>Wersja</th>
+                        <th>Parametr</th>
+                        <th>Seria</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table-body"></tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sveaverken</p>
+    </footer>
     <style>
         .error-dialog {
             position: fixed;
