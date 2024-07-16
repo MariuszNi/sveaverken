@@ -82,14 +82,21 @@
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-                console.log('Dane JSON:', jsonData);
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
                 const adaptedBrands = new Set();
+                const fullData = [];
+
                 jsonData.slice(1).forEach(row => {
                     if (row[3]) {
                         row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
+                    }
+
+                    const startRow = fullData.length ? fullData[fullData.length - 1].startRow + fullData[fullData.length - 1].rows.length : 1;
+                    const endRow = startRow + (row.length - 1);
+
+                    for (let i = startRow; i <= endRow; i++) {
+                        fullData.push({ startRow, rows: row });
                     }
                 });
 
@@ -103,7 +110,7 @@
 
                 brandSelect.addEventListener('change', () => {
                     const selectedBrand = brandSelect.value;
-                    const filteredData = jsonData.slice(1).filter(row => row[3] && row[3].split(',').map(brand => brand.trim()).includes(selectedBrand));
+                    const filteredData = fullData.filter(row => row.rows[3] && row.rows[3].split(',').map(brand => brand.trim()).includes(selectedBrand));
                     displayTableData(filteredData);
                 });
             } catch (error) {
@@ -115,7 +122,7 @@
             const tableBody = document.getElementById('data-table-body');
             tableBody.innerHTML = '';
             data.forEach(row => {
-                const [name, coding, version, adaptedBrand, parameter, series] = row;
+                const [name, coding, version, adaptedBrand, parameter, series] = row.rows;
                 const rowElement = document.createElement('tr');
                 rowElement.innerHTML = `
                     <td>${name || ''}</td>
