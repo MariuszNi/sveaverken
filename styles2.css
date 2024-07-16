@@ -63,8 +63,8 @@ body {
 
 .hay-bale, .rabbit, .stone {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     background-size: cover;
 }
 
