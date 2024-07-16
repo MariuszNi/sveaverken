@@ -84,6 +84,23 @@
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
+                const mergedRanges = sheet['!merges'];
+                if (mergedRanges) {
+                    mergedRanges.forEach(range => {
+                        const start = range.s;
+                        const end = range.e;
+                        const cellValue = sheet[XLSX.utils.encode_cell(start)].v;
+
+                        for (let R = start.r; R <= end.r; R++) {
+                            for (let C = start.c; C <= end.c; C++) {
+                                if (R !== start.r || C !== start.c) {
+                                    sheet[XLSX.utils.encode_cell({ r: R, c: C })] = { t: 's', v: cellValue };
+                                }
+                            }
+                        }
+                    });
+                }
+
                 const adaptedBrands = new Set();
                 const fullData = [];
 
@@ -92,12 +109,16 @@
                         row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
                     }
 
-                    const startRow = fullData.length ? fullData[fullData.length - 1].startRow + fullData[fullData.length - 1].rows.length : 1;
-                    const endRow = startRow + (row.length - 1);
+                    const rowData = {
+                        name: row[0],
+                        coding: row[1],
+                        version: row[2],
+                        adaptedBrand: row[3],
+                        parameter: row[4],
+                        series: row[5]
+                    };
 
-                    for (let i = startRow; i <= endRow; i++) {
-                        fullData.push({ startRow, rows: row });
-                    }
+                    fullData.push(rowData);
                 });
 
                 const brandSelect = document.getElementById('brand-select');
@@ -110,7 +131,7 @@
 
                 brandSelect.addEventListener('change', () => {
                     const selectedBrand = brandSelect.value;
-                    const filteredData = fullData.filter(row => row.rows[3] && row.rows[3].split(',').map(brand => brand.trim()).includes(selectedBrand));
+                    const filteredData = fullData.filter(row => row.adaptedBrand && row.adaptedBrand.split(',').map(brand => brand.trim()).includes(selectedBrand));
                     displayTableData(filteredData);
                 });
             } catch (error) {
@@ -122,7 +143,7 @@
             const tableBody = document.getElementById('data-table-body');
             tableBody.innerHTML = '';
             data.forEach(row => {
-                const [name, coding, version, adaptedBrand, parameter, series] = row.rows;
+                const { name, coding, version, parameter, series } = row;
                 const rowElement = document.createElement('tr');
                 rowElement.innerHTML = `
                     <td>${name || ''}</td>
