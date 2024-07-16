@@ -82,24 +82,7 @@
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-
-                const mergedRanges = sheet['!merges'];
-                if (mergedRanges) {
-                    mergedRanges.forEach(range => {
-                        const start = range.s;
-                        const end = range.e;
-                        const cellValue = sheet[XLSX.utils.encode_cell(start)].v;
-
-                        for (let R = start.r; R <= end.r; R++) {
-                            for (let C = start.c; C <= end.c; C++) {
-                                if (R !== start.r || C !== start.c) {
-                                    sheet[XLSX.utils.encode_cell({ r: R, c: C })] = { t: 's', v: cellValue };
-                                }
-                            }
-                        }
-                    });
-                }
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
                 const adaptedBrands = new Set();
                 const fullData = [];
