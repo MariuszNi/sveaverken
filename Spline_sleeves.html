@@ -86,7 +86,9 @@
 
                 const adaptedBrands = new Set();
                 jsonData.slice(1).forEach(row => {
-                    row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
+                    if (row[3]) {
+                        row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
+                    }
                 });
 
                 const brandSelect = document.getElementById('brand-select');
@@ -99,7 +101,7 @@
 
                 brandSelect.addEventListener('change', () => {
                     const selectedBrand = brandSelect.value;
-                    const filteredData = jsonData.slice(1).filter(row => row[3].split(',').map(brand => brand.trim()).includes(selectedBrand));
+                    const filteredData = jsonData.slice(1).filter(row => row[3] && row[3].split(',').map(brand => brand.trim()).includes(selectedBrand));
                     displayTableData(filteredData);
                 });
             } catch (error) {
