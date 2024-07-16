@@ -76,7 +76,7 @@
 <body>
     <header>
         <img src="logo.png" alt="Sveaverken Logo">
-        <div id="google_translate_element" style="float: left;"></div>
+        <div id="google_translate_element" style="float: right;"></div>
     </header>
     <main>
         <section id="spline-sleeves">
@@ -129,7 +129,7 @@
                 const sheetName = workbook.SheetNames[0];
                 const sheet = workbook.Sheets[sheetName];
                 expandMergedCells(sheet);
-                const jsonData = XLSX.utils.sheet_to_json(sheet);
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: '' });
 
                 console.log('Dane JSON:', jsonData);
 
@@ -220,6 +220,8 @@
     <style>
         .error-dialog {
             position: fixed;
+           
+
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
