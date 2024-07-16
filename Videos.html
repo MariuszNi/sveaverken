@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Filmów - Sveaverken</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Sveaverken Logo">
+        
+    </header>
+    <main>
+        <section id="video-list-section">
+            <h1>Lista Filmów</h1>
+            <div id="video-list-1">
+                <h2>Lista Filmów 1</h2>
+                <ul></ul>
+            </div>
+            <div id="video-list-2">
+                <h2>Lista Filmów 2</h2>
+                <ul></ul>
+            </div>
+            <div id="video-list-3">
+                <h2>Lista Filmów 3</h2>
+                <ul></ul>
+            </div>
+            <div id="video-list-4">
+                <h2>Lista Filmów 4</h2>
+                <ul></ul>
+            </div>
+            <div id="video-list-5">
+                <h2>Lista Filmów 5</h2>
+                <ul></ul>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sveaverken</p>
+    </footer>
+    <script>
+        async function loadExcelData(listId, url) {
+            try {
+                console.log('Pobieranie pliku Excel z URL:', url);
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
+                }
+                const data = await response.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                console.log('Dane JSON:', jsonData);
+
+                const listElement = document.querySelector(`#${listId} ul`);
+                listElement.innerHTML = ''; // Clear existing list items
+
+                jsonData.slice(1).forEach(row => {
+                    const [title, url] = row;
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<a href="${url}" target="_blank">${title}</a>`;
+                    listElement.appendChild(listItem);
+                });
+
+                console.log(`Lista filmów załadowana dla ${listId}`);
+            } catch (error) {
+                console.error(`Błąd ładowania danych z pliku Excel (${listId}):`, error);
+                showError(`Wystąpił błąd podczas ładowania danych z pliku Excel (${listId}): ` + error.message);
+            }
+        }
+
+        function showError(message) {
+            const errorDialog = document.createElement('div');
+            errorDialog.className = 'error-dialog';
+            errorDialog.innerHTML = `<p>${message}</p><button onclick="this.parentElement.remove()">Zamknij</button>`;
+            document.body.appendChild(errorDialog);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadExcelData('video-list-1', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista1.xlsx');
+            loadExcelData('video-list-2', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista2.xlsx');
+            loadExcelData('video-list-3', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista3.xlsx');
+            loadExcelData('video-list-4', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista4.xlsx');
+            loadExcelData('video-list-5', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista5.xlsx');
+        });
+    </script>
+    <style>
+        .error-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid red;
+            padding: 20px;
+            z-index: 1000;
+        }
+        .error-dialog p {
+            margin: 0 0 10px;
+        }
+    </style>
+</body>
+</html>
