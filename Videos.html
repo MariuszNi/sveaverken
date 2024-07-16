@@ -9,21 +9,21 @@
 <body>
     <header>
         <img src="logo.png" alt="Sveaverken Logo">
-        
     </header>
     <main>
         <section id="video-list-section">
             <h1>Lista Filmów</h1>
+            <input type="text" id="filter-input" placeholder="Filtruj filmy..." onkeyup="filterVideos()">
             <div id="video-list-1">
-                <h2>Lista Filmów w jezyku Angielskim</h2>
+                <h2>Lista Filmów w języku Angielskim</h2>
                 <ul></ul>
             </div>
             <div id="video-list-2">
-                <h2>Lista Filmów Polskim</h2>
+                <h2>Lista Filmów w języku Polskim</h2>
                 <ul></ul>
             </div>
             <div id="video-list-3">
-                <h2>Lista Filmów Angielskim i Tureckim</h2>
+                <h2>Lista Filmów w języku Angielskim i Tureckim</h2>
                 <ul></ul>
             </div>
             <div id="video-list-4">
@@ -71,6 +71,24 @@
                 console.error(`Błąd ładowania danych z pliku Excel (${listId}):`, error);
                 showError(`Wystąpił błąd podczas ładowania danych z pliku Excel (${listId}): ` + error.message);
             }
+        }
+
+        function filterVideos() {
+            const filterInput = document.getElementById('filter-input');
+            const filterValue = filterInput.value.toLowerCase();
+            const lists = document.querySelectorAll('#video-list-section ul');
+
+            lists.forEach(list => {
+                const items = list.getElementsByTagName('li');
+                Array.from(items).forEach(item => {
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().includes(filterValue)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
         }
 
         function showError(message) {
