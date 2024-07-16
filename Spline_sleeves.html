@@ -113,9 +113,11 @@
                 const brands = new Set();
                 jsonData.slice(1).forEach(row => {
                     const [name, coding, version, brand, parameter, series] = row;
-                    const brandList = brand.split(',');
-                    brandList.forEach(brand => brands.add(brand.trim()));
-                    sleeveData.push({ name, coding, version, brand: brandList, parameter, series });
+                    if (brand) {
+                        const brandList = brand.split(',');
+                        brandList.forEach(brand => brands.add(brand.trim()));
+                        sleeveData.push({ name, coding, version, brand: brandList, parameter, series });
+                    }
                 });
 
                 const brandSelect = document.getElementById('brand-select');
