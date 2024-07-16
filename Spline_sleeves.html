@@ -65,7 +65,7 @@
                             }
                         }
                     }, 1000);
-                });
+                }, 1000);
             }
         }
 
@@ -76,12 +76,11 @@
 <body>
     <header>
         <img src="logo.png" alt="Sveaverken Logo">
-        <div id="google_translate_element" style="float: left;">
-        </div>
+        <div id="google_translate_element" style="float: left;"></div>
     </header>
     <main>
         <section id="spline-sleeves">
-            <h1>Lista Adapterów Spline Sleeve!!!TEST!!!</h1>
+            <h1>Lista Adapterów Spline Sleeve</h1>
             <p>Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</p>
             <div>
                 <label for="brand-select">Marka pojazdu:</label>
@@ -219,7 +218,7 @@
         document.addEventListener('DOMContentLoaded', loadExcelData);
     </script>
     <style>
-                .error-dialog {
+        .error-dialog {
             position: fixed;
             top: 50%;
             left: 50%;
