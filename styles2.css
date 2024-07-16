@@ -8,18 +8,6 @@ body {
     background-color: #f0f0f0;
 }
 
-#controls {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#controls button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 5px;
-    cursor: pointer;
-}
-
 #game-layout {
     display: flex;
     justify-content: center;
@@ -44,8 +32,8 @@ body {
 
 #game-container {
     position: relative;
-    width: 400px;
-    height: 600px;
+    width: 520px; /* Increase width by 30% */
+    height: 780px; /* Increase height by 30% */
     background: url('background.jpg') repeat-y center top/cover;
     overflow: hidden;
     border: 2px solid #555;
@@ -55,29 +43,48 @@ body {
     position: absolute;
     bottom: 10px;
     left: 50%;
-    width: 80px; /* Double the original size */
-    height: 80px; /* Double the original size */
+    width: 100px; /* Double the original size */
+    height: 100px; /* Double the original size */
     background: url('tractor.png') no-repeat center center/contain;
     transform: translateX(-50%);
 }
 
 .hay-bale, .rabbit, .stone {
     position: absolute;
-    width: 60px;
-    height: 60px;
     background-size: cover;
 }
 
 .hay-bale {
+    width: 60px; /* Double the original size */
+    height: 60px; /* Double the original size */
     background: url('hay-bale.png') no-repeat center center/contain;
 }
 
 .rabbit {
+    width: 30px;
+    height: 30px;
     background: url('rabbit.png') no-repeat center center/contain;
 }
 
 .stone {
+    width: 30px;
+    height: 30px;
     background: url('stone.png') no-repeat center center/contain;
+}
+
+#controls {
+    margin-left: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#controls button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
 }
 
 #scoreboard {
