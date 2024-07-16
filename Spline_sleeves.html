@@ -64,170 +64,6 @@
                                 langToClick.click();
                             }
                         }
-                    }
-                }, 1000);
-            }
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</head>
-<body>
-    <header>
-        <img src="logo.png" alt="Sveaverken Logo">
-        <div id="google_translate_element" style="float: left;">
-        </div>
-    </header>
-    <main>
-        <section id="spline-sleeves">
-            <h1>Lista Adapterów Spline Sleeve!!!TEST!!!</h1>
-            <p>Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</p>
-            <div>
-                <label for="brand-select">Marka pojazdu:</label>
-                <select id="brand-select" onchange="showSleeveDetails()">
-                    <option value="">--Wybierz markę--</option>
-                </select>
-            </div>
-            <div id="sleeve-details">
-                <!-- Szczegóły adaptera będą wyświetlane tutaj -->
-            </div>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Sveaverken</p>
-    </footer>
-    <script>
-        const sleeveData = [];
-
-        function expandMergedCells(sheet) {
-            const mergeRanges = sheet['!merges'] || [];
-            mergeRanges.forEach(range => {
-                const startCell = XLSX.utils.encode_cell({ r: range.s.r, c: range.s.c });
-                const value = sheet[startCell] ? sheet[startCell].v : '';
-                for (let R = range.s.r; R <= range.e.r; ++R) {
-                    for (let C = range.s.c; C <= range.e.c; ++C) {
-                        const cell = XLSX.utils.encode_cell({ r: R, c: C });
-                        if (!sheet[cell]) {
-                            sheet[cell] = { t: 's', v: value };
-                        }
-                    }
-                }
-            });
-        }
-
-        async function loadExcelData() {
-            try {
-                const url = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx'; // Zaktualizowany URL
-                console.log('Pobieranie pliku Excel z URL:', url); // Dodano debugowanie
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
-                }
-                const data = await response.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array' });
-
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
-                expandMergedCells(sheet); // Rozszerz scalone komórki
-                const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-                console.log('Dane JSON:', jsonData); // Dodano debugowanie
-
-                jsonData.forEach(item => {
-                    if (item['Adapt brands']) {
-                        const brands = item['Adapt brands'].split(',');
-                        brands.forEach(brand => {
-                            if (!sleeveData.some(data => data.brand === brand.trim())) {
-                                sleeveData.push({ brand: brand.trim(), adapters: [] });
-                            }
-                            const brandData = sleeveData.find(data => data.brand === brand.trim());
-                            brandData.adapters.push({
-                                adapterNumber: item['Name'],
-                                productCode: item['Product code'],
-                                series: item['Series']
-                            });
-                        });
-                    } else {
-                        console.warn('Brak kolumny "Adapt brands" dla wpisu:', item);
-                    }
-                });
-
-                console.log('Dane adapterów:', sleeveData); // Dodano debugowanie
-                loadBrandOptions();
-            } catch (error) {
-                console.error('Błąd ładowania danych z pliku Excel:', error);
-                showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
-            }
-        }
-
-        function loadBrandOptions() {
-            try {
-                const brandSelect = document.getElementById('brand-select');
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Spline Sleeves - Sveaverken</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false // Disable the auto-display widget
-            }, 'google_translate_element');
-        }
-
-        function translatePageToBrowserLanguage() {
-            var userLang = navigator.language || navigator.userLanguage; 
-            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
-            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
-            if (supportedLanguages.includes(userLang)) {
-                if (userLang !== 'pl') { // Skip if it's Polish, as the default is Polish
-                    var translateElement = new google.translate.TranslateElement({
-                        pageLanguage: 'pl',
-                        includedLanguages: supportedLanguages.join(','),
-                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                        autoDisplay: false
-                    }, 'google_translate_element');
-
-                    setTimeout(function () {
-                        var iframe = document.querySelector('.goog-te-banner-frame');
-                        if (iframe) {
-                            var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                            var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                            if (langSelect) {
-                                langSelect.click();
-                                var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
-                                if (langToClick) {
-                                    langToClick.click();
-                                }
-                            }
-                        }
-                    }, 1000);
-                }
-            } else {
-                // Default to English if the user's language is not supported
-                var translateElement = new google.translate.TranslateElement({
-                    pageLanguage: 'pl',
-                    includedLanguages: supportedLanguages.join(','),
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false
-                }, 'google_translate_element');
-
-                setTimeout(function () {
-                    var iframe = document.querySelector('.goog-te-banner-frame');
-                    if (iframe) {
-                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                        if (langSelect) {
-                            langSelect.click();
-                            var langToClick = innerDoc.querySelector('a[lang=en]');
-                            if (langToClick) {
-                                langToClick.click();
-                            }
-                        }
                     }, 1000);
                 });
             }
@@ -383,12 +219,11 @@
         document.addEventListener('DOMContentLoaded', loadExcelData);
     </script>
     <style>
-        .error-dialog {
+                .error-dialog {
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50
-%, -50%);
+            transform: translate(-50%, -50%);
             background-color: white;
             border: 2px solid red;
             padding: 20px;
