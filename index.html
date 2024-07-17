@@ -8,7 +8,7 @@
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk', 
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                 autoDisplay: false // Disable the auto-display widget
             }, 'google_translate_element');
@@ -17,7 +17,7 @@
         function translatePageToBrowserLanguage() {
             var userLang = navigator.language || navigator.userLanguage; 
             userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
-            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl','sk'];
             if (userLang !== 'pl') {
                 var translateElement = new google.translate.TranslateElement({
                     pageLanguage: 'pl',
