@@ -89,10 +89,10 @@
     <main>
         <h1>Instrukcja Przeliczania Minimalnej Liczby Nawrotów na Polu</h1>
         <ol>
-            <li>Określ szerokość roboczą maszyny, którą nazywamy <strong>"Szerokość Robocza"</strong>.</li>
-            <li>Zmierz lub określ promień skrętu maszyny, który nazwiemy <strong>"Promień Skrętu"</strong>.</li>
+            <li>Określ szerokość roboczą maszyny <strong>"Szerokość Robocza"</strong>.</li>
+            <li>Zmierz lub określ promień skrętu maszyny <strong>"Promień Skrętu"</strong>.</li>
             <li>
-                Użyj poprawionego wzoru matematycznego: 
+                Użyj wzoru matematycznego: 
                 <code>2 * (2 * Promień Skrętu / Szerokość Robocza) + 1</code> 
                 do obliczenia minimalnej liczby linii (przejazdów), które muszą się znaleźć w granicach pola, aby możliwe było wykonanie pełnego nawrotu.
             </li>
@@ -107,7 +107,7 @@
             <p>Po zaokrągleniu wynika, że potrzebujesz co najmniej 7 linii, aby zaplanować automatyczny nawrót.</p>
         </div>
         <div class="calculator">
-            <h2>Kalkulator:</h2>
+            <h2>Kalkulator automatyczny:</h2>
             <label for="width">Szerokość Robocza (m):</label>
             <input type="number" id="width" step="0.1" placeholder="Wprowadź szerokość roboczą">
             <label for="radius">Promień Skrętu (m):</label>
@@ -116,7 +116,7 @@
             <div class="result" id="result"></div>
         </div>
         <div class="example-link">
-            <h2>Przykład kompatybilnych pól:</h2>
+            <h2>Przykład kompatybilnych pól z funkcją Smart U-Turn:</h2>
             <a href="https://raw.githubusercontent.com/MariuszNi/sveaverken/main/uturn.png" target="_blank">Zobacz przykład</a>
         </div>
     </main>
