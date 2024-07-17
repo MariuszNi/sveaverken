@@ -72,6 +72,16 @@
 </head>
 <body onload="translatePageToBrowserLanguage()">
     <header>
+        <img src="logo.png" alt="Sveaverken Logo">
+        <div id="google_translate_element" style="float: left;"></div>
+        <div style="float: right; padding-top: 10px;">
+            <label for="version-input">Aktualna wersja oprogramowania:</label>
+            
+        </div>
+    </header>
+    <main>
+        <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()"><body onload="translatePageToBrowserLanguage()">
+    <header>
     <img src="logo.png" alt="Sveaverken Logo">
     <div id="google_translate_element" style="float: left;"></div>
     <div style="float: right; padding-top: 10px;">
@@ -228,28 +238,92 @@
     <footer>
         <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
     </footer>
-    <script src="scripts.js"></script>
     <script type="text/javascript">
-    function filterContent() {
-        var input, filter, sections, section, h2, txtValue;
-        input = document.getElementById('search-input');
-        filter = input.value.toLowerCase();
-        sections = document.getElementsByTagName('section');
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'pl',
+            includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false // Disable the auto-display widget
+        }, 'google_translate_element');
+    }
 
-        for (var i = 0; i < sections.length; i++) {
-            section = sections[i];
-            h2 = section.getElementsByTagName('h2')[0];
-            if (h2) {
-                txtValue = h2.textContent || h2.innerText;
-                if (txtValue.toLowerCase().indexOf(filter) > -1) {
-                    section.style.display = '';
-                } else {
-                    section.style.display = 'none';
-                }
+    function translatePageToBrowserLanguage() {
+        var userLang = navigator.language || navigator.userLanguage; 
+        userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
+        var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
+        if (supportedLanguages.includes(userLang)) {
+            if (userLang !== 'pl') { // Skip if it's Polish, as the default is Polish
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
             }
+        } else {
+            // Default to English if the user's language is not supported
+            var translateElement = new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                includedLanguages: supportedLanguages.join(','),
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+
+            setTimeout(function () {
+                var iframe = document.querySelector('.goog-te-banner-frame');
+                if (iframe) {
+                    var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                    if (langSelect) {
+                        langSelect.click();
+                        var langToClick = innerDoc.querySelector('a[lang=en]');
+                        if (langToClick) {
+                            langToClick.click();
+                        }
+                    }
+                }, 1000);
+            });
         }
     }
+
+    function filterContent() {
+        const filterInput = document.getElementById('search-input');
+        const filterValue = filterInput.value.toLowerCase();
+        const sections = document.querySelectorAll('section');
+
+        sections.forEach(section => {
+            const items = section.querySelectorAll('li, p, a, h2, h3');
+            let sectionVisible = false;
+            items.forEach(item => {
+                const text = item.textContent || item.innerText;
+                if (text.toLowerCase().includes(filterValue)) {
+                    item.style.display = '';
+                    sectionVisible = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            section.style.display = sectionVisible ? '' : 'none';
+        });
+    }
 </script>
+
         
 </body>
 </html>
