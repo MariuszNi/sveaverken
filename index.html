@@ -80,7 +80,7 @@
         </div>
     </header>
     <main>
-        <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()"><body onload="translatePageToBrowserLanguage()">
+        <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()">
         <section id="home">
             <h1>Witamy na stronie Sveaverken</h1>
             <p>Sveaverken produkuje innowacyjne urządzenia dla rolnictwa, w tym systemy zarządzania hodowlą zwierząt, maszyny do karmienia, systemy monitoringu stanu zdrowia zwierząt oraz systemy zarządzania gospodarstwami. Te innowacyjne rozwiązania pomagają rolnikom zwiększać efektywność i zyski.</p>
@@ -293,26 +293,27 @@
         }
     }
 
-    function filterContent() {
-        const filterInput = document.getElementById('search-input');
-        const filterValue = filterInput.value.toLowerCase();
-        const sections = document.querySelectorAll('section');
+   function filterContent() {
+    const filterInput = document.getElementById('search-input');
+    const filterValue = filterInput.value.toLowerCase();
+    const sections = document.querySelectorAll('section');
 
-        sections.forEach(section => {
-            const items = section.querySelectorAll('li, p, a, h2, h3');
-            let sectionVisible = false;
-            items.forEach(item => {
-                const text = item.textContent || item.innerText;
-                if (text.toLowerCase().includes(filterValue)) {
-                    item.style.display = '';
-                    sectionVisible = true;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-            section.style.display = sectionVisible ? '' : 'none';
+    sections.forEach(section => {
+        const items = section.querySelectorAll('li, p, a, h2, h3');
+        let sectionVisible = false;
+        items.forEach(item => {
+            const text = item.textContent || item.innerText;
+            if (text.toLowerCase().includes(filterValue)) {
+                item.style.display = '';
+                sectionVisible = true;
+            } else {
+                item.style.display = 'none';
+            }
         });
-    }
+        section.style.display = sectionVisible ? '' : 'none';
+    });
+}
+
 </script>
 
         
