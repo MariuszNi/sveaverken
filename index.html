@@ -72,11 +72,16 @@
 </head>
 <body onload="translatePageToBrowserLanguage()">
     <header>
-          <img src="logo.png" alt="Sveaverken Logo">
-          <div id="google_translate_element" style="float: left;"></div>
-        
-    </header>
+    <img src="logo.png" alt="Sveaverken Logo">
+    <div id="google_translate_element" style="float: left;"></div>
+    <div style="float: right; padding-top: 10px;">
+        <label for="version-input">Aktualna wersja oprogramowania:</label>
+        <input type="text" id="version-input" placeholder="Wpisz wersję...">
+    </div>
+</header>
+
     <main>
+        <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()">
         <section id="home">
             <h1>Witamy na stronie Sveaverken</h1>
             <p>Sveaverken produkuje innowacyjne urządzenia dla rolnictwa, w tym systemy zarządzania hodowlą zwierząt, maszyny do karmienia, systemy monitoringu stanu zdrowia zwierząt oraz systemy zarządzania gospodarstwami. Te innowacyjne rozwiązania pomagają rolnikom zwiększać efektywność i zyski.</p>
@@ -225,5 +230,27 @@
         <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
     </footer>
     <script src="scripts.js"></script>
+    <script type="text/javascript">
+    function filterContent() {
+        var input, filter, sections, section, h2, txtValue;
+        input = document.getElementById('search-input');
+        filter = input.value.toLowerCase();
+        sections = document.getElementsByTagName('section');
+
+        for (var i = 0; i < sections.length; i++) {
+            section = sections[i];
+            h2 = section.getElementsByTagName('h2')[0];
+            if (h2) {
+                txtValue = h2.textContent || h2.innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    section.style.display = '';
+                } else {
+                    section.style.display = 'none';
+                }
+            }
+        }
+    }
+</script>
+        
 </body>
 </html>
