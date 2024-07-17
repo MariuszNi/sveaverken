@@ -4,47 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instrukcja Przeliczania Minimalnej Liczby Nawrotów</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false // Disable the auto-display widget
+            }, 'google_translate_element');
         }
-        h1 {
-            color: #333;
+
+        function translatePageToBrowserLanguage() {
+            var userLang = navigator.language || navigator.userLanguage; 
+            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
+            if (supportedLanguages.includes(userLang)) {
+                if (userLang !== 'pl') { // Skip if it's Polish, as the default is Polish
+                    var translateElement = new google.translate.TranslateElement({
+                        pageLanguage: 'pl',
+                        includedLanguages: supportedLanguages.join(','),
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    }, 'google_translate_element');
+
+                    setTimeout(function () {
+                        var iframe = document.querySelector('.goog-te-banner-frame');
+                        if (iframe) {
+                            var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                            if (langSelect) {
+                                langSelect.click();
+                                var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
+                                if (langToClick) {
+                                    langToClick.click();
+                                }
+                            }
+                        }
+                    }, 1000);
+                }
+            } else {
+                // Default to English if the user's language is not supported
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=en]');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
+            }
         }
-        ol {
-            margin: 20px 0;
+
+        function calculateTurnLines() {
+            const width = parseFloat(document.getElementById('width').value);
+            const radius = parseFloat(document.getElementById('radius').value);
+            if (!isNaN(width) && !isNaN(radius) && width > 0 && radius > 0) {
+                const result = Math.ceil(2 * (2 * radius / width) + 1);
+                document.getElementById('result').innerText = `Minimalna liczba linii: ${result}`;
+            } else {
+                document.getElementById('result').innerText = 'Proszę wprowadzić poprawne wartości.';
+            }
         }
-        p {
-            margin: 10px 0;
-        }
-        .example {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-top: 20px;
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <h1>Instrukcja Przeliczania Minimalnej Liczby Nawrotów na Polu</h1>
-    <ol>
-        <li>Określ szerokość roboczą maszyny, którą nazywamy <strong>"Szerokość Robocza"</strong>.</li>
-        <li>Zmierz lub określ promień skrętu maszyny, który nazwiemy <strong>"Promień Skrętu"</strong>.</li>
-        <li>
-            Użyj poprawionego wzoru matematycznego: 
-            <code>2 * (2 * Promień Skrętu / Szerokość Robocza) + 1</code> 
-            do obliczenia minimalnej liczby linii (przejazdów), które muszą się znaleźć w granicach pola, aby możliwe było wykonanie pełnego nawrotu.
-        </li>
-        <li>
-            Wstaw do wzoru swoje wartości <strong>'Promień Skrętu'</strong> oraz <strong>'Szerokość Robocza'</strong>, a następnie oblicz, zaokrąglając wynik do najbliższej całkowitej liczby linii w górę, co zapewni możliwość wykonania nawrotu.
-        </li>
-    </ol>
-    <div class="example">
-        <h2>Przykład:</h2>
-        <p>Jeżeli szerokość robocza wynosi 5m, a promień skrętu 7m, obliczenie powinno wyglądać tak:</p>
-        <p><code>2 * (2 * 7m / 5m) + 1 = 2 * (14m / 5m) + 1 = 2 * 2,8 + 1 = 5,6 + 1 = 6,6</code></p>
-        <p>Po zaokrągleniu wynika, że potrzebujesz co najmniej 7 linii, aby zaplanować automatyczny nawrót.</p>
-    </div>
+<body onload="translatePageToBrowserLanguage()">
+    <header>
+        <img src="logo.png" alt="Sveaverken Logo">
+        <div id="google_translate_element" style="float: right;"></div>
+    </header>
+    <main>
+        <h1>Instrukcja Przeliczania Minimalnej Liczby Nawrotów na Polu</h1>
+        <ol>
+            <li>Określ szerokość roboczą maszyny, którą nazywamy <strong>"Szerokość Robocza"</strong>.</li>
+            <li>Zmierz lub określ promień skrętu maszyny, który nazwiemy <strong>"Promień Skrętu"</strong>.</li>
+            <li>
+                Użyj poprawionego wzoru matematycznego: 
+                <code>2 * (2 * Promień Skrętu / Szerokość Robocza) + 1</code> 
+                do obliczenia minimalnej liczby linii (przejazdów), które muszą się znaleźć w granicach pola, aby możliwe było wykonanie pełnego nawrotu.
+            </li>
+            <li>
+                Wstaw do wzoru swoje wartości <strong>'Promień Skrętu'</strong> oraz <strong>'Szerokość Robocza'</strong>, a następnie oblicz, zaokrąglając wynik do najbliższej całkowitej liczby linii w górę, co zapewni możliwość wykonania nawrotu.
+            </li>
+        </ol>
+        <div class="example">
+            <h2>Przykład:</h2>
+            <p>Jeżeli szerokość robocza wynosi 5m, a promień skrętu 7m, obliczenie powinno wyglądać tak:</p>
+            <p><code>2 * (2 * 7m / 5m) + 1 = 2 * (14m / 5m) + 1 = 2 * 2,8 + 1 = 5,6 + 1 = 6,6</code></p>
+            <p>Po zaokrągleniu wynika, że potrzebujesz co najmniej 7 linii, aby zaplanować automatyczny nawrót.</p>
+        </div>
+        <div class="calculator">
+            <h2>Kalkulator:</h2>
+            <label for="width">Szerokość Robocza (m):</label>
+            <input type="number" id="width" step="0.1" placeholder="Wprowadź szerokość roboczą">
+            <label for="radius">Promień Skrętu (m):</label>
+            <input type="number" id="radius" step="0.1" placeholder="Wprowadź promień skrętu">
+            <button onclick="calculateTurnLines()">Oblicz</button>
+            <div class="result" id="result"></div>
+        </div>
+        <div class="example-link">
+            <h2>Przykład kompatybilnych pól:</h2>
+            <a href="https://raw.githubusercontent.com/MariuszNi/sveaverken/main/uturn.png" target="_blank">Zobacz przykład</a>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
+    </footer>
 </body>
 </html>
