@@ -32,26 +32,22 @@ body {
 
 #game-container {
     position: relative;
-    width: 520px;
-    height: 780px;
+    width: 520px; /* Increase width by 30% */
+    height: 780px; /* Increase height by 30% */
     background: url('background.jpg') repeat-y center top/cover;
     overflow: hidden;
-    margin: 0;
-    padding: 0;
-    border: 0; 
+    border: 2px solid #555;
 }
 
 #tractor {
     position: absolute;
     bottom: 10px;
-    left: 50%;  /* Centruj traktor początkowo */
-    width: 100px;
-    height: 100px;
+    left: 50%;
+    width: 100px; /* Double the original size */
+    height: 100px; /* Double the original size */
     background: url('tractor.png') no-repeat center center/contain;
     transform: translateX(-50%);
 }
-
-
 
 .hay-bale, .rabbit, .stone {
     position: absolute;
