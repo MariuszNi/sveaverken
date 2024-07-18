@@ -84,7 +84,7 @@ function isCaught(object) {
     return !(
         objectRect.bottom < tractorRect.top ||
         objectRect.top > tractorRect.bottom ||
-        objectRect.right < tractorRect.left
+        objectRect.right < tractorRect.left ||
         objectRect.left > tractorRect.right
     );
 }
