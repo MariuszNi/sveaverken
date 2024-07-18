@@ -332,6 +332,12 @@ function fetchNews() {
             translatePageToBrowserLanguage();
             fetchNews();
         });
+        window.onclick = function(event) {
+            const popup = document.getElementById("popup");
+            if (event.target == popup) {
+                popup.style.display = "none";
+            }
+        }
 </script>
 
         
