@@ -27,6 +27,8 @@ function moveTractor(event) {
     const tractorWidth = tractor.offsetWidth;
     const containerWidth = gameContainer.offsetWidth;
 
+    console.log(`Before move - Key: ${event.key}, Tractor Left: ${tractorLeft}, Container Width: ${containerWidth}, Tractor Width: ${tractorWidth}`);
+
     if (event.key === 'ArrowLeft' && tractorLeft > 0) {
         tractor.style.left = `${tractorLeft - 10}px`;
     } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) {
@@ -38,7 +40,10 @@ function moveTractor(event) {
         fallSpeed = Math.max(fallSpeed - 1, 1); // Minimum falling speed is 1
         backgroundSpeed = Math.min(backgroundSpeed + 1, 20); // Decrease background speed, max interval 20ms
     }
+
+    console.log(`After move - Key: ${event.key}, Tractor Left: ${tractor.style.left}`);
 }
+
 
 function createHayBale() {
     const hayBale = document.createElement('div');
