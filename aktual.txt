@@ -1,8 +1,7 @@
-18-07-2024
-FMS update
-1.Support uploading pictures in the operation record
-2.Support exporting a single operation record to PDF format, and can attach track pictures
-3.All data on the platform side will indicate whether the synchronization is completed
-4.The terminal's guidanceline and field support editing names and boundaries
-5.The guidanceline - curve type has newly added a free curve drawing method
-6.Guidanceline and field data can be shared to third-party accounts through the platform, which is similar to terminal sharing
+18-07-2024 - FMS update
+1. Obsługa przesyłania zdjęć w rejestrze operacji
+2. Obsługa eksportu pojedynczego rejestru operacji do formatu PDF, z możliwością dołączania zdjęć ścieżki
+3. Wszystkie dane po stronie platformy będą wskazywać, czy synchronizacja została zakończona
+4. Linie prowadzenia i pola w terminalu wspierają edytowanie nazw i granic
+5. W linii prowadzenia - typ krzywej dodano nową metodę rysowania dowolnej krzywej
+6. Dane linii prowadzenia i pola mogą być udostępniane kontom trzecim przez platformę, co jest podobne do udostępniania z terminala
