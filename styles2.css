@@ -39,13 +39,12 @@ body {
     margin: 0;
     padding: 0;
     border: 0; 
-    position: relative;
 }
 
 #tractor {
     position: absolute;
     bottom: 10px;
-    left: 50%;
+    left: 0;
     width: 100px; /* Double the original size */
     height: 100px; /* Double the original size */
     background: url('tractor.png') no-repeat center center/contain;
