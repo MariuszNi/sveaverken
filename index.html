@@ -55,6 +55,15 @@
             <strong> Board L1:23005 \/ Board L3:11491 \/ System:20240429103836 \/ Radio:J017.00.05.0</strong>
         </div>
         <div id="google_translate_element" style="float: left;"></div>
+        <div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close-button" onclick="closePopup()">&times;</span>
+        <h2>Aktualności</h2>
+        <p>Tutaj znajdziesz najnowsze aktualności.</p>
+        
+    </div>
+</div>
+
     </header>
     <main>
         <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()">
@@ -68,6 +77,8 @@
                 <li>Listę aktualnie dostepnych inżynierów serwisu (FAE)</li>
                 <li>Informacje kto pełni dyżur w najbliższy weekend</li>
             </ul>
+            <button onclick="openPopup()">Zobacz aktualności</button>
+
              </section>
         <section id="form">
             <h2>Formularz zbierania danych</h2>
