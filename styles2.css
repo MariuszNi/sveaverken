@@ -36,7 +36,10 @@ body {
     height: 780px; /* Increase height by 30% */
     background: url('background.jpg') repeat-y center top/cover;
     overflow: hidden;
-    border: 2px solid #555;
+    margin: 0;
+    padding: 0;
+    border: 0; 
+    position: relative;
 }
 
 #tractor {
