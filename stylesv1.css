@@ -66,13 +66,13 @@ main {
     justify-content: center;
     align-items: center;
     border: 2px solid #000;
-    background-color: #000;
+    background-color: #fff;
     width: 400px;
     height: 400px;
 }
 
 #game-canvas {
-    background-color: #000;
+    background-color: #fff;
     width: 100%;
     height: 100%;
 }
@@ -131,4 +131,12 @@ main {
 .difficulty-button:hover {
     background-color: #fff;
     color: #333;
+}
+
+.snake-segment {
+    background: url('traktor.png') no-repeat center center / contain;
+}
+
+.food {
+    background: url('przyczepa.png') no-repeat center center / contain;
 }

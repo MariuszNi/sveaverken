@@ -1,4 +1,3 @@
-// gamesnake.js
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -73,14 +72,44 @@ function updateGame() {
 }
 
 function drawGame() {
-    context.fillStyle = '#000';
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
-    context.fillStyle = '#0f0';
-    snake.forEach(segment => context.fillRect(segment.x, segment.y, cellSize, cellSize));
+    // Draw each segment of the snake
+    snake.forEach((segment, index) => {
+        drawSegment(segment.x, segment.y, index === 0 ? 'traktor.png' : 'przyczepa.png', getRotationAngle(index));
+    });
 
-    context.fillStyle = '#f00';
-    context.fillRect(food.x, food.y, cellSize, cellSize);
+    // Draw the food
+    drawSegment(food.x, food.y, 'przyczepa.png', 0);
+}
+
+function drawSegment(x, y, imgSrc, angle) {
+    const img = new Image();
+    img.src = imgSrc;
+    img.onload = () => {
+        context.save();
+        context.translate(x + cellSize / 2, y + cellSize / 2);
+        context.rotate(angle);
+        context.drawImage(img, -cellSize / 2, -cellSize / 2, cellSize, cellSize);
+        context.restore();
+    }
+}
+
+function getRotationAngle(index) {
+    if (index === 0) {
+        if (direction.x === 1) return 0;
+        if (direction.x === -1) return Math.PI;
+        if (direction.y === 1) return Math.PI / 2;
+        if (direction.y === -1) return -Math.PI / 2;
+    } else {
+        const current = snake[index];
+        const next = snake[index - 1];
+        if (next.x > current.x) return 0;
+        if (next.x < current.x) return Math.PI;
+        if (next.y > current.y) return Math.PI / 2;
+        if (next.y < current.y) return -Math.PI / 2;
+    }
+    return 0;
 }
 
 function changeDirection(event) {
