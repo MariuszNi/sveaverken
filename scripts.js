@@ -25,6 +25,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const expiryDate = new Date(cacheExpiry);
         return now < expiryDate;
     }
+function openPopup() {
+    document.getElementById("popup").style.display = "block";
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+// Opcjonalnie możesz dodać zamykanie popupu po kliknięciu poza jego treścią
+window.onclick = function(event) {
+    const popup = document.getElementById("popup");
+    if (event.target == popup) {
+        popup.style.display = "none";
+    }
+}
 
     function saveToCache(data) {
         localStorage.setItem(cacheKey, JSON.stringify(data));
