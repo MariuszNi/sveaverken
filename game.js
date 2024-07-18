@@ -24,12 +24,12 @@ restartButton.addEventListener('click', restartGame);
 
 function moveTractor(event) {
     const tractorLeft = tractor.offsetLeft;
-    const tractorWidth = tractor.clientWidth;
-    const containerWidth = gameContainer.clientWidth;
-    
-    if (event.key === 'ArrowLeft' && tractorLeft > 10) {
+    const tractorWidth = tractor.offsetWidth;
+    const containerWidth = gameContainer.offsetWidth;
+
+    if (event.key === 'ArrowLeft' && tractorLeft > 0) {
         tractor.style.left = `${tractorLeft - 10}px`;
-    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) { // Adjusted line
+    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) {
         tractor.style.left = `${tractorLeft + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
@@ -39,7 +39,6 @@ function moveTractor(event) {
         backgroundSpeed = Math.min(backgroundSpeed + 1, 20); // Decrease background speed, max interval 20ms
     }
 }
-
 
 function createHayBale() {
     const hayBale = document.createElement('div');
