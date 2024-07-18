@@ -46,7 +46,35 @@ body {
             margin: 10px 0;
             line-height: 1.5;
         }
+/* Stylizacja przycisku */
+        #news-button {
+            background-color: #4CAF50; /* Zielony kolor */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+            transition: background-color 0.3s ease;
+        }
 
+        #news-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Animacja dla popupu */
+        .popup-content {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
 header {
     background-color: #003366;
     color: #fff;
