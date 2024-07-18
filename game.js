@@ -22,16 +22,14 @@ startButton.addEventListener('click', startGame);
 restartButton.addEventListener('click', restartGame);
 
 function moveTractor(event) {
-    const containerRect = gameContainer.getBoundingClientRect();
-    let tractorLeft = parseFloat(tractor.style.left) || 0;
-    const tractorWidth = tractor.offsetWidth;
-
-    console.log(`Before move - Key: ${event.key}, Tractor Left: ${tractorLeft}px, Container Width: ${containerRect.width}, Tractor Width: ${tractorWidth}`);
-
+    const tractorLeft = tractor.offsetLeft;
+    const tractorWidth = tractor.clientWidth;
+    const containerWidth = gameContainer.clientWidth;
+    
     if (event.key === 'ArrowLeft' && tractorLeft > 0) {
-        tractorLeft -= 10;
-    } else if (event.key === 'ArrowRight' && tractorLeft < containerRect.width - tractorWidth) {
-        tractorLeft += 10;
+        tractor.style.left = `${tractorLeft - 10}px`;
+    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) {
+        tractor.style.left = `${tractorLeft + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
         backgroundSpeed = Math.max(backgroundSpeed - 1, 2); // Increase background speed, min interval 2ms
@@ -39,14 +37,7 @@ function moveTractor(event) {
         fallSpeed = Math.max(fallSpeed - 1, 1); // Minimum falling speed is 1
         backgroundSpeed = Math.min(backgroundSpeed + 1, 20); // Decrease background speed, max interval 20ms
     }
-
-    // Ensure tractorLeft is within the boundaries
-    tractorLeft = Math.max(0, Math.min(tractorLeft, containerRect.width - tractorWidth));
-    tractor.style.left = `${tractorLeft}px`;
-
-    console.log(`After move - Key: ${event.key}, Tractor Left: ${tractor.style.left}`);
 }
-
 
 function createHayBale() {
     const hayBale = document.createElement('div');
@@ -144,7 +135,7 @@ function startGame() {
         if (Math.random() < 0.1) createRabbit(); // 10% chance to create a rabbit
     }, 10000);
 
-    stoneInterval = setInterval(createStone, 12000);
+    stoneInterval = setInterval(createStone, 15000);
     startBackgroundAnimation();
 }
 
