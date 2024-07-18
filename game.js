@@ -84,7 +84,7 @@ function isCaught(object) {
     return !(
         objectRect.bottom < tractorRect.top ||
         objectRect.top > tractorRect.bottom ||
-        objectRect.right < tractorRect.left ||
+        objectRect.right < tractorRect.left
         objectRect.left > tractorRect.right
     );
 }
@@ -136,7 +136,7 @@ function startGame() {
         if (Math.random() < 0.1) createRabbit(); // 10% chance to create a rabbit
     }, 10000);
 
-    stoneInterval = setInterval(createStone, 15000);
+    stoneInterval = setInterval(createStone, 12000);
     startBackgroundAnimation();
 }
 
