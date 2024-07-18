@@ -15,7 +15,7 @@ const currentDifficultyDisplay = document.getElementById('current-difficulty');
 canvas.width = 400;
 canvas.height = 400;
 
-const cellSize = 20;
+const cellSize = 40;
 let snake = [{ x: 200, y: 200 }];
 let direction = { x: 0, y: 0 };
 let food = { x: 0, y: 0 };

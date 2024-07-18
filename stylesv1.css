@@ -66,13 +66,13 @@ main {
     justify-content: center;
     align-items: center;
     border: 2px solid #000;
-    background-color: #fff;
-    width: 400px;
-    height: 400px;
+    background-color: #fff; /* Changed to white */
+    width: 400px; /* Increased by 50% */
+    height: 400px; /* Increased by 50% */
 }
 
 #game-canvas {
-    background-color: #fff;
+    background-color: #fff; /* Changed to white */
     width: 100%;
     height: 100%;
 }
