@@ -290,39 +290,48 @@
         section.style.display = sectionVisible ? '' : 'none';
     });
 }
-function openPopup() {
-            loadNews();
-            document.getElementById("popup").style.display = "block";
-        }
-
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-        }
-
-        function loadNews() {
+function fetchNews() {
             fetch('aktual.txt')
                 .then(response => response.text())
                 .then(data => {
-                    // Dodajemy formatowanie HTML
-                    const formattedData = data
-                        .split('\n')
-                        .map(line => `<p>${line}</p>`)
-                        .join('');
-                    document.getElementById('news-content').innerHTML = formattedData;
+                    document.getElementById('news-content').innerHTML = data.replace(/\n/g, '<br>');
                 })
-                .catch(error => {
-                    document.getElementById('news-content').innerHTML = 'Nie udało się załadować aktualności.';
-                    console.error('Błąd podczas ładowania aktualności:', error);
-                });
+                .catch(error => console.error('Błąd wczytywania aktualności:', error));
         }
 
-        // Opcjonalnie możesz dodać zamykanie popupu po kliknięciu poza jego treścią
-        window.onclick = function(event) {
-            const popup = document.getElementById("popup");
-            if (event.target == popup) {
-                popup.style.display = "none";
-            }
+        function openPopup() {
+            document.getElementById('popup').style.display = 'block';
         }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function filterContent() {
+            const filterInput = document.getElementById('search-input');
+            const filterValue = filterInput.value.toLowerCase();
+            const sections = document.querySelectorAll('section');
+
+            sections.forEach(section => {
+                const items = section.querySelectorAll('li, p, a, h2, h3');
+                let sectionVisible = false;
+                items.forEach(item => {
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().includes(filterValue)) {
+                        item.style.display = '';
+                        sectionVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                section.style.display = sectionVisible ? '' : 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            translatePageToBrowserLanguage();
+            fetchNews();
+        });
 </script>
 
         
