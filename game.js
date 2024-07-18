@@ -29,7 +29,7 @@ function moveTractor(event) {
     
     if (event.key === 'ArrowLeft' && tractorLeft > 10) {
         tractor.style.left = `${tractorLeft - 10}px`;
-    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth - 10) {
+    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) { // Adjusted line
         tractor.style.left = `${tractorLeft + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
