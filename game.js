@@ -23,16 +23,14 @@ startButton.addEventListener('click', startGame);
 restartButton.addEventListener('click', restartGame);
 
 function moveTractor(event) {
-    const tractorRect = tractor.getBoundingClientRect();
-    const containerRect = gameContainer.getBoundingClientRect();
-
-    console.log('Tractor Rect:', tractorRect);
-    console.log('Container Rect:', containerRect);
+    const tractorLeft = tractor.offsetLeft;
+    const tractorWidth = tractor.clientWidth;
+    const containerWidth = gameContainer.clientWidth;
     
-    if (event.key === 'ArrowLeft' && tractorRect.left > containerRect.left) {
-        tractor.style.left = `${tractorRect.left - 10 - containerRect.left}px`;
-    } else if (event.key === 'ArrowRight' && tractorRect.right < containerRect.right) {
-        tractor.style.left = `${tractorRect.left - containerRect.left + 10}px`;
+    if (event.key === 'ArrowLeft' && tractorLeft > 10) {
+        tractor.style.left = `${tractorLeft - 10}px`;
+    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) { // Adjusted line
+        tractor.style.left = `${tractorLeft + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
         backgroundSpeed = Math.max(backgroundSpeed - 1, 2); // Increase background speed, min interval 2ms
@@ -41,6 +39,7 @@ function moveTractor(event) {
         backgroundSpeed = Math.min(backgroundSpeed + 1, 20); // Decrease background speed, max interval 20ms
     }
 }
+
 
 function createHayBale() {
     const hayBale = document.createElement('div');
