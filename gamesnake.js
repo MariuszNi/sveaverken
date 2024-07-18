@@ -4,8 +4,8 @@ const scoreDisplay = document.getElementById('score');
 const startButton = document.getElementById('start-button');
 const restartButton = document.getElementById('restart-button');
 
-canvas.width = 400;
-canvas.height = 400;
+canvas.width = 800;
+canvas.height = 800;
 
 const cellSize = 20;
 let snake = [{ x: 200, y: 200 }];
