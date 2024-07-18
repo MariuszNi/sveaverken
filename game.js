@@ -1,4 +1,3 @@
-// game.js
 const gameContainer = document.getElementById('game-container');
 const tractor = document.getElementById('tractor');
 const scoreDisplay = document.getElementById('score');
@@ -43,7 +42,6 @@ function moveTractor(event) {
 
     console.log(`After move - Key: ${event.key}, Tractor Left: ${tractor.style.left}`);
 }
-
 
 function createHayBale() {
     const hayBale = document.createElement('div');
