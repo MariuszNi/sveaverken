@@ -32,24 +32,25 @@ body {
 
 #game-container {
     position: relative;
-    width: 520px; /* Increase width by 30% */
-    height: 780px; /* Increase height by 30% */
+    width: 520px; /* Ensure this is set correctly */
+    height: 780px; /* Ensure this is set correctly */
     background: url('background.jpg') repeat-y center top/cover;
     overflow: hidden;
     margin: 0;
     padding: 0;
-    border: 0; 
+    border: 0;
 }
 
 #tractor {
     position: absolute;
     bottom: 10px;
-    left: 0;
+    left: 50%;
     width: 100px; /* Double the original size */
     height: 100px; /* Double the original size */
     background: url('tractor.png') no-repeat center center/contain;
     transform: translateX(-50%);
 }
+
 
 .hay-bale, .rabbit, .stone {
     position: absolute;
