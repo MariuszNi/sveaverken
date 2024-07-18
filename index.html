@@ -309,16 +309,21 @@ function openPopup() {
         }
 // Dodaj tę funkcję w sekcji <script> obok innych funkcji
 function loadNews() {
-    fetch('aktual.txt')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('news-content').innerHTML = data;
-        })
-        .catch(error => {
-            document.getElementById('news-content').innerHTML = 'Nie udało się załadować aktualności.';
-            console.error('Błąd podczas ładowania aktualności:', error);
-        });
-}
+            fetch('aktual.txt')
+                .then(response => response.text())
+                .then(data => {
+                    // Dodajemy formatowanie HTML
+                    const formattedData = data
+                        .split('\n')
+                        .map(line => `<p>${line}</p>`)
+                        .join('');
+                    document.getElementById('news-content').innerHTML = formattedData;
+                })
+                .catch(error => {
+                    document.getElementById('news-content').innerHTML = 'Nie udało się załadować aktualności.';
+                    console.error('Błąd podczas ładowania aktualności:', error);
+                });
+        }
 
 function openPopup() {
     loadNews();
