@@ -79,13 +79,14 @@
                 <li><a href="https://forms.gle/N7sy7ePUbFzMYqB59">Formularz zbierania danych o pojazdach (wypełnienie zajmie 3 min a dzieki temu utworzymy bazę danych tuleii itp.)</a></li>
             </ul>
             </section>
-             <div id="popup" class="popup">
-            <div class="popup-content">
+            <div id="popup" class="popup">
+                <div class="popup-content">
                 <span class="close-button" onclick="closePopup()">&times;</span>
                 <h2>Aktualności</h2>
-                <p>Tutaj znajdziesz najnowsze aktualności.</p>
-                <!-- Możesz tutaj dodać więcej treści lub dynamicznie załadować treści -->
+                    <div id="news-content">
+                </div>
             </div>
+
         </div>
              </section>
         <section id="marketing">
@@ -306,6 +307,23 @@ function openPopup() {
                 popup.style.display = "none";
             }
         }
+// Dodaj tę funkcję w sekcji <script> obok innych funkcji
+function loadNews() {
+    fetch('aktual.txt')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('news-content').innerHTML = data;
+        })
+        .catch(error => {
+            document.getElementById('news-content').innerHTML = 'Nie udało się załadować aktualności.';
+            console.error('Błąd podczas ładowania aktualności:', error);
+        });
+}
+
+function openPopup() {
+    loadNews();
+    document.getElementById("popup").style.display = "block";
+}
 
 </script>
 
