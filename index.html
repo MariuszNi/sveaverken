@@ -58,7 +58,7 @@
 
     </header>
     <main>
-        <button onclick="openPopup()">Zobacz aktualności</button>
+        <button id="news-button" onclick="openPopup()">Zobacz aktualności</button>
         <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()">
         <section id="home">
             <h1>Witamy na stronie Sveaverken</h1>
@@ -86,7 +86,6 @@
                     <div id="news-content">
                 </div>
             </div>
-
         </div>
              </section>
         <section id="marketing">
@@ -293,6 +292,7 @@
     });
 }
 function openPopup() {
+            loadNews();
             document.getElementById("popup").style.display = "block";
         }
 
@@ -300,15 +300,7 @@ function openPopup() {
             document.getElementById("popup").style.display = "none";
         }
 
-        // Opcjonalnie możesz dodać zamykanie popupu po kliknięciu poza jego treścią
-        window.onclick = function(event) {
-            const popup = document.getElementById("popup");
-            if (event.target == popup) {
-                popup.style.display = "none";
-            }
-        }
-// Dodaj tę funkcję w sekcji <script> obok innych funkcji
-function loadNews() {
+        function loadNews() {
             fetch('aktual.txt')
                 .then(response => response.text())
                 .then(data => {
@@ -325,11 +317,13 @@ function loadNews() {
                 });
         }
 
-function openPopup() {
-    loadNews();
-    document.getElementById("popup").style.display = "block";
-}
-
+        // Opcjonalnie możesz dodać zamykanie popupu po kliknięciu poza jego treścią
+        window.onclick = function(event) {
+            const popup = document.getElementById("popup");
+            if (event.target == popup) {
+                popup.style.display = "none";
+            }
+        }
 </script>
 
         
