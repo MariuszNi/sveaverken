@@ -7,8 +7,27 @@
     <link rel="stylesheet" href="stylesv1.css">
 </head>
 <body>
-    <div id="game-container">
-        <canvas id="game-canvas"></canvas>
+    <header>
+        <img src="logo.png" alt="Logo" id="logo">
+    </header>
+    <main id="game-layout">
+        <div id="left-controls">
+            <button class="control-button" id="left-button">←</button>
+            <button class="control-button" id="right-button">→</button>
+        </div>
+        <div id="game-container">
+            <canvas id="game-canvas"></canvas>
+        </div>
+        <div id="right-controls">
+            <button class="control-button" id="up-button">↑</button>
+            <button class="control-button" id="down-button">↓</button>
+        </div>
+    </main>
+    <div id="difficulty-controls">
+        <button class="difficulty-button" id="easy-button">Easy</button>
+        <button class="difficulty-button" id="medium-button">Medium</button>
+        <button class="difficulty-button" id="hard-button">Hard</button>
+        <p>Current Difficulty: <span id="current-difficulty">Easy</span></p>
     </div>
     <div id="controls">
         <button id="start-button">Start</button>

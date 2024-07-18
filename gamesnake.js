@@ -1,11 +1,20 @@
+// gamesnake.js
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
 const startButton = document.getElementById('start-button');
 const restartButton = document.getElementById('restart-button');
+const leftButton = document.getElementById('left-button');
+const rightButton = document.getElementById('right-button');
+const upButton = document.getElementById('up-button');
+const downButton = document.getElementById('down-button');
+const easyButton = document.getElementById('easy-button');
+const mediumButton = document.getElementById('medium-button');
+const hardButton = document.getElementById('hard-button');
+const currentDifficultyDisplay = document.getElementById('current-difficulty');
 
-canvas.width = 800;
-canvas.height = 800;
+canvas.width = 400;
+canvas.height = 400;
 
 const cellSize = 20;
 let snake = [{ x: 200, y: 200 }];
@@ -13,10 +22,18 @@ let direction = { x: 0, y: 0 };
 let food = { x: 0, y: 0 };
 let score = 0;
 let gameInterval;
+let gameSpeed = 150; // Default to medium speed
 
 document.addEventListener('keydown', changeDirection);
+leftButton.addEventListener('click', () => setDirection('ArrowLeft'));
+rightButton.addEventListener('click', () => setDirection('ArrowRight'));
+upButton.addEventListener('click', () => setDirection('ArrowUp'));
+downButton.addEventListener('click', () => setDirection('ArrowDown'));
 startButton.addEventListener('click', startGame);
 restartButton.addEventListener('click', restartGame);
+easyButton.addEventListener('click', () => setDifficulty('Easy', 200));
+mediumButton.addEventListener('click', () => setDifficulty('Medium', 150));
+hardButton.addEventListener('click', () => setDifficulty('Hard', 100));
 
 function startGame() {
     startButton.style.display = 'none';
@@ -26,7 +43,7 @@ function startGame() {
     snake = [{ x: 200, y: 200 }];
     scoreDisplay.textContent = score;
     placeFood();
-    gameInterval = setInterval(updateGame, 100);
+    gameInterval = setInterval(updateGame, gameSpeed);
 }
 
 function restartGame() {
@@ -67,8 +84,10 @@ function drawGame() {
 }
 
 function changeDirection(event) {
-    const keyPressed = event.key;
+    setDirection(event.key);
+}
 
+function setDirection(keyPressed) {
     if (keyPressed === 'ArrowUp' && direction.y === 0) {
         direction = { x: 0, y: -1 };
     } else if (keyPressed === 'ArrowDown' && direction.y === 0) {
@@ -78,6 +97,11 @@ function changeDirection(event) {
     } else if (keyPressed === 'ArrowRight' && direction.x === 0) {
         direction = { x: 1, y: 0 };
     }
+}
+
+function setDifficulty(level, speed) {
+    currentDifficultyDisplay.textContent = level;
+    gameSpeed = speed;
 }
 
 function placeFood() {

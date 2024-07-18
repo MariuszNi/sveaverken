@@ -1,27 +1,87 @@
 /* stylesv1.css */
 body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
+    color: #333;
+}
+
+header {
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#logo {
+    height: 50px;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+#left-controls, #right-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#left-controls {
+    margin-right: 20px;
+}
+
+#right-controls {
+    margin-left: 20px;
+}
+
+.control-button {
+    padding: 10px;
+    font-size: 24px;
+    margin: 5px;
+    cursor: pointer;
+    border: 2px solid #333;
+    background-color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.control-button:hover {
+    background-color: #333;
+    color: #fff;
 }
 
 #game-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
     border: 2px solid #000;
+    background-color: #000;
+    width: 400px;
+    height: 400px;
 }
 
 #game-canvas {
     background-color: #000;
+    width: 100%;
+    height: 100%;
 }
 
 #controls {
-    margin-top: 10px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #controls button {
@@ -29,6 +89,15 @@ body {
     font-size: 16px;
     margin: 5px;
     cursor: pointer;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#controls button:hover {
+    background-color: #fff;
+    color: #333;
 }
 
 #scoreboard {
@@ -39,4 +108,27 @@ body {
 #scoreboard p {
     font-size: 18px;
     margin: 5px;
+}
+
+#difficulty-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.difficulty-button {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.difficulty-button:hover {
+    background-color: #fff;
+    color: #333;
 }
