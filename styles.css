@@ -6,7 +6,7 @@ body {
     flex-direction: column;
     min-height: 100vh;
 }
- /* Stylizacja dla popupu */
+/* Stylizacja dla popupu */
         .popup {
             display: none;
             position: fixed;
@@ -46,7 +46,13 @@ body {
             margin: 10px 0;
             line-height: 1.5;
         }
-/* Stylizacja przycisku */
+
+        /* Stylizacja przycisku */
+        .button-container {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
         #news-button {
             background-color: #4CAF50; /* Zielony kolor */
             color: white;
@@ -55,10 +61,6 @@ body {
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            position: fixed;
-            top: 50px;
-            right: 50px;
-            z-index: 1001;
             transition: background-color 0.3s ease;
         }
 
@@ -68,7 +70,7 @@ body {
 
         /* Animacja dla popupu */
         .popup-content {
-            animation: fadeIn 2.5s;
+            animation: fadeIn 0.5s;
         }
 
         @keyframes fadeIn {
