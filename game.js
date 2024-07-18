@@ -23,16 +23,16 @@ startButton.addEventListener('click', startGame);
 restartButton.addEventListener('click', restartGame);
 
 function moveTractor(event) {
-    const tractorLeft = tractor.offsetLeft;
-    const tractorWidth = tractor.offsetWidth;
-    const containerWidth = gameContainer.offsetWidth;
+    const tractorRect = tractor.getBoundingClientRect();
+    const containerRect = gameContainer.getBoundingClientRect();
 
-    console.log(`Before move - Key: ${event.key}, Tractor Left: ${tractorLeft}, Container Width: ${containerWidth}, Tractor Width: ${tractorWidth}`);
+    console.log(`Tractor Rect:`, tractorRect);
+    console.log(`Container Rect:`, containerRect);
 
-    if (event.key === 'ArrowLeft' && tractorLeft > 0) {
-        tractor.style.left = `${tractorLeft - 10}px`;
-    } else if (event.key === 'ArrowRight' && tractorLeft < containerWidth - tractorWidth) {
-        tractor.style.left = `${tractorLeft + 10}px`;
+    if (event.key === 'ArrowLeft' && tractorRect.left > containerRect.left) {
+        tractor.style.left = `${tractorRect.left - containerRect.left - 10}px`;
+    } else if (event.key === 'ArrowRight' && tractorRect.right < containerRect.right) {
+        tractor.style.left = `${tractorRect.left - containerRect.left + 10}px`;
     } else if (event.key === 'ArrowUp') {
         fallSpeed = Math.min(fallSpeed + 1, 20); // Maximum falling speed is 20
         backgroundSpeed = Math.max(backgroundSpeed - 1, 2); // Increase background speed, min interval 2ms
