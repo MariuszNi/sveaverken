@@ -23,6 +23,12 @@ let score = 0;
 let gameInterval;
 let gameSpeed = 150; // Default to medium speed
 
+const tractorImg = new Image();
+tractorImg.src = 'traktor.png';
+
+const trailerImg = new Image();
+trailerImg.src = 'przyczepa.png';
+
 document.addEventListener('keydown', changeDirection);
 leftButton.addEventListener('click', () => setDirection('ArrowLeft'));
 rightButton.addEventListener('click', () => setDirection('ArrowRight'));
@@ -72,27 +78,25 @@ function updateGame() {
 }
 
 function drawGame() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+    context.fillStyle = '#fff'; // Set background to white
+    context.fillRect(0, 0, canvas.width, canvas.height); // Fill canvas with white color
 
     // Draw each segment of the snake
     snake.forEach((segment, index) => {
-        drawSegment(segment.x, segment.y, index === 0 ? 'traktor.png' : 'przyczepa.png', getRotationAngle(index));
+        drawSegment(segment.x, segment.y, index === 0 ? tractorImg : trailerImg, getRotationAngle(index));
     });
 
     // Draw the food
-    drawSegment(food.x, food.y, 'przyczepa.png', 0);
+    drawSegment(food.x, food.y, trailerImg, 0);
 }
 
-function drawSegment(x, y, imgSrc, angle) {
-    const img = new Image();
-    img.src = imgSrc;
-    img.onload = () => {
-        context.save();
-        context.translate(x + cellSize / 2, y + cellSize / 2);
-        context.rotate(angle);
-        context.drawImage(img, -cellSize / 2, -cellSize / 2, cellSize, cellSize);
-        context.restore();
-    }
+function drawSegment(x, y, img, angle) {
+    context.save();
+    context.translate(x + cellSize / 2, y + cellSize / 2);
+    context.rotate(angle);
+    context.drawImage(img, -cellSize / 2, -cellSize / 2, cellSize, cellSize);
+    context.restore();
 }
 
 function getRotationAngle(index) {
