@@ -26,6 +26,9 @@ function moveTractor(event) {
     const tractorRect = tractor.getBoundingClientRect();
     const containerRect = gameContainer.getBoundingClientRect();
 
+    console.log('Tractor Rect:', tractorRect);
+    console.log('Container Rect:', containerRect);
+    
     if (event.key === 'ArrowLeft' && tractorRect.left > containerRect.left) {
         tractor.style.left = `${tractorRect.left - 10 - containerRect.left}px`;
     } else if (event.key === 'ArrowRight' && tractorRect.right < containerRect.right) {
