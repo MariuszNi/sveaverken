@@ -1,6 +1,5 @@
-19-07-2024 test
-
 18-07-2024 - FMS update
+
 1. Obsługa przesyłania zdjęć w rejestrze operacji
 2. Obsługa eksportu pojedynczego rejestru operacji do formatu PDF, z możliwością dołączania zdjęć ścieżki
 3. Wszystkie dane po stronie platformy będą wskazywać, czy synchronizacja została zakończona
