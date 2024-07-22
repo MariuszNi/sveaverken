@@ -9,7 +9,7 @@
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cz',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk',
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                 autoDisplay: false
             }, 'google_translate_element');
@@ -18,7 +18,7 @@
         function translatePageToBrowserLanguage() {
             var userLang = navigator.language || navigator.userLanguage;
             userLang = userLang.split('-')[0];
-            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl','sk','cz'];
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
             if (supportedLanguages.includes(userLang)) {
                 if (userLang !== 'pl') {
                     googleTranslateElementInit();
