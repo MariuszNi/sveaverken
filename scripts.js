@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchVideos() {
         let fetchPromises = channelIds.map((channelId, index) => {
-            const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=100&key=${apiKey}&type=video`;
+            const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&maxResults=200&key=${apiKey}&type=video`;
             
             return fetch(apiUrl)
                 .then(response => response.json())
