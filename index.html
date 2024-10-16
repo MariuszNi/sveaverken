@@ -269,28 +269,8 @@
     <footer>
         <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
     </footer>
-    <script src="scripts.js"></script>
-    <script type="text/javascript">
-   function filterContent() {
-    const filterInput = document.getElementById('search-input');
-    const filterValue = filterInput.value.toLowerCase();
-    const sections = document.querySelectorAll('section');
+   
 
-    sections.forEach(section => {
-        const items = section.querySelectorAll('li, p, a, h2, h3');
-        let sectionVisible = false;
-        items.forEach(item => {
-            const text = item.textContent || item.innerText;
-            if (text.toLowerCase().includes(filterValue)) {
-                item.style.display = '';
-                sectionVisible = true;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-        section.style.display = sectionVisible ? '' : 'none';
-    });
-}
 function fetchNews() {
             fetch('aktual.txt')
                 .then(response => response.text())
