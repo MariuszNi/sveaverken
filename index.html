@@ -254,9 +254,8 @@
     <footer>
         <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
     </footer>
- 
-
-function fetchNews() {
+  <script type="text/javascript">
+        function fetchNews() {
             fetch('aktual.txt')
                 .then(response => response.text())
                 .then(data => {
@@ -295,17 +294,15 @@ function fetchNews() {
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            translatePageToBrowserLanguage();
             fetchNews();
         });
+
         window.onclick = function(event) {
             const popup = document.getElementById("popup");
             if (event.target == popup) {
                 popup.style.display = "none";
             }
         }
-
-
-        
+    </script>
 </body>
 </html>
