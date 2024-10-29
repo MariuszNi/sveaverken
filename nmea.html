@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>NMEA 0183 V4.1 - Zastosowanie w Rolnictwie Precyzyjnym</title>
+    <style>
+        /* Style inspirowane www.sveaverken.com */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #005b9e;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #004070;
+            overflow: hidden;
+        }
+        nav a {
+            float: left;
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            background-color: #003050;
+        }
+        main {
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #005b9e;
+        }
+        .function {
+            margin-bottom: 30px;
+        }
+        .example {
+            background-color: #f2f2f2;
+            padding: 10px;
+            font-family: "Courier New", Courier, monospace;
+            overflow-x: auto;
+        }
+        footer {
+            background-color: #005b9e;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+        /* Style dla symulatora */
+        #simulator {
+            background-color: #e6f2ff;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        #simulator select, #simulator button {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            background-color: #f2f2f2;
+            padding: 10px;
+            font-family: "Courier New", Courier, monospace;
+        }
+        /* Dodatkowe style */
+        .case-study {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #005b9e;
+        }
+    </style>
+    <script>
+        function generateNMEA() {
+            const messageType = document.getElementById('messageType').value;
+            let output = '';
+
+            switch (messageType) {
+                case 'GGA':
+                    // Generowanie losowych danych dla GGA
+                    const time = new Date().toISOString().substr(11, 8).replace(/:/g, '');
+                    const latitude = (Math.random() * 90).toFixed(5);
+                    const latDir = Math.random() > 0.5 ? 'N' : 'S';
+                    const longitude = (Math.random() * 180).toFixed(5);
+                    const lonDir = Math.random() > 0.5 ? 'E' : 'W';
+                    output = `$GPGGA,${time},${latitude},${latDir},${longitude},${lonDir},1,08,0.9,545.4,M,46.9,M,,*47`;
+                    break;
+                case 'VTG':
+                    output = '$GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48';
+                    break;
+                case 'GSA':
+                    output = '$GPGSA,A,3,04,05,29,31,32,,,,,,,1.8,1.0,1.5*33';
+                    break;
+                case 'RMC':
+                    output = '$GPRMC,235947,A,3723.2475,N,12158.3416,W,000.0,360.0,130694,015.5,E*67';
+                    break;
+                case 'GSV':
+                    output = '$GPGSV,2,1,08,01,40,083,41,02,17,308,42,03,07,205,43,04,13,143,42*70';
+                    break;
+                case 'GST':
+                    output = '$GPGST,024603.00,1.2,0.9,1.0,0.8,0.7,0.6,0.5*77';
+                    break;
+                case 'GLL':
+                    output = '$GPGLL,4916.45,N,12311.12,W,225444,A,*1D';
+                    break;
+                case 'ZDA':
+                    output = '$GPZDA,201530.00,04,07,2002,00,00*60';
+                    break;
+                case 'HDT':
+                    output = '$GPHDT,274.07,T*03';
+                    break;
+                case 'HDG':
+                    output = '$HCHDG,101.1,0.7,E,15.5,W*6C';
+                    break;
+                case 'ROT':
+                    output = '$GPROT,15,A*3B';
+                    break;
+                case 'DTM':
+                    output = '$GPDTM,W84,,0.0,N,0.0,E,0.0,W84*06';
+                    break;
+                case 'MWV':
+                    output = '$WIMWV,045,R,10.5,N,A*23';
+                    break;
+                case 'VHW':
+                    output = '$GPVHW,219.0,T,213.9,M,6.02,N,11.15,K*5C';
+                    break;
+                case 'MTW':
+                    output = '$GPMTW,15.0,C*1B';
+                    break;
+                case 'MDA':
+                    output = '$WIMDA,29.4477,I,0.9970,B,18.0,C,64.0,F,50.0,0.0,C*35';
+                    break;
+                case 'DBT':
+                    output = '$SDDBT,036.41,f,011.10,M,005.99,F*25';
+                    break;
+                case 'RMB':
+                    output = '$GPRMB,A,0.66,L,003,004,4917.16,N,12309.62,W,000.5,054.7,2.5,V*0B';
+                    break;
+                case 'RTE':
+                    output = '$GPRTE,1,1,c,0,1,2,3,4,5*37';
+                    break;
+                case 'WPL':
+                    output = '$GPWPL,5128.62,N,00027.58,W,EGLL*59';
+                    break;
+                case 'BWC':
+                    output = '$GPBWC,081837,,,,,,T,,M,,N,*13';
+                    break;
+                case 'XTE':
+                    output = '$GPXTE,A,A,0.67,L,N*6F';
+                    break;
+                case 'GNS':
+                    output = '$GNGNS,092725.00,4250.55890,N,07105.49513,W,AA,12,1.0,18.0,46.9,,*5B';
+                    break;
+                case 'VLW':
+                    output = '$GPVLW,12.3,N,22.5,N*53';
+                    break;
+                case 'ALM':
+                    output = '$GPALM,A,1,1,01,00,00,00,00,00,00*7B';
+                    break;
+                case 'TXT':
+                    output = '$GPTXT,01,01,02,u-blox ag - www.u-blox.com*50';
+                    break;
+                default:
+                    output = 'Wybierz typ komunikatu.';
+            }
+
+            document.getElementById('output').innerText = output;
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>NMEA 0183 V4.1 w Rolnictwie Precyzyjnym</h1>
+    </header>
+    <nav>
+        <a href="#opis">Opis Protokołu</a>
+        <a href="#funkcje">Funkcje</a>
+        <a href="#symulator">Symulator</a>
+        <a href="#kontakt">Kontakt</a>
+    </nav>
+    <main>
+        <section id="opis">
+            <h2>Opis Protokołu NMEA 0183 V4.1</h2>
+            <p>NMEA 0183 V4.1 to standard komunikacyjny używany do przesyłania danych nawigacyjnych między urządzeniami elektronicznymi. W rolnictwie precyzyjnym pozwala na integrację różnych systemów GPS, sensorów i maszyn rolniczych, umożliwiając precyzyjne zarządzanie działaniami w terenie.</p>
+           
+            <div class="image-container">
+                <img src="nmea.jpg" alt="Interfejs NMEA w nawigacji Sveaverken F100">
+                <p>Interfejs NMEA w nawigacji Sveaverken F100. Na zdjęciu widoczne są funkcje NMEA obsługiwane przez nawigację F100</p>
+            </div>
+        <section id="funkcje">
+            <h2>Funkcje Protokołu</h2>
+
+            <div class="function">
+                <h3>GGA - Global Positioning System Fix Data</h3>
+                <p>Dostarcza informacje o bieżącej pozycji, czasie i jakości sygnału GPS.</p>
+                <div class="example">
+                    Przykład: $GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>VTG - Course Over Ground and Ground Speed</h3>
+                <p>Informuje o kierunku i prędkości poruszania się względem ziemi.</p>
+                <div class="example">
+                    Przykład: $GPVTG,054.7,T,034.4,M,005.5,N,010.2,K*48
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>GSA - GPS DOP and Active Satellites</h3>
+                <p>Zawiera informacje o satelitach używanych do wyznaczenia pozycji i dokładności pomiaru.</p>
+                <div class="example">
+                    Przykład: $GPGSA,A,3,04,05,...,29,31,32,1.8,1.0,1.5*33
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>RMC - Recommended Minimum Specific GPS/Transit Data</h3>
+                <p>Podaje minimalne informacje potrzebne do nawigacji: czas, pozycję, prędkość.</p>
+                <div class="example">
+                    Przykład: $GPRMC,235947,A,3723.2475,N,12158.3416,W,000.0,360.0,130694,015.5,E*67
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>GSV - Satellites in View</h3>
+                <p>Dostarcza informacje o widocznych satelitach GPS.</p>
+                <div class="example">
+                    Przykład: $GPGSV,2,1,08,01,40,083,41,02,17,308,42,03,07,205,43,04,13,143,42*70
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>GST - GPS Pseudorange Noise Statistics</h3>
+                <p>Informacje o dokładności pozycji z GPS.</p>
+                <div class="example">
+                    Przykład: $GPGST,024603.00,1.2,0.9,1.0,0.8,0.7,0.6,0.5*77
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>GLL - Geographic Position - Latitude/Longitude</h3>
+                <p>Podaje bieżącą szerokość i długość geograficzną wraz z czasem.</p>
+                <div class="example">
+                    Przykład: $GPGLL,4916.45,N,12311.12,W,225444,A,*1D
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>ZDA - Time &amp; Date</h3>
+                <p>Dostarcza informacje o bieżącym czasie i dacie z dokładnością do sekund.</p>
+                <div class="example">
+                    Przykład: $GPZDA,201530.00,04,07,2002,00,00*60
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>HDT - Heading, True</h3>
+                <p>Informuje o rzeczywistym kursie statku (maszyny) względem północy geograficznej.</p>
+                <div class="example">
+                    Przykład: $GPHDT,274.07,T*03
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>HDG - Heading, Deviation &amp; Variation</h3>
+                <p>Zawiera informacje o kursie, dewiacji i wariacji magnetycznej.</p>
+                <div class="example">
+                    Przykład: $HCHDG,101.1,0.7,E,15.5,W*6C
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>ROT - Rate of Turn</h3>
+                <p>Informuje o szybkości skrętu maszyny, co jest istotne przy precyzyjnym sterowaniu.</p>
+                <div class="example">
+                    Przykład: $GPROT,15,A*3B
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>DTM - Datum Reference</h3>
+                <p>Podaje odniesienie do systemu geodezyjnego (datum) używanego w pomiarach.</p>
+                <div class="example">
+                    Przykład: $GPDTM,W84,,0.0,N,0.0,E,0.0,W84*06
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>MWV - Wind Speed and Angle</h3>
+                <p>Choć pierwotnie używany w żegludze, w rolnictwie precyzyjnym może dostarczać informacji o wietrze dla oprysków.</p>
+                <div class="example">
+                    Przykład: $WIMWV,045,R,10.5,N,A*23
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>VHW - Water Speed and Heading</h3>
+                <p>W kontekście rolnictwa może być adaptowany do pomiaru prędkości i kierunku maszyn względem podłoża.</p>
+                <div class="example">
+                    Przykład: $GPVHW,219.0,T,213.9,M,6.02,N,11.15,K*5C
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>MTW - Water Temperature</h3>
+                <p>Może być użyty do pomiaru temperatury otoczenia lub gleby, istotnej w niektórych aplikacjach rolniczych.</p>
+                <div class="example">
+                    Przykład: $GPMTW,15.0,C*1B
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>MDA - Meteorological Composite</h3>
+                <p>Zawiera różne dane meteorologiczne, takie jak ciśnienie, temperatura, wilgotność.</p>
+                <div class="example">
+                    Przykład: $WIMDA,29.4477,I,0.9970,B,18.0,C,64.0,F,50.0,0.0,C*35
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>DBT - Depth Below Transducer</h3>
+                <p>Może być użyty w systemach monitorujących głębokość uprawy czy poziom wody na polu.</p>
+                <div class="example">
+                    Przykład: $SDDBT,036.41,f,011.10,M,005.99,F*25
+                </div>
+            </div>
+
+        
+
+            <div class="function">
+                <h3>RMB - Recommended Minimum Navigation Information</h3>
+                <p>Dostarcza minimalne informacje nawigacyjne potrzebne do prowadzenia maszyny do celu.</p>
+                <div class="example">
+                    Przykład: $GPRMB,A,0.66,L,003,004,4917.16,N,12309.62,W,000.5,054.7,2.5,V*0B
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>RTE - Routes</h3>
+                <p>Informuje o trasach i punktach trasy, co jest przydatne w planowaniu przejazdów maszyn rolniczych.</p>
+                <div class="example">
+                    Przykład: $GPRTE,1,1,c,0,1,2,3,4,5*37
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>WPL - Waypoint Location</h3>
+                <p>Podaje informacje o położeniu punktów nawigacyjnych (waypointów).</p>
+                <div class="example">
+                    Przykład: $GPWPL,5128.62,N,00027.58,W,EGLL*59
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>BWC - Bearing and Distance to Waypoint</h3>
+                <p>Informuje o namiarze i odległości do określonego punktu, co pomaga w nawigacji do wyznaczonych miejsc na polu.</p>
+                <div class="example">
+                    Przykład: $GPBWC,081837,,,,,,T,,M,,N,*13
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>XTE - Cross-Track Error</h3>
+                <p>Zawiera informacje o odchyleniu od zaplanowanej trasy, co pozwala na korekcję kursu maszyny.</p>
+                <div class="example">
+                    Przykład: $GPXTE,A,A,0.67,L,N*6F
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>GNS - GNSS Fix Data</h3>
+                <p>Podobna do GGA, ale obsługuje wiele systemów GNSS (GPS, GLONASS, Galileo).</p>
+                <div class="example">
+                    Przykład: $GNGNS,092725.00,4250.55890,N,07105.49513,W,AA,12,1.0,18.0,46.9,,*5B
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>VLW - Dual Ground/Water Distance</h3>
+                <p>Podaje informacje o przebytej odległości, co jest przydatne w monitorowaniu pracy maszyn.</p>
+                <div class="example">
+                    Przykład: $GPVLW,12.3,N,22.5,N*53
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>ALM - GPS Almanac Data</h3>
+                <p>Zawiera dane almanachu GPS, używane do szybszego wyznaczania pozycji.</p>
+                <div class="example">
+                    Przykład: $GPALM,A,1,1,01,00,00,00,00,00,00*7B
+                </div>
+            </div>
+
+            <div class="function">
+                <h3>TXT - Text Transmission</h3>
+                <p>Umożliwia przesyłanie komunikatów tekstowych, np. ostrzeżeń czy informacji diagnostycznych.</p>
+                <div class="example">
+                    Przykład: $GPTXT,01,01,02,u-blox ag - www.u-blox.com*50
+                </div>
+            </div>
+
+
+        </section>
+        <section id="symulator">
+            <h2>Symulator Komunikatów NMEA 0183 V4.1</h2>
+            <div id="simulator">
+                <label for="messageType">Wybierz typ komunikatu:</label>
+                <select id="messageType">
+                    <option value="">--Wybierz--</option>
+                    <option value="GGA">GGA - Global Positioning System Fix Data</option>
+                    <option value="VTG">VTG - Course Over Ground and Ground Speed</option>
+                    <option value="GSA">GSA - GPS DOP and Active Satellites</option>
+                    <option value="RMC">RMC - Recommended Minimum Specific GPS/Transit Data</option>
+                    <option value="GSV">GSV - Satellites in View</option>
+                    <option value="GST">GST - GPS Pseudorange Noise Statistics</option>
+                    <option value="GLL">GLL - Geographic Position - Latitude/Longitude</option>
+                    <option value="ZDA">ZDA - Time & Date</option>
+                    <option value="HDT">HDT - Heading, True</option>
+                    <option value="HDG">HDG - Heading, Deviation & Variation</option>
+                    <option value="ROT">ROT - Rate of Turn</option>
+                    <option value="DTM">DTM - Datum Reference</option>
+                    <option value="MWV">MWV - Wind Speed and Angle</option>
+                    <option value="VHW">VHW - Water Speed and Heading</option>
+                    <option value="MTW">MTW - Water Temperature</option>
+                    <option value="MDA">MDA - Meteorological Composite</option>
+                    <option value="DBT">DBT - Depth Below Transducer</option>
+                    <option value="RMB">RMB - Recommended Minimum Navigation Information</option>
+                    <option value="RTE">RTE - Routes</option>
+                    <option value="WPL">WPL - Waypoint Location</option>
+                    <option value="BWC">BWC - Bearing and Distance to Waypoint</option>
+                    <option value="XTE">XTE - Cross-Track Error</option>
+                    <option value="GNS">GNS - GNSS Fix Data</option>
+                    <option value="VLW">VLW - Dual Ground/Water Distance</option>
+                    <option value="ALM">ALM - GPS Almanac Data</option>
+                    <option value="TXT">TXT - Text Transmission</option>
+                </select>
+                <button onclick="generateNMEA()">Generuj Komunikat</button>
+                <div id="output"></div>
+            </div>
+            <p>Symulator pozwala na generowanie przykładowych komunikatów NMEA dla wybranych funkcji. Jest to pomocne w zrozumieniu struktury i składni komunikatów używanych w protokole.</p>
+        </section>
+        <section id="przypadki">
+            <h2>Przypadki Zastosowań</h2>
+            <div class="case-study">
+                <h3>Automatyzacja Siewu</h3>
+                <p>Wykorzystanie protokołu NMEA do precyzyjnego sterowania maszynami siewnymi, co zwiększa wydajność i redukuje straty.</p>
+            </div>
+            <div class="case-study">
+                <h3>Monitorowanie Nawozów</h3>
+                <p>Integracja czujników z systemami GPS pozwala na optymalne dawkowanie nawozów na podstawie dokładnej lokalizacji.</p>
+            </div>
+        </section>
+    </main>
+    <footer id="kontakt">
+        <p>&copy; 2023 Sveaverken</p>
+        <p>Kontakt: <a href="mailto:mariusz.niezgoda@sveav.com">mariusz.niezgoda@sveav.com</a></p>
+    </footer>
+</body>
+</html>
