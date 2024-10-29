@@ -71,30 +71,30 @@
             background-color: #00457C;
             color: white;
         }
-        /* Lista numerowana */
-        ol {
-            margin-left: 20px;
-        }
     </style>
 </head>
 <body>
 
+    <!-- Nagłówek -->
     <div class="header">
         <h1>ISOBUS w Rolnictwie Precyzyjnym</h1>
     </div>
 
+    <!-- Nawigacja -->
     <div class="nav">
         <a href="#home">Strona Główna</a>
         <a href="#about">O ISOBUS</a>
         <a href="#technical">Specyfikacja Techniczna</a>
+        <a href="#connectors">Wtyczki ISOBUS</a>
         <a href="#j1939">Protokół J1939</a>
         <a href="#contact">Kontakt</a>
     </div>
 
+    <!-- Główna treść -->
     <div class="main">
         <h1 id="about">Czym jest ISOBUS?</h1>
         <p>
-            ISOBUS to międzynarodowy standard komunikacji (<strong>ISO 11783</strong>) między ciągnikami a maszynami rolniczymi. Pozwala na wymianę danych i sterowanie urządzeniami różnych producentów, co znacznie ułatwia pracę rolników.
+            ISOBUS to międzynarodowy standard komunikacji (ISO 11783) między ciągnikami a maszynami rolniczymi. Pozwala na wymianę danych i sterowanie urządzeniami różnych producentów, co znacznie ułatwia pracę rolników.
         </p>
         <h2>Zalety ISOBUS</h2>
         <ul>
@@ -103,117 +103,81 @@
             <li>Zwiększona efektywność pracy</li>
             <li>Oszczędność czasu i zasobów</li>
         </ul>
-        <h2>Zastosowanie w Rolnictwie Precyzyjnym</h2>
+
+        <!-- Wtyczki ISOBUS -->
+        <h1 id="connectors">Wtyczki ISOBUS</h1>
+
+        <h2>#1: Bus Extension Connector</h2>
         <p>
-            Dzięki ISOBUS możliwe jest precyzyjne sterowanie maszynami, co przekłada się na dokładniejsze nawożenie, siew i ochronę roślin. To wszystko prowadzi do zwiększenia plonów i optymalizacji kosztów.
+            Ten złącze umożliwia rozszerzenie linii sygnałowych ISOBUS z urządzenia do wnętrza ciągnika. Jest wykorzystywane do dodawania dodatkowych urządzeń, takich jak terminale wirtualne.
         </p>
+        <h3>Przypisania Pinów</h3>
+        <ul>
+            <li><strong>Pin 1:</strong> Zasilanie TBC (TBC Power)</li>
+            <li><strong>Pin 2:</strong> CAN High (CAN_H)</li>
+            <li><strong>Pin 3:</strong> Powrót TBC (TBC Return Path)</li>
+            <li><strong>Pin 4:</strong> CAN Low (CAN_L)</li>
+        </ul>
 
-        <h1 id="technical">Specyfikacja Techniczna ISOBUS</h1>
-
-        <h2>Wtyczki i Gniazda</h2>
+        <h2>#2: Implement Bus Breakaway Connector (IBBC)</h2>
         <p>
-            ISOBUS wykorzystuje standardowe złącze 9-pinowe typu <strong>ISO 11783-2</strong>. Wtyczka ta jest okrągła i posiada styki rozmieszczone w określony sposób, co zapewnia kompatybilność między różnymi urządzeniami.
+            IBBC umożliwia połączenie narzędzi z ciągnikiem. Znajduje się zazwyczaj z tyłu ciągnika i może być opcjonalnie instalowane także z przodu.
         </p>
-        <h3>Rozmieszczenie Pinów Złącza ISOBUS</h3>
-        <table>
-            <tr>
-                <th>Pin</th>
-                <th>Funkcja</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>GND (BAT-)</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>ECU GND (GND)</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>12V (BAT+)</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>ECU power</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>TBC connect/remove</td>
-            </tr>
-            <tr>
-                <td>6</td>
-                <td>TBC Power</td>
-            </tr>
-            <tr>
-                <td>7</td>
-                <td>TBC return patch</td>
-            </tr>
-            <tr>
-                <td>8</td>
-                <td>CAN H</td>
-            </tr>
-            <tr>
-                <td>9</td>
-                <td>CAN L</td>
-            </tr>
-        </table>
+        <h3>Przypisania Pinów</h3>
+        <ul>
+            <li><strong>Pin 1:</strong> Masa (Ground)</li>
+            <li><strong>Pin 2:</strong> Masa ECU (ECU Ground)</li>
+            <li><strong>Pin 3:</strong> Zasilanie (Power)</li>
+            <li><strong>Pin 4:</strong> Zasilanie ECU (ECU Power)</li>
+            <li><strong>Pin 5:</strong> TBC connect/remove</li>
+            <li><strong>Pin 6:</strong> TBC Power</li>
+            <li><strong>Pin 7:</strong> Powrót TBC</li>
+            <li><strong>Pin 8:</strong> CAN High (CAN_H)</li>
+            <li><strong>Pin 9:</strong> CAN Low (CAN_L)</li>
+        </ul>
 
-        <h2>Okablowanie</h2>
+        <h2>#3: In-cab Connector (LBS)</h2>
         <p>
-            Do połączeń w systemie ISOBUS wykorzystuje się przewody typu skrętka, co minimalizuje zakłócenia elektromagnetyczne. Kabel powinien być ekranowany, aby zapewnić stabilność sygnału w trudnych warunkach polowych.
+            Kabina ciągnika może mieć opcjonalne wewnętrzne złącze do połączenia z siecią ISOBUS.
         </p>
+        <h3>Przypisania Pinów</h3>
+        <ul>
+            <li><strong>Pin 1:</strong> Zasilanie ECU (ECU Power)</li>
+            <li><strong>Pin 2:</strong> CAN 1 L (input)</li>
+            <li><strong>Pin 3:</strong> CAN 2 L (output)</li>
+            <li><strong>Pin 4:</strong> CAN 1 H (input)</li>
+            <li><strong>Pin 5:</strong> CAN 2 H (output)</li>
+            <li><strong>Pin 6:</strong> TBC Power</li>
+            <li><strong>Pin 7:</strong> Zasilanie ECU (ECU Power)</li>
+            <li><strong>Pin 8:</strong> Masa TBC (TBC Ground)</li>
+            <li><strong>Pin 9:</strong> Masa ECU (ECU Ground)</li>
+        </ul>
 
-        <h2>Napięcia i Zasilanie</h2>
+        <h2>#4: Diagnostic Connector</h2>
         <p>
-            Standard ISOBUS przewiduje zasilanie <strong>12 V DC</strong>. Maksymalny prąd pobierany przez urządzenia nie powinien przekraczać <strong>25 A</strong>. Ważne jest, aby instalacja elektryczna była odpowiednio zabezpieczona i spełniała normy bezpieczeństwa.
+            Złącze diagnostyczne znajduje się w kabinie ciągnika w łatwo dostępnym miejscu. Jest używane do połączenia z zewnętrznymi rejestratorami danych w celu diagnostyki.
         </p>
+        <h3>Przypisania Pinów</h3>
+        <ul>
+            <li><strong>A:</strong> Masa</li>
+            <li><strong>B:</strong> Zasilanie baterii (Battery Power)</li>
+            <li><strong>C:</strong> CAN 1 H (ciągnik)</li>
+            <li><strong>D:</strong> CAN 1 L (ciągnik)</li>
+            <li><strong>H:</strong> CAN 2 H (implement)</li>
+            <li><strong>J:</strong> CAN 2 L (implement)</li>
+        </ul>
 
+        <!-- Protokół J1939 -->
         <h1 id="j1939">Protokół J1939 w ISOBUS</h1>
-
-        <h2>Czym jest J1939?</h2>
         <p>
             Protokół <strong>SAE J1939</strong> to standard komunikacji oparty na magistrali CAN, używany w pojazdach ciężarowych, maszynach budowlanych i rolniczych. W kontekście ISOBUS, J1939 stanowi podstawę dla warstwy komunikacyjnej, umożliwiając wymianę danych między urządzeniami.
-        </p>
-
-        <h2>Funkcje Protokółu J1939 w ISOBUS</h2>
-        <ul>
-            <li><strong>Adresowanie urządzeń:</strong> Każde urządzenie w sieci ma unikalny adres, co umożliwia komunikację wielu urządzeń na jednej magistrali.</li>
-            <li><strong>Diagnostyka:</strong> Protokół umożliwia przesyłanie kodów błędów i informacji diagnostycznych.</li>
-            <li><strong>Standaryzacja danych:</strong> Ujednolicone formaty wiadomości ułatwiają integrację różnych systemów.</li>
-        </ul>
-
-        <h2>Struktura Wiadomości J1939</h2>
-        <p>
-            Wiadomości w protokole J1939 składają się z następujących elementów:
-        </p>
-        <ol>
-            <li><strong>PDU (Protocol Data Unit):</strong> Zawiera informacje o priorytecie, adresie docelowym i źródłowym.</li>
-            <li><strong>PGN (Parameter Group Number):</strong> Określa rodzaj przesyłanych danych.</li>
-            <li><strong>Dane:</strong> Właściwe informacje przesyłane między urządzeniami.</li>
-        </ol>
-
-        <h2>Zalety Wykorzystania J1939 w ISOBUS</h2>
-        <ul>
-            <li><strong>Skalowalność:</strong> Możliwość podłączenia wielu urządzeń bez utraty jakości komunikacji.</li>
-            <li><strong>Niezawodność:</strong> Magistrala CAN jest odporna na zakłócenia i awarie pojedynczych urządzeń.</li>
-            <li><strong>Efektywność:</strong> Szybka wymiana danych w czasie rzeczywistym.</li>
-        </ul>
-
-        <h2>Przykładowa Komunikacja</h2>
-        <p>
-            Na przykład, gdy operator ciągnika chce zmienić ustawienia siewnika, sygnał jest przesyłany przez magistralę CAN zgodnie z protokołem J1939 do siewnika, który następnie dostosowuje swoje działanie.
-        </p>
-
-        <h2>Bezpieczeństwo i Diagnostyka</h2>
-        <p>
-            Protokół J1939 wspiera funkcje bezpieczeństwa, takie jak wykrywanie błędów transmisji. Ułatwia to diagnostykę i konserwację systemu ISOBUS.
         </p>
 
     </div>
 
     <!-- Stopka -->
     <div class="footer">
-        &copy; 2023 Sveaverken
+        &copy; 2023 ISOBUS w Rolnictwie Precyzyjnym
     </div>
 
 </body>
