@@ -78,6 +78,46 @@
             margin: 20px 0;
         }
     </style>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false // Disable the auto-display widget
+            }, 'google_translate_element');
+        }
+
+        function translatePageToBrowserLanguage() {
+            var userLang = navigator.language || navigator.userLanguage; 
+            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
+            if (userLang !== 'pl') {
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']') || innerDoc.querySelector('a[lang=en]');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
+            }
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
 
