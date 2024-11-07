@@ -50,22 +50,23 @@
     <header>
         <img src="logo.png" alt="Sveaverken Logo">
         
-     <div style="text-align: center; padding-top: 10px;">
-    <strong class="software-title">Aktualna wersja oprogramowania</strong><br><br>
-    <p><strong>APP:</strong> 23.102.2.16</p>
-    <p><strong>ECU1:</strong> 3.1.4.9 (very old units only)</p>
-    <p><strong>ECU2:</strong> 103.0.3.22</p>
-    <p><strong>IMU:</strong> 3.0.0.59</p>
-    <p><strong>Motor:</strong> 1.1.13.4</p><br>
-    <p><strong>Board L1:</strong> 23005 (very old units only)</p>
-    <p><strong>Board L3:</strong> 11491</p>
-    <p><strong>System:</strong> 20240429103836</p>
-    <p><strong>Radio:</strong> J017.00.05.0</p>
-</div>
-
+        <!-- Random Tractor Image Section -->
+        <div id="tractor-image" style="text-align: center; margin-top: 20px;">
+            <img id="random-tractor" src="" alt="Random Tractor" style="max-width: 100%; height: auto;">
+        </div>
 
         <div id="google_translate_element" style="float: left;"></div>
     </header>
+    <script type="text/javascript">
+        // Fetch random tractor image from Lorem Picsum (as a placeholder service for tractor images)
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('https://picsum.photos/600/400?random')
+                .then(response => {
+                    document.getElementById('random-tractor').src = response.url;
+                })
+                .catch(error => console.error('Błąd wczytywania obrazu traktora:', error));
+        });
+    </script>
     <main>
         <div class="button-container">
             <button id="news-button" onclick="openPopup()">Zobacz aktualności</button>
@@ -81,7 +82,7 @@
                 <li>Listę aktualnie dostepnych inżynierów serwisu (FAE)</li>
                 <li>Informacje kto pełni dyżur w najbliższy weekend</li>
             </ul>
-             </section>
+        </section>
         <section id="form">
             <h2>Formularz zbierania danych</h2>
             <ul>
@@ -296,7 +297,7 @@
         <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
         <p>Sugestie i pytania: mariusz.niezgoda@sveav.com</p>
     </footer>
-  <script type="text/javascript">
+    <script type="text/javascript">
         function fetchNews() {
             fetch('aktual.txt')
                 .then(response => response.text())
@@ -347,4 +348,4 @@
         }
     </script>
 </body>
-        </html>
+</html>
