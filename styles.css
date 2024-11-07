@@ -18,6 +18,9 @@ body {
             overflow: auto;
             background-color: rgba(0,0,0,0.5);
         }
+.software-title {
+    font-size: 1.5em;
+}
 
         .popup-content {
             background-color: #fff;
