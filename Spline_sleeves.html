@@ -2,31 +2,69 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Adapterów Spline Sleeve</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <script type="text/javascript">
-        let cachedData = [];
-        let currentPage = 1;
-        const rowsPerPage = 10;
-
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr',
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
                 autoDisplay: false
             }, 'google_translate_element');
         }
 
         function translatePageToBrowserLanguage() {
-            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-            const supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
-            if (supportedLanguages.includes(userLang) && userLang !== 'pl') {
-                googleTranslateElementInit();
+            var userLang = navigator.language || navigator.userLanguage;
+            userLang = userLang.split('-')[0];
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
+            if (supportedLanguages.includes(userLang)) {
+                if (userLang !== 'pl') {
+                    var translateElement = new google.translate.TranslateElement({
+                        pageLanguage: 'pl',
+                        includedLanguages: supportedLanguages.join(','),
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                        autoDisplay: false
+                    }, 'google_translate_element');
+
+                    setTimeout(function () {
+                        var iframe = document.querySelector('.goog-te-banner-frame');
+                        if (iframe) {
+                            var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                            if (langSelect) {
+                                langSelect.click();
+                                var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
+                                if (langToClick) {
+                                    langToClick.click();
+                                }
+                            }
+                        }
+                    }, 1000);
+                }
+            } else {
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=en]');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
             }
         }
 
@@ -37,18 +75,23 @@
 
         async function loadExcelData(listId, url) {
             try {
-                showSpinner(true);
                 const response = await fetch(url);
                 if (!response.ok) {
-                    throw new Error('Nie można pobrać pliku Excel: ' + response.statusText);
+                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
                 }
-
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
+                const adaptedBrands = new Set();
+                const fullData = [];
+
                 jsonData.slice(1).forEach(row => {
+                    if (row[3]) {
+                        row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
+                    }
+
                     const rowData = {
                         name: row[0],
                         coding: row[1],
@@ -57,28 +100,26 @@
                         parameter: row[4],
                         series: row[5]
                     };
-                    cachedData.push(rowData);
+
+                    fullData.push(rowData);
                 });
 
-                updateTable();
-                showSpinner(false);
+                const brandSelect = document.getElementById('brand-select');
+                adaptedBrands.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    brandSelect.appendChild(option);
+                });
+
+                brandSelect.addEventListener('change', () => {
+                    const selectedBrand = brandSelect.value;
+                    const filteredData = fullData.filter(row => row.adaptedBrand && row.adaptedBrand.split(',').map(brand => brand.trim()).includes(selectedBrand));
+                    displayTableData(filteredData);
+                });
             } catch (error) {
-                console.error(error);
-                showError(`Wystąpił błąd podczas ładowania danych z pliku Excel: ${error.message}`);
-                showSpinner(false);
+                showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
             }
-        }
-
-        function updateTable() {
-            const paginatedData = paginateData(cachedData, currentPage, rowsPerPage);
-            displayTableData(paginatedData);
-            updatePaginationControls();
-        }
-
-        function paginateData(data, page, rowsPerPage) {
-            const start = (page - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            return data.slice(start, end);
         }
 
         function displayTableData(data) {
@@ -98,180 +139,57 @@
             });
         }
 
-        function updatePaginationControls() {
-            const totalPages = Math.ceil(cachedData.length / rowsPerPage);
-            const pagination = document.getElementById('pagination-controls');
-            pagination.innerHTML = '';
-
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement('button');
-                button.textContent = i;
-                button.disabled = i === currentPage;
-                button.addEventListener('click', () => {
-                    currentPage = i;
-                    updateTable();
-                });
-                pagination.appendChild(button);
-            }
-        }
-document.getElementById('search-bar').addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-
-    // Filter cachedData based on the search query
-    const filteredData = cachedData.filter(row =>
-        Object.values(row).some(value =>
-            value && value.toString().toLowerCase().includes(query)
-        )
-    );
-
-    // Reset current page to 1 when searching
-    currentPage = 1;
-
-    // Display filtered data with pagination
-    const paginatedData = paginateData(filteredData, currentPage, rowsPerPage);
-    displayTableData(paginatedData);
-
-    // Update pagination controls to match the filtered dataset
-    updatePaginationControls(filteredData);
-});
-
-        async function addNewEntry() {
-    const form = document.getElementById('add-sleeve-form');
-    const password = form.password.value;
-
-    if (CryptoJS.SHA256(password).toString() !== CryptoJS.SHA256('20210406').toString()) {
-        displayStatusMessage('Nieprawidłowe hasło.', 'error');
-        return;
-    }
-
-    const newEntry = {
-        name: form.name.value,
-        coding: form.coding.value,
-        version: form.version.value,
-        adaptedBrand: "",
-        parameter: form.parameter.value,
-        series: form.series.value
-    };
-
-    // Add the new entry to cachedData
-    cachedData.push(newEntry);
-
-    // Refresh the table to show the new entry
-    updateTable();
-
-    // Show success message and reset the form
-    displayStatusMessage('Nowy adapter został dodany.', 'success');
-    form.reset();
-}
-
-
-        function showSpinner(show) {
-            const spinner = document.getElementById('loading-spinner');
-            spinner.style.display = show ? 'block' : 'none';
-        }
-
-        function displayStatusMessage(message, type) {
-            const statusMessage = document.getElementById('status-message');
-            statusMessage.textContent = message;
-            statusMessage.style.color = type === 'success' ? 'green' : 'red';
+        function showError(message) {
+            const errorDialog = document.createElement('div');
+            errorDialog.className = 'error-dialog';
+            errorDialog.innerHTML = `<p>${message}</p><button onclick="this.parentElement.remove()">Zamknij</button>`;
+            document.body.appendChild(errorDialog);
         }
     </script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #f8f8f8;
-            padding: 10px 20px;
-        }
-
-        header a {
-            margin-right: 15px;
-            text-decoration: none;
-            color: #007BFF;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f4f4f4;
-        }
-
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        #loading-spinner {
-            display: none;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="Sveaverken Logo" height="50">
-        <div id="google_translate_element"></div>
-        <a href="Spline Sleeve (Flat key).jpg" target="_blank">Spline Sleeve (Flat key)</a>
-        <a href="spliened sleeve measure.jpg" target="_blank">Spline Sleeve Measure</a>
+        <div id="google_translate_element" style="float: right;"></div>
+        <img src="logo.png" alt="Sveaverken Logo">
     </header>
     <main>
         <section id="spline_sleeves">
             <h1>Lista Adapterów Spline Sleeve</h1>
-            <input type="text" id="search-bar" placeholder="Szukaj..." oninput="updateTable()">
+            <label for="brand-select">Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</label>
+            <select id="brand-select">
+                <option value="">--Wybierz markę--</option>
+            </select>
             <table>
                 <thead>
                     <tr>
-                        <th onclick="sortTable('name')">Nazwa</th>
-                        <th onclick="sortTable('coding')">Kod produktu</th>
-                        <th onclick="sortTable('version')">Wersja</th>
-                        <th onclick="sortTable('parameter')">Parametr</th>
-                        <th onclick="sortTable('series')">Seria</th>
+                        <th>Nazwa</th>
+                        <th>Kod produktu</th>
+                        <th>Wersja</th>
+                        <th>Parametr</th>
+                        <th>Seria</th>
                     </tr>
                 </thead>
                 <tbody id="data-table-body"></tbody>
             </table>
-            <div id="pagination-controls" class="pagination-controls"></div>
-            <div id="loading-spinner">Ładowanie...</div>
-        </section>
-        <section id="add-sleeve">
-            <h2>Dodaj Nowy Adapter Spline Sleeve</h2>
-            <form id="add-sleeve-form">
-                <label for="name">Nazwa:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="coding">Kod produktu:</label>
-                <input type="text" id="coding" name="coding" required>
-                <label for="version">Wersja:</label>
-                <input type="text" id="version" name="version" required>
-                <label for="parameter">Parametr:</label>
-                <input type="text" id="parameter" name="parameter" required>
-                <label for="series">Seria:</label>
-                <input type="text" id="series" name="series" required>
-                <label for="password">Hasło:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="button" onclick="addNewEntry()">Dodaj Adapter</button>
-            </form>
-            <div id="status-message"></div>
         </section>
     </main>
     <footer>
         <p>&copy; 2024 Sveaverken</p>
     </footer>
+    <style>
+        .error-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid red;
+            padding: 20px;
+            z-index: 1000;
+        }
+        .error-dialog p {
+            margin: 0 0 10px;
+        }
+    </style>
 </body>
 </html>
-
