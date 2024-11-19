@@ -114,30 +114,56 @@
                 pagination.appendChild(button);
             }
         }
+document.getElementById('search-bar').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+
+    // Filter cachedData based on the search query
+    const filteredData = cachedData.filter(row =>
+        Object.values(row).some(value =>
+            value && value.toString().toLowerCase().includes(query)
+        )
+    );
+
+    // Reset current page to 1 when searching
+    currentPage = 1;
+
+    // Display filtered data with pagination
+    const paginatedData = paginateData(filteredData, currentPage, rowsPerPage);
+    displayTableData(paginatedData);
+
+    // Update pagination controls to match the filtered dataset
+    updatePaginationControls(filteredData);
+});
 
         async function addNewEntry() {
-            const form = document.getElementById('add-sleeve-form');
-            const password = form.password.value;
+    const form = document.getElementById('add-sleeve-form');
+    const password = form.password.value;
 
-            if (CryptoJS.SHA256(password).toString() !== CryptoJS.SHA256('20210406').toString()) {
-                displayStatusMessage('Nieprawidłowe hasło.', 'error');
-                return;
-            }
+    if (CryptoJS.SHA256(password).toString() !== CryptoJS.SHA256('20210406').toString()) {
+        displayStatusMessage('Nieprawidłowe hasło.', 'error');
+        return;
+    }
 
-            const newEntry = {
-                name: form.name.value,
-                coding: form.coding.value,
-                version: form.version.value,
-                adaptedBrand: "",
-                parameter: form.parameter.value,
-                series: form.series.value
-            };
+    const newEntry = {
+        name: form.name.value,
+        coding: form.coding.value,
+        version: form.version.value,
+        adaptedBrand: "",
+        parameter: form.parameter.value,
+        series: form.series.value
+    };
 
-            cachedData.push(newEntry);
-            updateTable();
-            displayStatusMessage('Nowy adapter został dodany.', 'success');
-            form.reset();
-        }
+    // Add the new entry to cachedData
+    cachedData.push(newEntry);
+
+    // Refresh the table to show the new entry
+    updateTable();
+
+    // Show success message and reset the form
+    displayStatusMessage('Nowy adapter został dodany.', 'success');
+    form.reset();
+}
+
 
         function showSpinner(show) {
             const spinner = document.getElementById('loading-spinner');
