@@ -2,10 +2,13 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Adapterów Spline Sleeve</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script type="text/javascript">
+        let cachedData = [];
+
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'pl',
@@ -16,64 +19,39 @@
         }
 
         function translatePageToBrowserLanguage() {
-            var userLang = navigator.language || navigator.userLanguage;
-            userLang = userLang.split('-')[0];
-            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
-            if (supportedLanguages.includes(userLang)) {
-                if (userLang !== 'pl') {
-                    googleTranslateElementInit();
-                    setTimeout(function () {
-                        var iframe = document.querySelector('.goog-te-banner-frame');
-                        if (iframe) {
-                            var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                            var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                            if (langSelect) {
-                                langSelect.click();
-                                var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
-                                if (langToClick) {
-                                    langToClick.click();
-                                }
-                            }
-                        }
-                    }, 1000);
-                }
-            } else {
+            const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+            const supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
+            if (supportedLanguages.includes(userLang) && userLang !== 'pl') {
                 googleTranslateElementInit();
-                setTimeout(function () {
-                    var iframe = document.querySelector('.goog-te-banner-frame');
-                    if (iframe) {
-                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                        if (langSelect) {
-                            langSelect.click();
-                            var langToClick = innerDoc.querySelector('a[lang=en]');
-                            if (langToClick) {
-                                langToClick.click();
-                            }
-                        }
-                    }
-                }, 1000);
+                // Automatically apply translation after Google Translate loads
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            displayLoadingSpinner(true);
             loadExcelData('spline_sleeves', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx');
             translatePageToBrowserLanguage();
         });
 
         async function loadExcelData(listId, url) {
             try {
+                if (cachedData.length > 0) {
+                    displayTableData(cachedData);
+                    displayLoadingSpinner(false);
+                    return;
+                }
+
                 const response = await fetch(url);
                 if (!response.ok) {
-                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
+                    throw new Error(`Problem z pobraniem pliku Excel: ${response.statusText}`);
                 }
+
                 const data = await response.arrayBuffer();
                 const workbook = XLSX.read(data, { type: 'array' });
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
                 const adaptedBrands = new Set();
-                const fullData = [];
 
                 jsonData.slice(1).forEach(row => {
                     if (row[3]) {
@@ -89,25 +67,36 @@
                         series: row[5]
                     };
 
-                    fullData.push(rowData);
+                    cachedData.push(rowData);
                 });
 
-                const brandSelect = document.getElementById('brand-select');
-                adaptedBrands.forEach(brand => {
-                    const option = document.createElement('option');
-                    option.value = brand;
-                    option.textContent = brand;
-                    brandSelect.appendChild(option);
-                });
-
-                brandSelect.addEventListener('change', () => {
-                    const selectedBrand = brandSelect.value;
-                    const filteredData = fullData.filter(row => row.adaptedBrand && row.adaptedBrand.split(',').map(brand => brand.trim()).includes(selectedBrand));
-                    displayTableData(filteredData);
-                });
+                populateBrandDropdown(adaptedBrands);
+                displayTableData(cachedData);
+                displayLoadingSpinner(false);
             } catch (error) {
-                showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
+                console.error(error);
+                showError(`Wystąpił błąd podczas ładowania danych z pliku Excel: ${error.message}`);
+                displayLoadingSpinner(false);
             }
+        }
+
+        function populateBrandDropdown(adaptedBrands) {
+            const brandSelect = document.getElementById('brand-select');
+            brandSelect.innerHTML = '<option value="">--Wybierz markę--</option>';
+            adaptedBrands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand;
+                option.textContent = brand;
+                brandSelect.appendChild(option);
+            });
+
+            brandSelect.addEventListener('change', () => {
+                const selectedBrand = brandSelect.value;
+                const filteredData = cachedData.filter(row =>
+                    row.adaptedBrand && row.adaptedBrand.split(',').map(brand => brand.trim()).includes(selectedBrand)
+                );
+                displayTableData(filteredData);
+            });
         }
 
         function displayTableData(data) {
@@ -127,6 +116,11 @@
             });
         }
 
+        function displayLoadingSpinner(isVisible) {
+            const spinner = document.getElementById('loading-spinner');
+            spinner.style.display = isVisible ? 'block' : 'none';
+        }
+
         function showError(message) {
             const errorDialog = document.createElement('div');
             errorDialog.className = 'error-dialog';
@@ -135,6 +129,47 @@
         }
     </script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .error-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid red;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -148,6 +183,9 @@
             <select id="brand-select">
                 <option value="">--Wybierz markę--</option>
             </select>
+            <div id="loading-spinner" class="loading-spinner">
+                <img src="spinner.gif" alt="Ładowanie...">
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -161,27 +199,9 @@
                 <tbody id="data-table-body"></tbody>
             </table>
         </section>
-        <img src="spliened sleeve measure.jpg" alt="Spline">
-        <img src="Spline Sleeve (Flat key).jpg" alt="Spline flat">
-        
     </main>
     <footer>
         <p>&copy; 2024 Sveaverken</p>
     </footer>
-    <style>
-        .error-dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            border: 2px solid red;
-            padding: 20px;
-            z-index: 1000;
-        }
-        .error-dialog p {
-            margin: 0 0 10px;
-        }
-    </style>
 </body>
 </html>
