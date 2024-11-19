@@ -23,27 +23,19 @@
             const supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
             if (supportedLanguages.includes(userLang) && userLang !== 'pl') {
                 googleTranslateElementInit();
-                // Automatically apply translation after Google Translate loads
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            displayLoadingSpinner(true);
             loadExcelData('spline_sleeves', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx');
             translatePageToBrowserLanguage();
         });
 
         async function loadExcelData(listId, url) {
             try {
-                if (cachedData.length > 0) {
-                    displayTableData(cachedData);
-                    displayLoadingSpinner(false);
-                    return;
-                }
-
                 const response = await fetch(url);
                 if (!response.ok) {
-                    throw new Error(`Problem z pobraniem pliku Excel: ${response.statusText}`);
+                    throw new Error('Nie można pobrać pliku Excel: ' + response.statusText);
                 }
 
                 const data = await response.arrayBuffer();
@@ -70,33 +62,64 @@
                     cachedData.push(rowData);
                 });
 
-                populateBrandDropdown(adaptedBrands);
                 displayTableData(cachedData);
-                displayLoadingSpinner(false);
             } catch (error) {
                 console.error(error);
                 showError(`Wystąpił błąd podczas ładowania danych z pliku Excel: ${error.message}`);
-                displayLoadingSpinner(false);
             }
         }
 
-        function populateBrandDropdown(adaptedBrands) {
-            const brandSelect = document.getElementById('brand-select');
-            brandSelect.innerHTML = '<option value="">--Wybierz markę--</option>';
-            adaptedBrands.forEach(brand => {
-                const option = document.createElement('option');
-                option.value = brand;
-                option.textContent = brand;
-                brandSelect.appendChild(option);
-            });
+        async function addNewEntry() {
+            const form = document.getElementById('add-sleeve-form');
+            const password = form.password.value;
 
-            brandSelect.addEventListener('change', () => {
-                const selectedBrand = brandSelect.value;
-                const filteredData = cachedData.filter(row =>
-                    row.adaptedBrand && row.adaptedBrand.split(',').map(brand => brand.trim()).includes(selectedBrand)
-                );
-                displayTableData(filteredData);
-            });
+            // Verify password
+            if (password !== '20210406') {
+                displayStatusMessage('Nieprawidłowe hasło.', 'error');
+                return;
+            }
+
+            const newEntry = {
+                name: form.name.value,
+                coding: form.coding.value,
+                version: form.version.value,
+                adaptedBrand: "", // Leave empty for now
+                parameter: form.parameter.value,
+                series: form.series.value
+            };
+
+            try {
+                // Fetch the existing Excel file
+                const response = await fetch('https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx');
+                if (!response.ok) {
+                    throw new Error('Nie można pobrać pliku Excel: ' + response.statusText);
+                }
+
+                const data = await response.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                // Add new entry to the data
+                jsonData.push(newEntry);
+
+                // Update the workbook
+                const newSheet = XLSX.utils.json_to_sheet(jsonData);
+                workbook.Sheets[workbook.SheetNames[0]] = newSheet;
+
+                // Create a downloadable Excel file
+                const updatedFile = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+                const blob = new Blob([updatedFile], { type: 'application/octet-stream' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'List_Updated.xlsx';
+                link.click();
+
+                displayStatusMessage('Nowy adapter został dodany i zapisany.', 'success');
+            } catch (error) {
+                console.error(error);
+                displayStatusMessage('Wystąpił błąd podczas aktualizacji pliku.', 'error');
+            }
         }
 
         function displayTableData(data) {
@@ -116,22 +139,28 @@
             });
         }
 
-        function displayLoadingSpinner(isVisible) {
-            const spinner = document.getElementById('loading-spinner');
-            spinner.style.display = isVisible ? 'block' : 'none';
-        }
-
-        function showError(message) {
-            const errorDialog = document.createElement('div');
-            errorDialog.className = 'error-dialog';
-            errorDialog.innerHTML = `<p>${message}</p><button onclick="this.parentElement.remove()">Zamknij</button>`;
-            document.body.appendChild(errorDialog);
+        function displayStatusMessage(message, type) {
+            const statusMessage = document.getElementById('status-message');
+            statusMessage.textContent = message;
+            statusMessage.style.color = type === 'success' ? 'green' : 'red';
         }
     </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #f8f8f8;
+            padding: 10px;
+        }
+
+        header a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #007BFF;
         }
 
         table {
@@ -149,43 +178,17 @@
         th {
             background-color: #f4f4f4;
         }
-
-        .error-dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            border: 2px solid red;
-            padding: 20px;
-            z-index: 1000;
-        }
-
-        .loading-spinner {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-        }
     </style>
 </head>
 <body>
     <header>
+        <a href="Spline Sleeve (Flat key).jpg" target="_blank">Spline Sleeve (Flat key)</a>
+        <a href="spliened sleeve measure.jpg" target="_blank">Spline Sleeve Measure</a>
         <div id="google_translate_element" style="float: right;"></div>
-        <img src="logo.png" alt="Sveaverken Logo">
     </header>
     <main>
         <section id="spline_sleeves">
             <h1>Lista Adapterów Spline Sleeve</h1>
-            <label for="brand-select">Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</label>
-            <select id="brand-select">
-                <option value="">--Wybierz markę--</option>
-            </select>
-            <div id="loading-spinner" class="loading-spinner">
-                <img src="spinner.gif" alt="Ładowanie...">
-            </div>
             <table>
                 <thead>
                     <tr>
@@ -198,6 +201,31 @@
                 </thead>
                 <tbody id="data-table-body"></tbody>
             </table>
+        </section>
+        <section id="add-sleeve">
+            <h2>Dodaj Nowy Adapter Spline Sleeve</h2>
+            <form id="add-sleeve-form">
+                <label for="name">Nazwa:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="coding">Kod produktu:</label>
+                <input type="text" id="coding" name="coding" required>
+                
+                <label for="version">Wersja:</label>
+                <input type="text" id="version" name="version" required>
+                
+                <label for="parameter">Parametr:</label>
+                <input type="text" id="parameter" name="parameter" required>
+                
+                <label for="series">Seria:</label>
+                <input type="text" id="series" name="series" required>
+                
+                <label for="password">Hasło:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="button" onclick="addNewEntry()">Dodaj Adapter</button>
+            </form>
+            <div id="status-message"></div>
         </section>
     </main>
     <footer>
