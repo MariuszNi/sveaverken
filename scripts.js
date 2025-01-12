@@ -90,6 +90,23 @@ document.addEventListener('DOMContentLoaded', function() {
         fetchVideos();
     }
 });
+async function sendMessageToChatbot(userMessage) {
+    const response = await fetch("https://your-backend-url.onrender.com/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: userMessage })
+    });
+
+    const data = await response.json();
+    if (data.reply) {
+        return data.reply;
+    } else {
+        console.error("Error:", data.error);
+        return "Wystąpił problem z odpowiedzią.";
+    }
+}
 
 function filterVideos() {
     const searchTerm = document.getElementById('search-input').value.toLowerCase();
