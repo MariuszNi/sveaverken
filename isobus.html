@@ -54,70 +54,7 @@
             bottom: 0;
             width: 100%;
         }
-        /* Tabela */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        table, th, td {
-            border: 1px solid #00457C;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #00457C;
-            color: white;
-        }
-        /* Obrazki */
-        .connector-image {
-            max-width: 100%;
-            height: auto;
-            margin: 20px 0;
-        }
     </style>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk', 
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false // Disable the auto-display widget
-            }, 'google_translate_element');
-        }
-
-        function translatePageToBrowserLanguage() {
-            var userLang = navigator.language || navigator.userLanguage; 
-            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
-            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
-            if (userLang !== 'pl') {
-                var translateElement = new google.translate.TranslateElement({
-                    pageLanguage: 'pl',
-                    includedLanguages: supportedLanguages.join(','),
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false
-                }, 'google_translate_element');
-
-                setTimeout(function () {
-                    var iframe = document.querySelector('.goog-te-banner-frame');
-                    if (iframe) {
-                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                        if (langSelect) {
-                            langSelect.click();
-                            var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']') || innerDoc.querySelector('a[lang=en]');
-                            if (langToClick) {
-                                langToClick.click();
-                            }
-                        }
-                    }
-                }, 1000);
-            }
-        }
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
 
@@ -131,6 +68,7 @@
         <a href="#home">Strona Główna</a>
         <a href="#about">O ISOBUS</a>
         <a href="#technical">Specyfikacja Techniczna</a>
+        <a href="#functions">Funkcje ISOBUS</a>
         <a href="#connectors">Wtyczki ISOBUS</a>
         <a href="#j1939">Protokół J1939</a>
         <a href="#contact">Kontakt</a>
@@ -142,82 +80,104 @@
         <p>
             ISOBUS to międzynarodowy standard komunikacji (ISO 11783) między ciągnikami a maszynami rolniczymi. Pozwala na wymianę danych i sterowanie urządzeniami różnych producentów, co znacznie ułatwia pracę rolników.
         </p>
-        <h2>Zalety ISOBUS</h2>
-        <ul>
-            <li>Kompatybilność między urządzeniami różnych marek</li>
-            <li>Uproszczona obsługa maszyn</li>
-            <li>Zwiększona efektywność pracy</li>
-            <li>Oszczędność czasu i zasobów</li>
-        </ul>
 
-        <!-- Wtyczki ISOBUS -->
-        <h1 id="connectors">Wtyczki ISOBUS</h1>
-
-        <h2>#1: Bus Extension Connector</h2>
-        <img src="connector1.jpg" alt="Bus Extension Connector" class="connector-image">
+        <h2 id="functions">Funkcje ISOBUS</h2>
+        
+        <h3>TC-BAS – Task Controller Basic</h3>
         <p>
-            Ten złącze umożliwia rozszerzenie linii sygnałowych ISOBUS z urządzenia do wnętrza ciągnika. Jest wykorzystywane do dodawania dodatkowych urządzeń, takich jak terminale wirtualne.
+            **Podstawowa funkcja Task Controller**, pozwalająca na rejestrowanie i zarządzanie danymi dotyczącymi aplikacji nawozów, oprysków lub siewu.
         </p>
-        <h3>Przypisania Pinów</h3>
-        <ul>
-            <li><strong>Pin 1:</strong> Zasilanie TBC (TBC Power)</li>
-            <li><strong>Pin 2:</strong> CAN High (CAN_H)</li>
-            <li><strong>Pin 3:</strong> Powrót TBC (TBC Return Path)</li>
-            <li><strong>Pin 4:</strong> CAN Low (CAN_L)</li>
-        </ul>
 
-        <h2>#2: Implement Bus Breakaway Connector (IBBC)</h2>
-        <img src="connector2.jpg" alt="Implement Bus Breakaway Connector" class="connector-image">
+        <h3>TC-SC – Task Controller Section Control</h3>
         <p>
-            IBBC umożliwia połączenie narzędzi z ciągnikiem. Znajduje się zazwyczaj z tyłu ciągnika i może być opcjonalnie instalowane także z przodu.
+            **Automatyczne sterowanie sekcjami maszyny** (np. opryskiwacza, rozsiewacza, siewnika), włączając i wyłączając aplikację w odpowiednich miejscach.
         </p>
-        <h3>Przypisania Pinów</h3>
-        <ul>
-            <li><strong>Pin 1:</strong> Masa (Ground)</li>
-            <li><strong>Pin 2:</strong> Masa ECU (ECU Ground)</li>
-            <li><strong>Pin 3:</strong> Zasilanie (Power)</li>
-            <li><strong>Pin 4:</strong> Zasilanie ECU (ECU Power)</li>
-            <li><strong>Pin 5:</strong> TBC connect/remove</li>
-            <li><strong>Pin 6:</strong> TBC Power</li>
-            <li><strong>Pin 7:</strong> Powrót TBC</li>
-            <li><strong>Pin 8:</strong> CAN High (CAN_H)</li>
-            <li><strong>Pin 9:</strong> CAN Low (CAN_L)</li>
-        </ul>
+        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
 
-        <h2>#3: In-cab Connector (LBS)</h2>
-        <img src="connector3.jpg" alt="In-cab Connector" class="connector-image">
+        <h3>TC-GEO – Task Controller GEO</h3>
         <p>
-            Kabina ciągnika może mieć opcjonalne wewnętrzne złącze do połączenia z siecią ISOBUS.
+            **Precyzyjna aplikacja na podstawie map GPS** – dostosowuje dawki nawozów, środków ochrony roślin i siewu do konkretnych części pola.
         </p>
-        <h3>Przypisania Pinów</h3>
-        <ul>
-            <li><strong>Pin 1:</strong> Zasilanie ECU (ECU Power)</li>
-            <li><strong>Pin 2:</strong> CAN 1 L (input)</li>
-            <li><strong>Pin 3:</strong> CAN 2 L (output)</li>
-            <li><strong>Pin 4:</strong> CAN 1 H (input)</li>
-            <li><strong>Pin 5:</strong> CAN 2 H (output)</li>
-            <li><strong>Pin 6:</strong> TBC Power</li>
-            <li><strong>Pin 7:</strong> Zasilanie ECU (ECU Power)</li>
-            <li><strong>Pin 8:</strong> Masa TBC (TBC Ground)</li>
-            <li><strong>Pin 9:</strong> Masa ECU (ECU Ground)</li>
-        </ul>
+        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
 
-        <h2>#4: Diagnostic Connector</h2>
-        <img src="connector4.jpg" alt="Diagnostic Connector" class="connector-image">
+        <h3>AUX-N – Rozszerzone sterowanie</h3>
         <p>
-            Złącze diagnostyczne znajduje się w kabinie ciągnika w łatwo dostępnym miejscu. Jest używane do połączenia z zewnętrznymi rejestratorami danych w celu diagnostyki.
+            **Możliwość sterowania maszynami ISOBUS za pomocą joysticków i dodatkowych przycisków** w kabinie, co ułatwia pracę i redukuje zmęczenie operatora.
         </p>
-        <h3>Przypisania Pinów</h3>
-        <ul>
-            <li><strong>A:</strong> Masa</li>
-            <li><strong>B:</strong> Zasilanie baterii (Battery Power)</li>
-            <li><strong>C:</strong> CAN 1 H (ciągnik)</li>
-            <li><strong>D:</strong> CAN 1 L (ciągnik)</li>
-            <li><strong>H:</strong> CAN 2 H (implement)</li>
-            <li><strong>J:</strong> CAN 2 L (implement)</li>
-        </ul>
+        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
 
-        <!-- Protokół J1939 -->
+        <h3>Sprawdzanie kompatybilności ISOBUS</h3>
+        <p>
+            Nie wszystkie maszyny i urządzenia ISOBUS są w pełni kompatybilne. Aby sprawdzić, czy dany sprzęt działa poprawnie w danym systemie, można skorzystać z <a href="https://www.aef-isobus-database.org/" target="_blank">bazy AEF</a>, gdzie znajdują się testowane i certyfikowane konfiguracje.
+        </p>
+    </ul>
+         <!-- Wtyczki ISOBUS -->
+    <h1 id="connectors">Wtyczki ISOBUS</h1>
+
+    <h2>#1: Bus Extension Connector</h2>
+    <img src="connector1.jpg" alt="Bus Extension Connector" class="connector-image">
+    <p>
+        Ten złącze umożliwia rozszerzenie linii sygnałowych ISOBUS z urządzenia do wnętrza ciągnika. Jest wykorzystywane do dodawania dodatkowych urządzeń, takich jak terminale wirtualne.
+    </p>
+    <h3>Przypisania Pinów</h3>
+    <ul>
+        <li><strong>Pin 1:</strong> Zasilanie TBC (TBC Power)</li>
+        <li><strong>Pin 2:</strong> CAN High (CAN_H)</li>
+        <li><strong>Pin 3:</strong> Powrót TBC (TBC Return Path)</li>
+        <li><strong>Pin 4:</strong> CAN Low (CAN_L)</li>
+    </ul>
+
+    <h2>#2: Implement Bus Breakaway Connector (IBBC)</h2>
+    <img src="connector2.jpg" alt="Implement Bus Breakaway Connector" class="connector-image">
+    <p>
+        IBBC umożliwia połączenie narzędzi z ciągnikiem. Znajduje się zazwyczaj z tyłu ciągnika i może być opcjonalnie instalowane także z przodu.
+    </p>
+    <h3>Przypisania Pinów</h3>
+    <ul>
+        <li><strong>Pin 1:</strong> Masa (Ground)</li>
+        <li><strong>Pin 2:</strong> Masa ECU (ECU Ground)</li>
+        <li><strong>Pin 3:</strong> Zasilanie (Power)</li>
+        <li><strong>Pin 4:</strong> Zasilanie ECU (ECU Power)</li>
+        <li><strong>Pin 5:</strong> TBC connect/remove</li>
+        <li><strong>Pin 6:</strong> TBC Power</li>
+        <li><strong>Pin 7:</strong> Powrót TBC</li>
+        <li><strong>Pin 8:</strong> CAN High (CAN_H)</li>
+        <li><strong>Pin 9:</strong> CAN Low (CAN_L)</li>
+    </ul>
+
+    <h2>#3: In-cab Connector (LBS)</h2>
+    <img src="connector3.jpg" alt="In-cab Connector" class="connector-image">
+    <p>
+        Kabina ciągnika może mieć opcjonalne wewnętrzne złącze do połączenia z siecią ISOBUS.
+    </p>
+    <h3>Przypisania Pinów</h3>
+    <ul>
+        <li><strong>Pin 1:</strong> Zasilanie ECU (ECU Power)</li>
+        <li><strong>Pin 2:</strong> CAN 1 L (input)</li>
+        <li><strong>Pin 3:</strong> CAN 2 L (output)</li>
+        <li><strong>Pin 4:</strong> CAN 1 H (input)</li>
+        <li><strong>Pin 5:</strong> CAN 2 H (output)</li>
+        <li><strong>Pin 6:</strong> TBC Power</li>
+        <li><strong>Pin 7:</strong> Zasilanie ECU (ECU Power)</li>
+        <li><strong>Pin 8:</strong> Masa TBC (TBC Ground)</li>
+        <li><strong>Pin 9:</strong> Masa ECU (ECU Ground)</li>
+    </ul>
+
+    <h2>#4: Diagnostic Connector</h2>
+    <img src="connector4.jpg" alt="Diagnostic Connector" class="connector-image">
+    <p>
+        Złącze diagnostyczne znajduje się w kabinie ciągnika w łatwo dostępnym miejscu. Jest używane do połączenia z zewnętrznymi rejestratorami danych w celu diagnostyki.
+    </p>
+    <h3>Przypisania Pinów</h3>
+    <ul>
+        <li><strong>A:</strong> Masa</li>
+        <li><strong>B:</strong> Zasilanie baterii (Battery Power)</li>
+        <li><strong>C:</strong> CAN 1 H (ciągnik)</li>
+        <li><strong>D:</strong> CAN 1 L (ciągnik)</li>
+        <li><strong>H:</strong> CAN 2 H (implement)</li>
+        <li><strong>J:</strong> CAN 2 L (implement)</li>
+    </ul>
+
         <h1 id="j1939">Protokół J1939 w ISOBUS</h1>
         <p>
             Protokół <strong>SAE J1939</strong> to standard komunikacji oparty na magistrali CAN, używany w pojazdach ciężarowych, maszynach budowlanych i rolniczych. W kontekście ISOBUS, J1939 stanowi podstawę dla warstwy komunikacyjnej, umożliwiając wymianę danych między urządzeniami.
@@ -227,7 +187,7 @@
 
     <!-- Stopka -->
     <div class="footer">
-        &copy; 2024 Sveaverken www.sveaverken.com
+        &copy; 2024 Sveaverken | <a href="https://www.aef-isobus-database.org/" target="_blank" style="color:white;">Sprawdź kompatybilność w bazie AEF</a>
     </div>
 
 </body>
