@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kompleksowy przewodnik po systemie ISOBUS w rolnictwie precyzyjnym - funkcje, złącza, protokoły i praktyczne zastosowania">
+    <meta name="keywords" content="ISOBUS, rolnictwo precyzyjne, J1939, maszyny rolnicze, automatyzacja rolnictwa">
+    <title>ISOBUS w Rolnictwie Precyzyjnym | Kompleksowy Przewodnik</title>
+    <style>
+        :root {
+            --primary-color: #00457C;
+            --secondary-color: #002E5D;
+            --accent-color: #FF6B00;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .nav {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-list a {
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-list a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+        }
+
+        h1 { font-size: 2.5rem; }
+        h2 { font-size: 2rem; }
+        h3 { font-size: 1.5rem; }
+
+        .connector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .connector-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .connector-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .connector-image {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            display: block;
+            margin: 1rem auto;
+            border-radius: 4px;
+        }
+
+        .warning {
+            color: #d32f2f;
+            font-weight: bold;
+            padding: 0.5rem;
+            background: #ffebee;
+            border-left: 4px solid #d32f2f;
+            margin: 1rem 0;
+        }
+
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                padding: 1rem;
+            }
+            
+            .section {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>ISOBUS w Rolnictwie Precyzyjnym</h1>
+        <p>Kompleksowy przewodnik po standardzie komunikacji maszyn rolniczych</p>
+    </header>
+
+    <nav class="nav">
+        <ul class="nav-list">
+            <li><a href="#about">O ISOBUS</a></li>
+            <li><a href="#functions">Funkcje</a></li>
+            <li><a href="#connectors">Złącza</a></li>
+            <li><a href="#j1939">Protokół J1939</a></li>
+        </ul>
+    </nav>
+
+    <main class="main">
+        <section class="section" id="about">
+            <h2>Czym jest ISOBUS?</h2>
+            <p>ISOBUS (ISO 11783) to międzynarodowy standard komunikacji między ciągnikami a maszynami rolniczymi, który:</p>
+            <ul>
+                <li>Umożliwia integrację urządzeń różnych producentów</li>
+                <li>Redukuje liczbę potrzebnych wyświetlaczy w kabinie</li>
+                <li>Standaryzuje formaty danych i protokoły komunikacyjne</li>
+                <li>Usprawnia zarządzanie flotą maszyn</li>
+            </ul>
+        </section>
+
+        <section class="section" id="functions">
+            <h2>Kluczowe funkcje ISOBUS</h2>
+            
+            <article class="connector-card">
+                <h3>VT – Terminal Wirtualny</h3>
+                <p>Uniwersalny interfejs HMI zastępujący multiple monitory. Pozwala na:</p>
+                <ul>
+                    <li>Sterowanie wszystkimi podłączonymi maszynami</li>
+                    <li>Wyświetlanie danych w czasie rzeczywistym</li>
+                    <li>Integrację z systemami nawigacji GPS</li>
+                </ul>
+            </article>
+
+            <!-- Other functions formatted similarly -->
+        </section>
+
+        <section class="section" id="connectors">
+            <h2>Typy złączy ISOBUS</h2>
+            <div class="connector-grid">
+                <article class="connector-card">
+                    <h3>Bus Extension Connector</h3>
+                    <img src="https://example.com/connector1.jpg" alt="Złącze rozszerzenia magistrali" class="connector-image">
+                    <p>Parametry techniczne:</p>
+                    <ul>
+                        <li>Napięcie robocze: 12-24V DC</li>
+                        <li>Prędkość transmisji: 250 kbit/s</li>
+                        <li>Zabezpieczenia: IP67</li>
+                    </ul>
+                </article>
+
+                <!-- Other connectors formatted similarly -->
+            </div>
+        </section>
+
+        <section class="section" id="j1939">
+            <h2>Integracja z protokołem J1939</h2>
+            <p>ISOBUS wykorzystuje zmodyfikowaną wersję protokołu J1939 dostosowaną do potrzeb rolnictwa:</p>
+            <div class="comparison-table">
+                <table>
+                    <tr>
+                        <th>Parametr</th>
+                        <th>J1939</th>
+                        <th>ISOBUS</th>
+                    </tr>
+                    <tr>
+                        <td>Prędkość transmisji</td>
+                        <td>250 kbit/s</td>
+                        <td>250 kbit/s</td>
+                    </tr>
+                    <tr>
+                        <td>Napięcie sieciowe</td>
+                        <td>24V</td>
+                        <td>12V</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Sveaverken | Partnerzy technologiczni: 
+            <a href="#" style="color: var(--accent-color);">John Deere</a>, 
+            <a href="#" style="color: var(--accent-color);">CLAAS</a>
+        </p>
+        <p>Certyfikaty: 
+            <img src="aef-certified.png" alt="Certyfikat AEF" style="height: 40px; vertical-align: middle;">
+        </p>
+    </footer>
+</body>
+</html>
