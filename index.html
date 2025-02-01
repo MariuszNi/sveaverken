@@ -2,126 +2,350 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>ISOBUS w Rolnictwie Precyzyjnym</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            color: #333;
+    <title>Sveaverken - Filmy i Instrukcje</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk', 
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false // Disable the auto-display widget
+            }, 'google_translate_element');
         }
-        /* Nagłówek */
-        .header {
-            background-color: #00457C;
-            color: white;
-            padding: 20px;
-            text-align: center;
+
+        function translatePageToBrowserLanguage() {
+            var userLang = navigator.language || navigator.userLanguage; 
+            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
+            if (userLang !== 'pl') {
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']') || innerDoc.querySelector('a[lang=en]');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
+            }
         }
-        /* Nawigacja */
-        .nav {
-            display: flex;
-            background-color: #002E5D;
-            justify-content: center;
-        }
-        .nav a {
-            color: white;
-            padding: 15px 20px;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-        .nav a:hover {
-            background-color: #001B3D;
-        }
-        /* Główna treść */
-        .main {
-            padding: 40px;
-            max-width: 1000px;
-            margin: auto;
-        }
-        .main h1, .main h2, .main h3 {
-            color: #00457C;
-        }
-        .main p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-        /* Stopka */
-        .footer {
-            background-color: #002E5D;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
-<body>
-
-    <!-- Nagłówek -->
-    <div class="header">
-        <h1>ISOBUS w Rolnictwie Precyzyjnym</h1>
-    </div>
-
-    <!-- Nawigacja -->
-    <div class="nav">
-        <a href="#home">Strona Główna</a>
-        <a href="#about">O ISOBUS</a>
-        <a href="#technical">Specyfikacja Techniczna</a>
-        <a href="#functions">Funkcje ISOBUS</a>
-        <a href="#connectors">Wtyczki ISOBUS</a>
-        <a href="#j1939">Protokół J1939</a>
-        <a href="#contact">Kontakt</a>
-    </div>
-
-    <!-- Główna treść -->
-    <div class="main">
-        <h1 id="about">Czym jest ISOBUS?</h1>
-        <p>
-            ISOBUS to międzynarodowy standard komunikacji (ISO 11783) między ciągnikami a maszynami rolniczymi. Pozwala na wymianę danych i sterowanie urządzeniami różnych producentów, co znacznie ułatwia pracę rolników.
-        </p>
-
-        <h2 id="functions">Funkcje ISOBUS</h2>
+<body onload="translatePageToBrowserLanguage()">
+    
+    <header>
+        <img src="logo.png" alt="Sveaverken Logo">
         
-        <h3>TC-BAS – Task Controller Basic</h3>
-        <p>
-            **Podstawowa funkcja Task Controller**, pozwalająca na rejestrowanie i zarządzanie danymi dotyczącymi aplikacji nawozów, oprysków lub siewu.
-        </p>
+       <div style="text-align: center; padding-top: 10px;">
+    <strong class="software-title">Aktualna wersja oprogramowania</strong><br><br>
+    <p><strong>APP:</strong> 23.102.2.16</p>
+    <p><strong>ECU1:</strong> 3.1.4.9</p>
+    <p><strong>ECU2:</strong> 103.0.3.22</p>
+    <p><strong>IMU:</strong> 3.0.0.59</p>
+    <p><strong>Motor:</strong> 1.1.13.4</p><br>
+    <p><strong>Board L1:</strong> 23005</p>
+    <p><strong>Board L3:</strong> 11491</p>
+    <p><strong>System:</strong> 20240429103836</p>
+    <p><strong>Radio:</strong> J017.00.05.0</p>
+</div>
 
-        <h3>TC-SC – Task Controller Section Control</h3>
-        <p>
-            **Automatyczne sterowanie sekcjami maszyny** (np. opryskiwacza, rozsiewacza, siewnika), włączając i wyłączając aplikację w odpowiednich miejscach.
-        </p>
-        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
 
-        <h3>TC-GEO – Task Controller GEO</h3>
-        <p>
-            **Precyzyjna aplikacja na podstawie map GPS** – dostosowuje dawki nawozów, środków ochrony roślin i siewu do konkretnych części pola.
-        </p>
-        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
+        <div id="google_translate_element" style="float: left;"></div>
+    </header>
+    <main>
+        <div class="button-container">
+            <button id="news-button" onclick="openPopup()">Zobacz aktualności</button>
+        </div>
+        <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()">
+        <section id="home">
+            <h1>Witamy na stronie Sveaverken</h1>
+            <p>Sveaverken produkuje innowacyjne urządzenia dla rolnictwa, w tym systemy zarządzania hodowlą zwierząt, maszyny do karmienia, systemy monitoringu stanu zdrowia zwierząt oraz systemy zarządzania gospodarstwami. Te innowacyjne rozwiązania pomagają rolnikom zwiększać efektywność i zyski.</p>
+            <p>Na tej witrynie znajdziesz:</p>
+            <ul>
+                <li>Filmy instruktażowe i promocyjne dotyczące naszych produktów.</li>
+                <li>Opisy i instrukcje obsługi naszych urządzeń, dostępne do pobrania.</li>
+                <li>Listę aktualnie dostepnych inżynierów serwisu (FAE)</li>
+                <li>Informacje kto pełni dyżur w najbliższy weekend</li>
+            </ul>
+             </section>
+        <section id="form">
+            <h2>Formularz zbierania danych</h2>
+            <ul>
+                <li><a href="https://forms.gle/N7sy7ePUbFzMYqB59">Formularz zbierania danych o pojazdach (wypełnienie zajmie 3 min a dzieki temu utworzymy bazę danych tuleii itp.)</a></li>
+            </ul>
+            </section>
+            <div id="popup" class="popup">
+                <div class="popup-content">
+                <span class="close-button" onclick="closePopup()">&times;</span>
+                <h2>Aktualności</h2>
+                    <div id="news-content">
+                </div>
+            </div>
+        </div>
+        <section id="Mapa zakłóceń sygnału GPS">
+            <h2>Mapa zakłóceń sygnału GPS</h2>
+            <ul>
+                <li><a href="https://www.flightradar24.com/data/gps-jamming" target="_blank">Mapa zakłóceń sygnału GPS</a></li>
+            </ul>
+        </div>
+        <section id="NTRIP">
+            <h2>Dostawcy NTRIP w Europie</h2>
+            <ul>
+                <li><a href="NTRIP.html" target="_blank">Dostawcy NTRIP w Europie</a></li>
+            </ul>
+        </div>
+        <section id="NMEA">
+            <h2>NMEA 0183 V.4.1</h2>
+            <ul>
+                <li><a href="nmea.html" target="_blank">NMEA 0183 V.4.1</a></li>
+            </ul>
+        </div>
+            <section id="ISOBUS">
+            <h2>ISOBUS</h2>
+            <ul>
+                <li><a href="isobus.html" target="_blank">ISOBUS</a></li>
+            </ul>
+        </div>
+             </section>
+        <section id="marketing">
+            <h2>Materiały marketingowe PL</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1OTWwJKdunxfPkFHoQbIAIlmKR1ejsHj5&usp=drive_fs">Materiały marketingowe</a></li>
+            </ul>
+        </div>
+         </section>
+        <section id="getting-started">
+            <h2>Pierwsze kroki po uruchomieniu nawigacji-VIDEO TUTORIAL</h2>
+            <ul>
+                <li><a href="https://drive.google.com/file/d/19sgjlq9vhnwjyPkLuo_DnxFmH677UJMJ/view?usp=drivesdk" target="_blank">Utworzenie konta</a></li>
+                <li><a href="https://drive.google.com/file/d/1hRWlQyibGXSVix895dbH-fWaTcF9rZPL/view?usp=drivesdk" target="_blank">Podłączenie do źródła sygnału korekcyjnego</a></li>
+                <li><a href="https://drive.google.com/file/d/15iLf5mf0I2OXDm4PSu9RCww9WsmOfyFx/view?usp=drivesdk" target="_blank">Informacje o pojeździe</a></li>
+                <li><a href="https://drive.google.com/file/d/1Jk2pDdD4yZj_JhHMhvCBNQAVffucBxHn/view?usp=drivesdk" target="_blank">Kalibracja czujnika skrętu</a></li>
+                <li><a href="https://drive.google.com/file/d/1yRgx2Tc1XQYOAGIvs47n8cUKB7zpkvFz/view?usp=drivesdk" target="_blank">Kalibracja pojazdu</a></li>
+                <li><a href="https://drive.google.com/file/d/1Lq9k853Foxme29xrKI9kv82qJFt9-Spd/view?usp=drivesdk" target="_blank">Kalibracja narzędzia</a></li>
+            </ul>
+        </div>
+        </section>
+        <section id="next-step">
+            <h2>Funkcje F100-VIDEO TUTORIAL</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1rmRgQdd9gllM8B2ZP1Am1Lx8PK1q930S&usp=drive_fs" target="_blank">Tworzenie linii A+</a></li>
+                <li><a href="https://drive.google.com/open?id=1ivJ7IShm1mD2mFCmUGy57WFG-frVvZqP&usp=drive_fs" target="_blank">Aktywacja wersji zaawansowanej</a></li>
+                <li><a href="https://drive.google.com/open?id=1y8kDSdNkR4DEmHL6pNwXaK_vEQ8GnghS&usp=drive_fs" target="_blank">Tworzenie linii AB</a></li>
+                <li><a href="https://drive.google.com/open?id=1NisnfxnpapIbf6-mazX_Xe9kD2rbevkh&usp=drive_fs" target="_blank">Tworzenie granicy (tylko wersja zaawansowana)</a></li>
+                <li><a href="https://drive.google.com/open?id=1yhdT3AMTf3S35sQCb-qeyZARXfH-G7xj&usp=drive_fs" target="_blank">Tworzenie linii krzywej</a></li>
+                <li><a href="https://drive.google.com/open?id=1_iLGofWV_muD7Ur6MbfnX_tb95BbBR2t&usp=drive_fs" target="_blank">Tworzenie okręgu</a></li>
+                <li><a href="https://drive.google.com/open?id=1Png_pEral-C1vqtbyJ0IFWmTGFx08Uw2&usp=drive_fs" target="_blank">Operacje na granicach (tylko wersja zaawansowana)</a></li>
+                <li><a href="https://drive.google.com/open?id=12MrpT5L-Ju6PyvU3uhzyQOYNLcm8Yhn5&usp=drive_fs" target="_blank">Ustawianie jednostek</a></li>
+                <li><a href="https://drive.google.com/open?id=1b5oJ5fcu0DydjPShS9eojNisWgcKILJJ&usp=drive_fs" target="_blank">Kalibracja anteny do centralnej osi pojazdu</a></li>
+                <li><a href="https://drive.google.com/open?id=1m_Jb0qvfsaJhe42fRtHfHmTF3WoT3afP&usp=drive_fs" target="_blank">Udostępnianie linni online</a></li>
+                <li><a href="https://drive.google.com/open?id=18B2ytQtNVdu5p2cD02JFQcfzDYcFVHCN&usp=drive_fs" target="_blank">Jak zacząć operacje (tylko wersja zaawansowana)</a></li>
+                <li><a href="https://drive.google.com/open?id=1z-LnzVyFxW_srKjUR3Pu0AEvQf4VsIqD&usp=drive_fs" target="_blank">Udostępnianie linni przez USB</a></li>
+                <li><a href="https://drive.google.com/open?id=1tTez-4Ey9x9GQSIMC7im_Uii_bLaNshe&usp=drive_fs" target="_blank">Aktualizacja systemu</a></li>
+                <li><a href="https://drive.google.com/open?id=1GsB1PCzd0fHOt3cA3nhw09N7giZCSVQ-&usp=drive_fs" target="_blank">Przesunięcie linii</a></li>
+                <li><a href="https://drive.google.com/open?id=1ExhSgZyJQbMmLho2iLH9RY5QsFbva6MI&usp=drive_fs" target="_blank">Jak zacząć operacje (wersja sandard)</a></li>
+                <li><a href="https://drive.google.com/open?id=1TCgh4ZfjtWvQ4wWh6L6hoY9ey_rjOI_y&usp=drive_fs" target="_blank">Jak używać opcji dostrajania (Współczynnik dostrajania)</a></li>
+                <li><a href="https://drive.google.com/open?id=12yCWhRzxwBP6SC9gRIAnd_ZkZ7tZpvQ6&usp=drive_fs" target="_blank">Aktualizacja poprzez USB</a></li>
+                <li><a href="https://drive.google.com/open?id=1gk-Tvnk39NVIermd7-NS_ZrBRYlO0gXu&usp=drive_fs" target="_blank">Jak używać pilota Easy Control</a></li>
+                <li><a href="https://drive.google.com/open?id=1_AFPAW6JaumMqsc0OOMwLWzDLBc7Qj3h&usp=drive_fs" target="_blank">Jak używać bibliotekę narzędzi</a></li>
+                <li><a href="https://drive.google.com/open?id=1JonCh1ka-dP-huz3nYCJU0tDOck5aep3&usp=drive_fs" target="_blank">Jak używać funkcji NMEA</a></li>
+                <li><a href="https://drive.google.com/open?id=1rXFbLZZLYHqjgQNhHqiJJfgOcQ44GGPu&usp=drive_fs" target="_blank">Jak używać Farm Management System (FMS)</a></li>
+                <li><a href="https://drive.google.com/open?id=19STiCqEx_Yp-5JN4P3ThYNtZXoF__ZhP&usp=drive_fs" target="_blank">Jak używać funkcji trimm</a></li>
+                <li><a href="https://drive.google.com/open?id=1-_OqC-SclzaKb9rH3qAcW8WhtNDN-Vnq&usp=drive_fs" target="_blank">Jak używać biblioteki pojazdów</a></li>
+                <li><a href="https://drive.google.com/open?id=1y6v48BfIcjNUvLN8694cS_JL7TjqnmPe&usp=drive_fs" target="_blank">Jak używać basic uturn</a></li>
+                <li><a href="https://drive.google.com/open?id=1pokERSVgSMeyAgWFjHI8Whz_SUJFcEPo&usp=drive_fs" target="_blank">Jak używać smart uturn</a></li>
+                
+            </ul>
+        </div>
+        <section id="PROBLEMY">
+            <h2>Rozwiązywanie problemów</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1MIqILb1dPGc1P7r08Sz0ibBVN0PANYi3&usp=drive_fs" target="_blank">Jak wyczyścić cache</a></li>
+        <li><a href="https://drive.google.com/open?id=12HkENs3xLrZlG6JHyuqscbC6shWP51rq&usp=drive_fs" target="_blank">Jak postępować z przy problemach z 4G</a></li>
+        <li><a href="https://drive.google.com/open?id=1ck-duCMkU5scvo3x-ukM0nbKTA7b8Wkp&usp=drive_fs" target="_blank">Jak postepować z problemem czujnika kątas</a></li>
+        <li><a href="https://drive.google.com/open?id=1W2EmSXcgwZWrBsaAhrzH-4jN3e38AFEb&usp=drive_fs" target="_blank">Jak postepowac z problemem RTK</a></li>
+            </ul>
+        </section>
+        <section id="Dostępność FAE">
+            <h2>Dostępność FAE</h2>
+            <ul>
+        <li><a href="FAE.html" target="_blank">Dostępność FAE i dyżur w weekend</a></li>
+        <li><a href="Spline_sleeves.html" target="_blank">Lista adapterów kierownicy</a></li>      
+            </ul>
+            
+        </section>
+        <section id="manuals">
+            <h2>Instrukcje F100</h2>
+                <ul>
+                    <li><a href="https://drive.google.com/drive/folders/1qdx5cS1ztcoLIucgLVFVsQPANHQo1j-U?usp=sharing" target="_blank">Dysk Google</a></li>
+                    <li><a href="https://drive.google.com/open?id=1qq0ZRjBmLxN3m-4yPnLI1bydzuGLbuqq&usp=drive_fs" target="_blank">Instrukcja obsługi dla wersji interfejsu urzytkownika >3.1.6 (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1r40zZGEsil78agJnX9vhEWFBM2sGj86i&usp=drive_fs" target="_blank">Krótka instrukcja obsługi dla wersji interfejsu urzytkownika >3.1.6 (14 języków)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OIeOZAxnMAtiyDIXJDTmKyYCVD15aesl&usp=drive_fs" target="_blank">ISOBUS COMPATIBILITY CHECK (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OJ40mnlzsbO2-FThJS2sN_qABntralPQ&usp=drive_fs" target="_blank">ISOBUS KOMPATYBILNOŚĆ (pl)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OKsH96R__ZVOlEmeIMVz4Z_LHLX45uYZ&usp=drive_fs" target="_blank">ISOBUS COMPATIBILITY CHECK (es)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1sA_QAE9zUv--dPJ_H-xnH55ydGUrYDzH&usp=drive_fs" target="_blank">Test napięcia wiązki ISOBUS</a></li>
+                    <li><a href="https://drive.google.com/open?id=1Nox3ks34Qj9psUx5ogRNEn_pvOsfeJZD&usp=drive_fs" target="_blank">Instrukcja ISOBUS</a></li>
+                    <li><a href="https://drive.google.com/open?id=1NxJJEWl9ahH5Kjt8YYgoE5eJWgwKWWMH&usp=drive_fs" target="_blank">Instrukcja rozwiązywania problemów (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OLBQ0tzE8-qsW2lWHsE-fhqpEwYVOPuq&usp=drive_fs" target="_blank">Instrukcja rozwiązywania problemów (pl)</a></li>
+                    <li><a href="offsetv6.html"_blank">Kalkulator dla podwójnego narzędzia</a></li>
+                    <li><a href="https://drive.google.com/open?id=148Qg0fYVWWLTxR9N5fX6QGtHT5x62Ssq&usp=drive_fs" target="_blank">Instrukcja kalkulatora podwójnego narzędzia</a></li>
+                    <li><a href="https://drive.google.com/open?id=1dAyGcCc1NLuMzHIcoA2ccUyiA7I84pRV&usp=drive_fs" target="_blank">Instrukcja NMEA</a></li>
+                    <li><a href="https://drive.google.com/file/d/11lcsDdRLOvZ5ujUpsdJZl5SZeVDC6ZWv/view?usp=drivesdk" target="_blank">NTRIP RTK EBOOK</a></li>
+                    <li><a href="https://drive.google.com/file/d/11WDNm_LPltzfxZ5iKB-_-qQNajZSwFk-/view?usp=drivesdk" target="_blank">Instrukcja pomiarów kolumny kierowniczej</a></li>
+                    <li><a href="https://drive.google.com/file/d/1rNvstt4cFVIrDn6gQ1o_wCBbFLp-fjS3/view?usp=drivesdk" target="_blank">Instrukcja konfiguracji NTRIP RTK ASG-EUPOS Polska</a></li>
+                    <li><a href="https://drive.google.com/file/d/1s6auzeFp2Q-2EOdJjybGGIJmk1JWOqYx/view?usp=drivesdk" target="_blank">Przewodnik FMS (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1-WtPAW7ioKERSmNKT7FzKLxc-FcGkEs9&usp=drive_fs" target="_blank">Instrukcja FMS (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1refC6YDpEgLtn-DLGsutJ-0NRTQPUwkq&usp=drive_fs=" target="_blank">Aktualizacja przez USB / Pliki i instrukcje</a></li>
+                    <li><a href="https://drive.google.com/open?id=1ErvoLkhHcZdn_gHPRm7pig-4EXo_pdid&usp=drive_fs" target="_blank">Klonowanie ekranu terminala na PC</a></li>
+                    <li><a href="https://drive.google.com/open?id=1MtPULk8AteS5JcoMCnolceyAx9rdNlr4&usp=drive_fs" target="_blank">Przeglądarka Chrome do instalacji na terminalu (z USB)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1MxWb68hQkQ3R2M2desowlFQtzHlYZQG8&usp=drive_fs" target="_blank">Przeglądarka plików do instalacji na terminalu (z USB)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1qx583Sw4vlLAIhbOaWGzbnRQzRfZZ11j&usp=drive_fs" target="_blank">Instrukcja obsługi aplikacji Sveaverken na Android</a></li>
+                    <li><a href="https://drive.google.com/open?id=1PWDPn-PAo7wW_DRveOUtDyCcxFwjsdvC&usp=drive_fs"_blank">Release note wersji 23.102.2.4</a></li>
+                    <li><a href="https://drive.google.com/open?id=1O2FCGk98vSkH_HMrqOQ-MXrzWftpy_eL&usp=drive_fs"_blank">Instrukcja obsługi platformy zdalnej pomocy (en)</a></li>
+                    <li><a href="uturn.html" target="_blank">Instrukcja przeliczania minimalnej liczby nawrotów na polu dla funkcji Smart U-turn (pl)</a></li>
+                </ul>
+            </section>
+        <section id="F100H NON-CAN">
+            <h2>F100H NON-CAN</h2>
+            <ul>
+                <li><a href="https://docs.google.com/presentation/d/1-Gd1DP-ocQTwvFX8Yxtd3y-rmiORPAkY/edit?usp=drivesdk&ouid=103561026551793102014&rtpof=true&sd=true" target="_blank">Prezentacja systemu F100H</a></li>
+                <li><a href="https://drive.google.com/open?id=1x1uYjRCphirLbg5rkRtHtyyDKmuSkmFw&usp=drive_fs" target="_blank">Wymagania dla F100H</a></li>
+        
+            </ul>
+            
+            </section>
+        <section id="Stacje-bazowe">
+            <h2>Stacje bazowe</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1H4Qg8U8veIpneX6O8DlWMI6qLLrG5Bt0&usp=drive_fs" target="_blank">Sveaverken CORS N10</a></li>
+        <li><a href="https://drive.google.com/open?id=1H45DhZhi-7YW9F-iAJaxUWQvw8ROnTRD&usp=drive_fs" target="_blank">Sveaverken CORS N20</a></li> 
+        <li><a href="https://drive.google.com/open?id=1OD_3PyraboOP7eg0F2TfaIa-QN-_ouOt&usp=drive_fs" target="_blank">Sveaverken Base Station V1</a></li>
+        <li><a href="https://drive.google.com/open?id=1OC6kzWy7hos7I3RtpcnyHwGzdsWe9VFv&usp=drive_fs" target="_blank">Sveaverken Base Station V1 manual</a></li>
+        <li><a href="https://drive.google.com/open?id=1LJyNhg9Swn5IO6vl9if58asp5H3nb_Os&usp=drive_fs" target="_blank">Aplikacja do obsługi V1 na telefon z Android</a></li>
+        <li><a href="https://drive.google.com/open?id=1Or8hElAKtjnVkmFM86juiMeoVIuNAccK&usp=drive_fs" target="_blank">Instrukcja obsługi aplikacji V1 Android</a></li>
+        <li><a href="https://drive.google.com/open?id=1OVLfaqD9vzp-XuwvByW1tMd7ijJxBmIH&usp=drive_fs" target="_blank">Instrukcja obsługi aplikacji V1 iOS Iphone</a></li>
+        <li><a href="https://drive.google.com/open?id=1OY8iF-f8dU2NWZLmpUbJkaHjHKIC4pOi&usp=drive_fs" target="_blank">Instrukcja połączenia F110 z V1 Android</a></li>
+        <li><a href="https://drive.google.com/open?id=1OVxfB5BeylfLHP2puB13SExZNaY2DOZt&usp=drive_fs" target="_blank">Instalacja V1 Video</a></li>
+            </ul>
+            </section>
+        <section id="NIMBO Robot podgarniający">
+            <h2>NIMBO</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1ra6ojD4M-hJYoI2i5ukI9eWVgM5PKJ6k&usp=drive_fs" target="_blank">NIMBO instrukcja obsługi (pl)</a></li>
+        <li><a href="https://drive.google.com/open?id=1wFqgQGA8AIzeWFXEivjtoZiD5I2auyhW&usp=drive_fs" target="_blank">Lista anarzędzi i pierwsze kroki</a></li> 
+        <li><a href="https://drive.google.com/open?id=1Zl8bQ263qxzNv3yUc9nMfcDltb2w-7Ge&usp=drive_fs" target="_blank">Przewodnik po aplikacji MooConnect</a></li>
+        <li><a href="https://drive.google.com/open?id=1wIpyEyx-tyh5VJKyEVKt72wMkXwpKceo&usp=drive_fs" target="_blank">Zmiana serwera</a></li>
+        <li><a href="https://drive.google.com/open?id=1wJuw91TlAi17F2ZkJlwQkrcomIz9iDDB&usp=drive_fs" target="_blank">Zmiana strefy czasowej</a></li>
+        <li><a href="https://drive.google.com/open?id=1wH02ByUf7Ox-TuIaQx7T29wdFqJsBcdX&usp=drive_fs" target="_blank">Aktualizacja oprogramowania robota</a></li>
+        <li><a href="https://drive.google.com/open?id=1wOYiX9la9LtGdBRXf9HfA7dffLByZSkc&usp=drive_fs" target="_blank">Instrukcja obsługi Web Client</a></li>
+        <li><a href="https://drive.google.com/open?id=1O3kTDhRHkK3SJVgo2kMijSVkOVw5vyCq&usp=drive_fs" target="_blank">Aktualna wersja FW</a></li>
+            </ul>
+             </section>
+        <section id="Moo Collar">
+            <h2>Moo Collar</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1Oe9YuzgUjIaUox3ep9BNDLIHGpua0a-V&usp=drive_fs" target="_blank">Skrócona instrukcja obsługi (en)</a></li>
+            </ul>
+             </section>
+        <section id="Svea brush">
+            <h2>Sveaverken Brush SCEB200</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1Odc0N2l9dn54t4413Am4HtbeNIPjPomz&usp=drive_fs" target="_blank">Instrukcja obsługi szczotki Sveaverken (en)</a></li>
+                <li><a href="https://drive.google.com/open?id=1Odfv4dVgm0m8y9jpyHEwXRS_-Cd2tos7&usp=drive_fs" target="_blank">Instrukcja obsługi szczotki Sveaverken (pl)</a></li>
+            </ul>
+             </section>
+        <section id="Svea ap">
+            <h2>Bramka LoRaWAN® ND67</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1ObH-NqHOCeS2FB2Jder8Mqv7X_z9sMjy&usp=drive_fs"_blank">Instrukcja obsługi Bramki LoRaWAN® ND67 (en)</a></li>
+                <li><a href="https://drive.google.com/open?id=1OcReaVjoGnq5qTb9T7kUJ_ACY7-lg3h0&usp=drive_fs" target="_blank">Instrukcja obsługi Bramki LoRaWAN® ND67 (pl)</a></li>
+            </ul>
+            </section>
+            <section id="BONUS">
+            <h2>BONUS</h2>
+            <ul>
+        <li><a href="tracgame.html" target="_blank">Gra traktor</a></li>   
+        <li><a href="Game.html" target="_blank">O&X</a></li>
+        <li><a href="snake.html" target="_blank">Wąż</a></li>
+        
+            </ul>
+        </section>
+        <section id="video list">
+            <h2>Linki do filmów na YouTube</h2>
+            <ul>
+        <li><a href="Videos.html" target="_blank">Linki do folmów na YouTube</a></li>
+            </ul>
+        
+                </div>
+            </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
+        <p>Sugestie i pytania: mariusz.niezgoda@sveav.com</p>
+    </footer>
+  <script type="text/javascript">
+        function fetchNews() {
+            fetch('aktual.txt')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('news-content').innerHTML = data.replace(/\n/g, '<br>');
+                })
+                .catch(error => console.error('Błąd wczytywania aktualności:', error));
+        }
 
-        <h3>AUX-N – Rozszerzone sterowanie</h3>
-        <p>
-            **Możliwość sterowania maszynami ISOBUS za pomocą joysticków i dodatkowych przycisków** w kabinie, co ułatwia pracę i redukuje zmęczenie operatora.
-        </p>
-        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
+        function openPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
 
-        <h3>Sprawdzanie kompatybilności ISOBUS</h3>
-        <p>
-            Nie wszystkie maszyny i urządzenia ISOBUS są w pełni kompatybilne. Aby sprawdzić, czy dany sprzęt działa poprawnie w danym systemie, można skorzystać z <a href="https://www.aef-isobus-database.org/" target="_blank">bazy AEF</a>, gdzie znajdują się testowane i certyfikowane konfiguracje.
-        </p>
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
 
-        <h1 id="j1939">Protokół J1939 w ISOBUS</h1>
-        <p>
-            Protokół <strong>SAE J1939</strong> to standard komunikacji oparty na magistrali CAN, używany w pojazdach ciężarowych, maszynach budowlanych i rolniczych. W kontekście ISOBUS, J1939 stanowi podstawę dla warstwy komunikacyjnej, umożliwiając wymianę danych między urządzeniami.
-        </p>
+        function filterContent() {
+            const filterInput = document.getElementById('search-input');
+            const filterValue = filterInput.value.toLowerCase();
+            const sections = document.querySelectorAll('section');
 
-    </div>
+            sections.forEach(section => {
+                const items = section.querySelectorAll('li, p, a, h2, h3');
+                let sectionVisible = false;
+                items.forEach(item => {
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().includes(filterValue)) {
+                        item.style.display = '';
+                        sectionVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                section.style.display = sectionVisible ? '' : 'none';
+            });
+        }
 
-    <!-- Stopka -->
-    <div class="footer">
-        &copy; 2024 Sveaverken | <a href="https://www.aef-isobus-database.org/" target="_blank" style="color:white;">Sprawdź kompatybilność w bazie AEF</a>
-    </div>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNews();
+        });
 
+        window.onclick = function(event) {
+            const popup = document.getElementById("popup");
+            if (event.target == popup) {
+                popup.style.display = "none";
+            }
+        }
+    </script>
 </body>
-</html>
+        </html>
