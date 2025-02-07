@@ -40,38 +40,22 @@
                     });
                 });
 
-                const brandSelect = document.getElementById('brand-select');
+                const brandInput = document.getElementById('brand-input');
+                const brandDatalist = document.getElementById('brands');
                 adaptedBrands.forEach(brand => {
                     const option = document.createElement('option');
                     option.value = brand;
-                    option.textContent = brand;
-                    brandSelect.appendChild(option);
+                    brandDatalist.appendChild(option);
                 });
 
-                brandSelect.addEventListener('input', () => {
-                    filterDropdown(brandSelect);
-                });
-                
-                brandSelect.addEventListener('change', () => {
-                    const selectedBrand = brandSelect.value;
+                brandInput.addEventListener('input', () => {
+                    const selectedBrand = brandInput.value;
                     const filteredData = fullData.filter(row => row.adaptedBrand && row.adaptedBrand.split(',').map(brand => brand.trim()).includes(selectedBrand));
                     displayTableData(filteredData);
                 });
             } catch (error) {
                 showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
             }
-        }
-
-        function filterDropdown(selectElement) {
-            const filter = selectElement.value.toLowerCase();
-            const options = selectElement.querySelectorAll('option');
-            options.forEach(option => {
-                if (option.textContent.toLowerCase().includes(filter) || option.value === '') {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
         }
 
         function displayTableData(data) {
@@ -100,8 +84,8 @@
     <main>
         <section id="spline_sleeves">
             <h1>Lista Adapterów Spline Sleeve</h1>
-            <label for="brand-select">Wybierz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</label>
-            <input list="brands" id="brand-select" placeholder="Wpisz markę...">
+            <label for="brand-input">Wpisz markę pojazdu, aby znaleźć odpowiedni adapter spline sleeve:</label>
+            <input list="brands" id="brand-input" placeholder="Wpisz markę...">
             <datalist id="brands"></datalist>
             <table>
                 <thead>
