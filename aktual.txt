@@ -1,3 +1,4 @@
+13-03-2025 - oficjalnie mamy nową werję oprogramowania.
 12-01-2025 - dostepna jest wersja BETA oprogramowanie przeznaczona do testów. Chętni powinni zgłaszać się do FAE ze swojego regionu. SVEA V24.102.3 (G00_Trial). Wersja ta przeznaczona jest do F100, F100H (steer ready CANBUS, NON-CAN), and F200
 - Nowa linia kombinowana
 - Dodano Baseline Create Rename (domyślnie wyłączone)
@@ -29,7 +30,7 @@ https://forms.gle/v7MtwJgufLay6edU9
 
 Wersja w języku Polskim:
 
-https://forms.gle/MrLdtb3MiV1XdvNZ6 
+htt-ps://forms.gle/MrLdtb3MiV1XdvNZ6 
 
 18-07-2024 - FMS update
 
