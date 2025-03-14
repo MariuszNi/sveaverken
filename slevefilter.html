@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleeve Search Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background-color: #ddd; }
+        input, select { padding: 5px; margin: 5px; }
+        #google_translate_element { margin-bottom: 20px; }
+    </style>
+    <script>
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+        }
+    </script>
+</head>
+<body>
+
+    <div id="google_translate_element"></div>
+
+    <h2>Sleeve Search Tool</h2>
+
+    <label for="type">Sleeve Type:</label>
+    <select id="type">
+        <option value="">All</option>
+        <option value="wieloklin">Spline</option>
+        <option value="klin">Keyed</option>
+    </select>
+
+    <label for="L1">L1:</label>
+    <input type="number" id="L1" placeholder="Enter L1" disabled>
+
+    <label for="L2">L2:</label>
+    <input type="number" id="L2" placeholder="Enter L2" disabled>
+
+    <label for="N">N:</label>
+    <input type="number" id="N" placeholder="Enter N" disabled>
+
+    <label for="Dei">Dei:</label>
+    <input type="number" id="Dei" placeholder="Enter Dei">
+
+    <label for="H2">H2:</label>
+    <input type="number" id="H2" placeholder="Enter H2">
+
+    <button onclick="filterData()">Search</button>
+
+    <table id="results">
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>L1</th>
+                <th>L2</th>
+                <th>N</th>
+                <th>Dei</th>
+                <th>H2</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        const data = [
+            {"Index": "0#", "L1": "-", "L2": "-", "N": "40.0", "Dei": "17.56", "H2": "75"},
+			{"Index": "41#", "L1": "4.8", "L2": "22.85", "N": "-", "Dei": "-", "H2": "100"},
+			{"Index": "48#", "L1": "5.0", "L2": "18.5", "N": "-", "Dei": "-", "H2": "125"},
+			{"Index": "47#", "L1": "5.0", "L2": "18.5", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "51#", "L1": "5.0", "L2": "19.0", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "56#", "L1": "5.0", "L2": "22.95", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "38#", "L1": "5.0", "L2": "23.2", "N": "-", "Dei": "-", "H2": "100"},
+			{"Index": "24#", "L1": "5.0", "L2": "23.4", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "59#", "L1": "5.0", "L2": "24.2", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "21#", "L1": "5.0", "L2": "24.35", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "42#", "L1": "5.1", "L2": "16.68", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "43#", "L1": "5.2", "L2": "23.07", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "10#", "L1": "5.31", "L2": "26.255", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "25#", "L1": "6.0", "L2": "18.5", "N": "-", "Dei": "-", "H2": "75"},
+			{"Index": "11#", "L1": "-", "L2": "-", "N": "18.0", "Dei": "15.0", "H2": "105"},
+			{"Index": "7#", "L1": "-", "L2": "-", "N": "18.0", "Dei": "15.0", "H2": "75"},
+			{"Index": "68#", "L1": "-", "L2": "-", "N": "18.0", "Dei": "15.0", "H2": "91"},
+			{"Index": "53#", "L1": "-", "L2": "-", "N": "24.0", "Dei": "20.4", "H2": "85"},
+			{"Index": "35#", "L1": "-", "L2": "-", "N": "28.0", "Dei": "18.2", "H2": "75"},
+			{"Index": "8#", "L1": "-", "L2": "-", "N": "30.0", "Dei": "15.3", "H2": "65"},
+			{"Index": "23#", "L1": "-", "L2": "-", "N": "32.0", "Dei": "16.6", "H2": "68"},
+			{"Index": "58#", "L1": "-", "L2": "-", "N": "33.0", "Dei": "16.13", "H2": "75"},
+			{"Index": "67#", "L1": "-", "L2": "-", "N": "33.0", "Dei": "16.13", "H2": "75"},
+			{"Index": "71#", "L1": "-", "L2": "-", "N": "34.0", "Dei": "16.2", "H2": "75"},
+			{"Index": "55#", "L1": "-", "L2": "-", "N": "34.0", "Dei": "23.9", "H2": "75"},
+			{"Index": "13#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.752", "H2": "75"},
+			{"Index": "31#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.752", "H2": "75"},
+			{"Index": "60#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.752", "H2": "75"},
+			{"Index": "65#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.752", "H2": "80"},
+			{"Index": "14#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.697", "H2": "75"},
+			{"Index": "52#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.697", "H2": "90"},
+			{"Index": "15#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.875", "H2": "105"},
+			{"Index": "9#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.875", "H2": "65"},
+			{"Index": "6#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.875", "H2": "75"},
+			{"Index": "72#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.875", "H2": "77"},
+			{"Index": "50#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "15.875", "H2": "90"},
+			{"Index": "16#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "17.5", "H2": "105"},
+			{"Index": "27#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "17.5", "H2": "75"},
+			{"Index": "19#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "17.775", "H2": "75"},
+			{"Index": "1#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "18.15", "H2": "75"},
+			{"Index": "46#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "18.15", "H2": "75"},
+			{"Index": "2#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "18.6", "H2": "75"},
+			{"Index": "17#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "18.6", "H2": "75"},
+			{"Index": "37#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "19.2", "H2": "75"},
+			{"Index": "33#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "19.3", "H2": "75"},
+			{"Index": "34#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "19.3", "H2": "75"},
+			{"Index": "28#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.42", "H2": "75"},
+			{"Index": "36#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.42", "H2": "75"},
+			{"Index": "26#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "20.752", "H2": "105"},
+			{"Index": "54#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "21.0", "H2": "75"},
+			{"Index": "22#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "22.1", "H2": "105"},
+			{"Index": "4#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "22.1", "H2": "75"},
+			{"Index": "70#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "22.1", "H2": "75"},
+			{"Index": "66#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "22.1", "H2": "85"},
+			{"Index": "3#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "22.4", "H2": "75"},
+			{"Index": "5#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "22.4", "H2": "75"},
+			{"Index": "57#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "24.63", "H2": "75"},
+			{"Index": "62#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "24.8", "H2": "75"},
+			{"Index": "69#", "L1": "-", "L2": "-", "N": "36.0", "Dei": "24.81", "H2": "75"},
+			{"Index": "40#", "L1": "-", "L2": "-", "N": "40.0", "Dei": "17.56", "H2": "75"},
+			{"Index": "64#", "L1": "-", "L2": "-", "N": "40.0", "Dei": "17.6", "H2": "75"},
+			{"Index": "39#", "L1": "-", "L2": "-", "N": "40.0", "Dei": "17.704", "H2": "100"},
+			{"Index": "18#", "L1": "-", "L2": "-", "N": "40.0", "Dei": "17.704", "H2": "75"},
+			{"Index": "12#", "L1": "-", "L2": "-", "N": "40.0", "Dei": "17.76", "H2": "75"},
+			{"Index": "20#", "L1": "-", "L2": "-", "N": "48.0", "Dei": "19.3", "H2": "75"},
+			{"Index": "44#", "L1": "-", "L2": "-", "N": "48.0", "Dei": "19.3", "H2": "75"},
+			{"Index": "49#", "L1": "-", "L2": "-", "N": "48.0", "Dei": "22.3", "H2": "75"}
+        ];
+
+        function filterData() {
+            const type = document.getElementById("type").value;
+            const L1 = parseFloat(document.getElementById("L1").value) || null;
+            const L2 = parseFloat(document.getElementById("L2").value) || null;
+            const N = parseFloat(document.getElementById("N").value) || null;
+            const Dei = parseFloat(document.getElementById("Dei").value) || null;
+            const H2 = parseFloat(document.getElementById("H2").value) || null;
+
+            let filtered = data.filter(item => {
+                if (type === "wieloklin" && item.N === "-") return false;
+                if (type === "klin" && item.L1 === "-") return false;
+                return (
+                    (L1 === null || item.L1 == L1) &&
+                    (L2 === null || item.L2 == L2) &&
+                    (N === null || item.N == N) &&
+                    (Dei === null || item.Dei == Dei) &&
+                    (H2 === null || item.H2 == H2)
+                );
+            });
+
+            const tbody = document.querySelector("#results tbody");
+            tbody.innerHTML = "";
+
+            filtered.forEach(item => {
+                const row = `<tr>
+                    <td>${item.Index}</td>
+                    <td>${item.L1 !== "-" ? item.L1 : "-"}</td>
+                    <td>${item.L2 !== "-" ? item.L2 : "-"}</td>
+                    <td>${item.N !== "-" ? item.N : "-"}</td>
+                    <td>${item.Dei !== "-" ? item.Dei : "-"}</td>
+                    <td>${item.H2 !== "-" ? item.H2 : "-"}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        document.getElementById("type").addEventListener("change", function() {
+            const type = this.value;
+            document.getElementById("L1").disabled = type !== "klin";
+            document.getElementById("L2").disabled = type !== "klin";
+            document.getElementById("N").disabled = type !== "wieloklin";
+        });
+
+        window.onload = filterData;
+    </script>
+
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
+</body>
+</html>
