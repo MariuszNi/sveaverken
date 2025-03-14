@@ -177,42 +177,6 @@
         tbody.innerHTML += row;
     });
 }
-function filterData() {
-            const type = document.getElementById("type").value;
-            const L1 = parseFloat(document.getElementById("L1").value) || null;
-            const L2 = parseFloat(document.getElementById("L2").value) || null;
-            const N = parseFloat(document.getElementById("N").value) || null;
-            const Dei = parseFloat(document.getElementById("Dei").value) || null;
-            const H2 = parseFloat(document.getElementById("H2").value) || null;
-
-            let filtered = data.filter(item => {
-                if (type === "wieloklin" && item.N === "-") return false;
-                if (type === "klin" && item.L1 === "-") return false;
-                return (
-                    (L1 === null || item.L1 == L1) &&
-                    (L2 === null || item.L2 == L2) &&
-                    (N === null || item.N == N) &&
-                    (Dei === null || item.Dei == Dei) &&
-                    (H2 === null || item.H2 == H2)
-                );
-            });
-
-            const tbody = document.querySelector("#results tbody");
-            tbody.innerHTML = "";
-
-            filtered.forEach(item => {
-                const row = `<tr>
-                    <td>${item.Index}</td>
-                    <td>${item.L1 !== "-" ? item.L1 : "-"}</td>
-                    <td>${item.L2 !== "-" ? item.L2 : "-"}</td>
-                    <td>${item.N !== "-" ? item.N : "-"}</td>
-                    <td>${item.Dei !== "-" ? item.Dei : "-"}</td>
-                    <td>${item.H2 !== "-" ? item.H2 : "-"}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-        }
-
         document.getElementById("type").addEventListener("change", function() {
             const type = this.value;
             document.getElementById("L1").disabled = type !== "klin";
