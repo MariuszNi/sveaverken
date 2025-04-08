@@ -8,6 +8,88 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        :root {
+            --main-blue: #0076bd;
+            --light-gray: #f4f4f4;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: var(--main-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        main {
+            padding: 30px 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        h2 {
+            color: var(--main-blue);
+        }
+        #filter-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: var(--light-gray);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        li a {
+            color: #0076bd;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        li a:hover {
+            text-decoration: underline;
+        }
+        li img {
+            vertical-align: middle;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+        button {
+            background-color: var(--main-blue);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #005a96;
+        }
+        footer {
+            background-color: #eee;
+            text-align: center;
+            padding: 15px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
         body { font-family: Arial, sans-serif; padding: 20px; }
         header, footer { margin-bottom: 20px; }
         #filter-input { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
@@ -74,48 +156,31 @@
         }
 
         function exportVisibleListToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    let y = 10;
-    const margin = 10;
-    const lineHeight = 10;
-    const pageHeight = doc.internal.pageSize.height;
-
-    document.querySelectorAll('#video-list li a').forEach(link => {
-        const text = link.textContent.trim();
-        const href = link.href;
-        const fullLine = `${text} - ${href}`;
-
-        if (y + lineHeight > pageHeight - margin) {
-            doc.addPage();
-            y = margin;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 10;
+            document.querySelectorAll('#video-list li').forEach(li => {
+                if (li.style.display !== 'none') {
+                    doc.text(li.textContent.trim(), 10, y);
+                    y += 10;
+                }
+            });
+            doc.save("ListaFilmow.pdf");
         }
 
-        doc.text(fullLine, margin, y);
-        y += lineHeight;
-    });
-
-    doc.save("ListaFilmow.pdf");
-}
-
-
-
         function exportVisibleListToExcel() {
-    const wb = XLSX.utils.book_new();
-    const ws_data = [["Tytuł", "Link"]]; // Nagłówki
-
-    document.querySelectorAll('#video-list li a').forEach(link => {
-        const title = link.textContent.trim();
-        const href = link.href;
-        ws_data.push([title, href]);
-    });
-
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    XLSX.utils.book_append_sheet(wb, ws, "Filmy");
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'ListaFilmow.xlsx');
-}
-
+            const wb = XLSX.utils.book_new();
+            const ws_data = [];
+            document.querySelectorAll('#video-list li').forEach(li => {
+                if (li.style.display !== 'none') {
+                    ws_data.push([li.textContent.trim()]);
+                }
+            });
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            XLSX.utils.book_append_sheet(wb, ws, "Filmy");
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'ListaFilmow.xlsx');
+        }
 
         function filterVideos() {
             const val = document.getElementById('filter-input').value.toLowerCase();
