@@ -115,7 +115,46 @@
             datalist.innerHTML = suggestions.map(s => `<option value="${s}">`).join('');
         });
 
-        document.addEventListener('DOMContentLoaded', () => loadData(sampleData));
+        
+        const listsToLoad = [
+            { id: 'video-list', url: 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista1.xlsx' },
+            { id: 'video-list', url: 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista2.xlsx' },
+            { id: 'video-list', url: 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista3.xls' }
+        ];
+
+        async function loadExcelData(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Błąd pobierania: ' + url);
+                const data = await response.arrayBuffer();
+                const wb = XLSX.read(data, { type: 'array' });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+                return jsonData;
+            } catch (error) {
+                console.error(error);
+                return [];
+            }
+        }
+
+        async function loadAllExcelLists() {
+            for (const { id, url } of listsToLoad) {
+                const data = await loadExcelData(url);
+                data.slice(1).forEach(([title, url]) => {
+                    if (title && url) {
+                        if (!allTitles.includes(title)) allTitles.push(title);
+                        const li = document.createElement('li');
+                        const isYoutube = url.includes("youtube.com");
+                        const thumb = isYoutube ? `<img src="https://img.youtube.com/vi/${getYoutubeID(url)}/0.jpg">` : '';
+                        li.innerHTML = `<a href="${url}" target="_blank">${thumb}${title}</a>`;
+                        listElement.appendChild(li);
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAllExcelLists);
+
     </script>
 </body>
 </html>
