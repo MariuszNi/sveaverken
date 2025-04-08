@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista Adapterów Spline Sleeve</title>
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
@@ -52,13 +51,18 @@
         header img {
             height: 50px;
         }
+
+        #google_translate_element {
+            margin-left: auto;
+            padding: 10px;
+        }
     </style>
     <script>
         let fullData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             loadExcelData('spline_sleeves', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx');
-            translatePageToBrowserLanguage();
+            autoTranslateToBrowserLanguage();
         });
 
         async function loadExcelData(listId, url) {
@@ -109,11 +113,10 @@
                     displayTableData(filteredData);
                 });
 
-                // domyślnie pokaż wszystko
-                displayTableData(fullData);
+                displayTableData(fullData); // domyślnie pokaż wszystko
 
             } catch (error) {
-                showError('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
+                alert('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
             }
         }
 
@@ -147,26 +150,28 @@
         }
 
         function googleTranslateElementInit() {
-            new google.translate.TranslateElement({ pageLanguage: 'pl' }, 'google_translate_element');
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
         }
 
-        function translatePageToBrowserLanguage() {
+        function autoTranslateToBrowserLanguage() {
             const lang = navigator.language || navigator.userLanguage;
-            if (lang && lang.startsWith('pl')) return;
+            if (!lang || lang.startsWith('pl')) return;
 
-            const observer = new MutationObserver(() => {
-                const iframe = document.querySelector('iframe.goog-te-banner-frame');
-                if (iframe) iframe.style.display = 'none';
-            });
-            observer.observe(document.body, { childList: true, subtree: true });
-
-            const select = setInterval(() => {
-                const frame = document.querySelector('select.goog-te-combo');
-                if (frame) {
-                    frame.value = lang.substring(0, 2);
-                    frame.dispatchEvent(new Event('change'));
-                    clearInterval(select);
+            const trySetLang = () => {
+                const select = document.querySelector('select.goog-te-combo');
+                if (select && select.options.length > 1) {
+                    select.value = lang.substring(0, 2);
+                    select.dispatchEvent(new Event('change'));
+                    return true;
                 }
+                return false;
+            };
+
+            const interval = setInterval(() => {
+                if (trySetLang()) clearInterval(interval);
             }, 500);
         }
     </script>
