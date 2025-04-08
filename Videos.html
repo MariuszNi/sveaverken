@@ -77,17 +77,27 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     let y = 10;
+    const margin = 10;
+    const lineHeight = 10;
+    const pageHeight = doc.internal.pageSize.height;
 
     document.querySelectorAll('#video-list li a').forEach(link => {
         const text = link.textContent.trim();
         const href = link.href;
-        const line = `${text} - ${href}`;
-        doc.text(line, 10, y);
-        y += 10;
+        const fullLine = `${text} - ${href}`;
+
+        if (y + lineHeight > pageHeight - margin) {
+            doc.addPage();
+            y = margin;
+        }
+
+        doc.text(fullLine, margin, y);
+        y += lineHeight;
     });
 
     doc.save("ListaFilmow.pdf");
 }
+
 
 
         function exportVisibleListToExcel() {
