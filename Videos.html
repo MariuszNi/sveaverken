@@ -74,31 +74,38 @@
         }
 
         function exportVisibleListToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let y = 10;
-            document.querySelectorAll('#video-list li').forEach(li => {
-                if (li.style.display !== 'none') {
-                    doc.text(li.textContent.trim(), 10, y);
-                    y += 10;
-                }
-            });
-            doc.save("ListaFilmow.pdf");
-        }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 10;
+
+    document.querySelectorAll('#video-list li a').forEach(link => {
+        const text = link.textContent.trim();
+        const href = link.href;
+        const line = `${text} - ${href}`;
+        doc.text(line, 10, y);
+        y += 10;
+    });
+
+    doc.save("ListaFilmow.pdf");
+}
+
 
         function exportVisibleListToExcel() {
-            const wb = XLSX.utils.book_new();
-            const ws_data = [];
-            document.querySelectorAll('#video-list li').forEach(li => {
-                if (li.style.display !== 'none') {
-                    ws_data.push([li.textContent.trim()]);
-                }
-            });
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
-            XLSX.utils.book_append_sheet(wb, ws, "Filmy");
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'ListaFilmow.xlsx');
-        }
+    const wb = XLSX.utils.book_new();
+    const ws_data = [["Tytuł", "Link"]]; // Nagłówki
+
+    document.querySelectorAll('#video-list li a').forEach(link => {
+        const title = link.textContent.trim();
+        const href = link.href;
+        ws_data.push([title, href]);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    XLSX.utils.book_append_sheet(wb, ws, "Filmy");
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'ListaFilmow.xlsx');
+}
+
 
         function filterVideos() {
             const val = document.getElementById('filter-input').value.toLowerCase();
