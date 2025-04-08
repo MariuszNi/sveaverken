@@ -1,190 +1,121 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <title>Lista Filmów - Sveaverken</title>
-    <link rel="stylesheet" href="styles.css">
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'pl',
-                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr', 
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false // Disable the auto-display widget
-            }, 'google_translate_element');
-        }
-
-        function translatePageToBrowserLanguage() {
-            var userLang = navigator.language || navigator.userLanguage; 
-            userLang = userLang.split('-')[0]; // Get language code (e.g., 'en' from 'en-US')
-            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl'];
-            if (supportedLanguages.includes(userLang)) {
-                if (userLang !== 'pl') { // Skip if it's Polish, as the default is Polish
-                    var translateElement = new google.translate.TranslateElement({
-                        pageLanguage: 'pl',
-                        includedLanguages: supportedLanguages.join(','),
-                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                        autoDisplay: false
-                    }, 'google_translate_element');
-
-                    setTimeout(function () {
-                        var iframe = document.querySelector('.goog-te-banner-frame');
-                        if (iframe) {
-                            var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                            var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                            if (langSelect) {
-                                langSelect.click();
-                                var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']');
-                                if (langToClick) {
-                                    langToClick.click();
-                                }
-                            }
-                        }
-                    }, 1000);
-                }
-            } else {
-                // Default to English if the user's language is not supported
-                var translateElement = new google.translate.TranslateElement({
-                    pageLanguage: 'pl',
-                    includedLanguages: supportedLanguages.join(','),
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                    autoDisplay: false
-                }, 'google_translate_element');
-
-                setTimeout(function () {
-                    var iframe = document.querySelector('.goog-te-banner-frame');
-                    if (iframe) {
-                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-                        if (langSelect) {
-                            langSelect.click();
-                            var langToClick = innerDoc.querySelector('a[lang=en]');
-                            if (langToClick) {
-                                langToClick.click();
-                            }
-                        }
-                    }
-                }, 1000);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', translatePageToBrowserLanguage);
-    </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        header, footer { margin-bottom: 20px; }
+        #filter-input { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 5px 0; }
+        li img { vertical-align: middle; height: 40px; margin-right: 10px; }
+        button { margin-right: 10px; padding: 5px 10px; }
+    </style>
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="Sveaverken Logo">
-        <div id="google_translate_element" style="float: left;"></div>
+        <h1>Lista Filmów Sveaverken</h1>
+        <input type="text" id="filter-input" placeholder="Filtruj filmy..." list="autocomplete-datalist">
     </header>
     <main>
+        <button onclick="exportVisibleListToExcel()">📥 Eksportuj do Excel</button>
+        <button onclick="exportVisibleListToPDF()">📄 Eksportuj do PDF</button>
         <section id="video-list-section">
-            <h1>Wyszukaj film</h1>
-            <input type="text" id="filter-input" placeholder="Filtruj filmy..." onkeyup="filterVideos()">
-            <div id="video-list-1">
-                <h2>Lista Filmów w języku Angielskim</h2>
-                <ul></ul>
-            </div>
-            <div id="video-list-2">
-                <h2>Lista Filmów w języku Polskim</h2>
-                <ul></ul>
-            </div>
-            <div id="video-list-3">
-                <h2>Lista Filmów w języku Angielskim i Tureckim</h2>
-                <ul></ul>
-            </div>
-            <div id="video-list-4">
-                <h2>Lista Filmów Angielskim</h2>
-                <ul></ul>
-            </div>
-            
+            <ul id="video-list"></ul>
+        </section>
+        <section id="youtube-channels">
+            <h2>Nasze kanały YouTube</h2>
+            <ul>
+                <li><a href="https://www.youtube.com/@Sveaverken-FAE" target="_blank">📺 Sveaverken FAE</a></li>
+                <li><a href="https://www.youtube.com/@Sveaverken-Global" target="_blank">🌍 Sveaverken Global</a></li>
+                <li><a href="https://www.youtube.com/@SveaF100" target="_blank">🧭 Svea F100</a></li>
+                <li><a href="https://www.youtube.com/@dinomey" target="_blank">🎮 Dinomey</a></li>
+                <li><a href="https://www.youtube.com/@EvelynLin-yolo" target="_blank">🚜 Evelyn Lin - Yolo</a></li>
+                <li><a href="https://www.youtube.com/@sveaverkenabjudyzhu1339" target="_blank">📡 Judy Zhu - Sveaverken AB</a></li>
+            </ul>
         </section>
     </main>
     <footer>
         <p>&copy; 2024 Sveaverken</p>
     </footer>
+    <datalist id="autocomplete-datalist"></datalist>
     <script>
-        async function loadExcelData(listId, url) {
-            try {
-                console.log('Pobieranie pliku Excel z URL:', url);
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
-                }
-                const data = await response.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array' });
+        let allTitles = [];
+        const listElement = document.getElementById('video-list');
 
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        const sampleData = [
+            ["Film 1", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
+            ["Film 2", "https://www.youtube.com/watch?v=3JZ_D3ELwOQ"],
+            ["Film 3", "https://example.com/nonyoutube"]
+        ];
 
-                console.log('Dane JSON:', jsonData);
-
-                const listElement = document.querySelector(`#${listId} ul`);
-                listElement.innerHTML = ''; // Clear existing list items
-
-                jsonData.slice(1).forEach(row => {
-                    const [title, url] = row;
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<a href="${url}" target="_blank">${title}</a>`;
-                    listElement.appendChild(listItem);
-                });
-
-                console.log(`Lista filmów załadowana dla ${listId}`);
-            } catch (error) {
-                console.error(`Błąd ładowania danych z pliku Excel (${listId}):`, error);
-                showError(`Wystąpił błąd podczas ładowania danych z pliku Excel (${listId}): ` + error.message);
-            }
+        function getYoutubeID(url) {
+            const match = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
+            return match ? match[1] : '';
         }
 
-        function filterVideos() {
-            const filterInput = document.getElementById('filter-input');
-            const filterValue = filterInput.value.toLowerCase();
-            const lists = document.querySelectorAll('#video-list-section ul');
-
-            lists.forEach(list => {
-                const items = list.getElementsByTagName('li');
-                Array.from(items).forEach(item => {
-                    const text = item.textContent || item.innerText;
-                    if (text.toLowerCase().includes(filterValue)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+        function loadData(data) {
+            const sortedData = data.sort((a, b) => a[0].localeCompare(b[0]));
+            sortedData.forEach(([title, url]) => {
+                if (title && url) {
+                    if (!allTitles.includes(title)) allTitles.push(title);
+                    const li = document.createElement('li');
+                    const isYoutube = url.includes("youtube.com");
+                    const thumb = isYoutube ? `<img src="https://img.youtube.com/vi/${getYoutubeID(url)}/0.jpg">` : '';
+                    li.innerHTML = `<a href="${url}" target="_blank">${thumb}${title}</a>`;
+                    listElement.appendChild(li);
+                }
             });
         }
 
-        function showError(message) {
-            const errorDialog = document.createElement('div');
-            errorDialog.className = 'error-dialog';
-            errorDialog.innerHTML = `<p>${message}</p><button onclick="this.parentElement.remove()">Zamknij</button>`;
-            document.body.appendChild(errorDialog);
+        function exportVisibleListToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 10;
+            document.querySelectorAll('#video-list li').forEach(li => {
+                if (li.style.display !== 'none') {
+                    doc.text(li.textContent.trim(), 10, y);
+                    y += 10;
+                }
+            });
+            doc.save("ListaFilmow.pdf");
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadExcelData('video-list-1', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista1.xlsx');
-            loadExcelData('video-list-2', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista2.xlsx');
-            loadExcelData('video-list-3', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista3.xlsx');
-            loadExcelData('video-list-4', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista4.xlsx');
-            
+        function exportVisibleListToExcel() {
+            const wb = XLSX.utils.book_new();
+            const ws_data = [];
+            document.querySelectorAll('#video-list li').forEach(li => {
+                if (li.style.display !== 'none') {
+                    ws_data.push([li.textContent.trim()]);
+                }
+            });
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+            XLSX.utils.book_append_sheet(wb, ws, "Filmy");
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'ListaFilmow.xlsx');
+        }
+
+        function filterVideos() {
+            const val = document.getElementById('filter-input').value.toLowerCase();
+            document.querySelectorAll('#video-list li').forEach(li => {
+                li.style.display = li.textContent.toLowerCase().includes(val) ? '' : 'none';
+            });
+        }
+
+        document.getElementById('filter-input').addEventListener('input', function () {
+            filterVideos();
+            const val = this.value.toLowerCase();
+            const suggestions = allTitles.filter(t => t.toLowerCase().includes(val)).slice(0, 10);
+            const datalist = document.getElementById('autocomplete-datalist');
+            datalist.innerHTML = suggestions.map(s => `<option value="${s}">`).join('');
         });
+
+        document.addEventListener('DOMContentLoaded', () => loadData(sampleData));
     </script>
-    <style>
-        .error-dialog {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            border: 2px solid red;
-            padding: 20px;
-            z-index: 1000;
-        }
-        .error-dialog p {
-            margin: 0 0 10px;
-        }
-    </style>
 </body>
 </html>
