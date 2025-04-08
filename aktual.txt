@@ -1,4 +1,4 @@
-13-03-2025 - oficjalnie mamy nową werję oprogramowania.
+07-04-2025 - oficjalnie mamy nową werję oprogramowania V24.102.3(G00) 2025 Spring Version
 12-01-2025 - dostepna jest wersja BETA oprogramowanie przeznaczona do testów. Chętni powinni zgłaszać się do FAE ze swojego regionu. SVEA V24.102.3 (G00_Trial). Wersja ta przeznaczona jest do F100, F100H (steer ready CANBUS, NON-CAN), and F200
 - Nowa linia kombinowana
 - Dodano Baseline Create Rename (domyślnie wyłączone)
