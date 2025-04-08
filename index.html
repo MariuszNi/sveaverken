@@ -47,40 +47,44 @@
 </head>
 <body onload="translatePageToBrowserLanguage()">
     
-<header style="background-color: #003366; color: white; padding: 20px;">
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 40px; max-width: 1200px; margin: 0 auto;">
+<header style="background-color: #003366; color: white; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 40px;">
 
-        <!-- Kolumna lewa: logo i obraz -->
+        <!-- Lewa kolumna: logo + obrazek -->
         <div style="flex: 1; min-width: 300px; text-align: center;">
-            <img src="logo.png" alt="Sveaverken Logo" style="max-width: 150px; height: auto; display: block; margin: 0 auto;">
-            <img src="SVEA F100.webp" alt="SVEA F100" style="max-width: 100%; height: auto; margin-top: 20px;">
+            <img src="logo.png" alt="Sveaverken Logo" style="max-width: 160px; height: auto; margin-bottom: 20px;">
+            <div style="background-color: white; padding: 10px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.3);">
+                <img src="SVEA F100.webp" alt="SVEA F100" style="max-width: 100%; height: auto; border-radius: 8px;">
+            </div>
         </div>
 
-        <!-- Kolumna prawa: tekst z wersjami -->
-        <div style="flex: 1; min-width: 300px; text-align: left;">
-            <strong style="font-size: 20px;">Aktualna wersja oprogramowania</strong><br><br>
-            <p><strong>APP:</strong> 24.102.3.24</p>
-            <p><strong>ECU1 old:</strong> 3.0.5.3</p>
-            <p><strong>ECU2 new:</strong> 103.0.4.12</p>
-            <p><strong>IMU:</strong> 3.0.0.79</p>
-            <p><strong>Motor old:</strong> 1.1.13.9</p>
-            <p><strong>Motor NEW:</strong> 2.1.1.8</p>
-            <p><strong>Board L1 old:</strong> 23005</p>
-            <p><strong>Board L3 new:</strong> 11491</p>
-            <p><strong>System:</strong> 202501081622</p>
-            <p><strong>Radio 1:</strong> J017.00.05.0</p>
-            <p><strong>Radio 2:</strong> 35.0.0.0</p><br>
-
-            <p>
-                <a href="https://drive.google.com/open?id=1uJQWm-xcmF6pWdEW7Yk3eFrCqWcOeGNa&usp=drive_fs" 
-                   target="_blank" 
-                   style="font-size: 20px; font-weight: bold; color: white; text-decoration: none;">
-                    Release note
-                </a>
-            </p>
+        <!-- Prawa kolumna: informacje o wersjach -->
+        <div style="flex: 1; min-width: 300px;">
+            <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px;">Aktualna wersja oprogramowania</h2>
+            <div style="background-color: #004080; padding: 20px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.2);">
+                <p><strong>APP:</strong> 24.102.3.24</p>
+                <p><strong>ECU1 old:</strong> 3.0.5.3</p>
+                <p><strong>ECU2 new:</strong> 103.0.4.12</p>
+                <p><strong>IMU:</strong> 3.0.0.79</p>
+                <p><strong>Motor old:</strong> 1.1.13.9</p>
+                <p><strong>Motor NEW:</strong> 2.1.1.8</p>
+                <p><strong>Board L1 old:</strong> 23005</p>
+                <p><strong>Board L3 new:</strong> 11491</p>
+                <p><strong>System:</strong> 202501081622</p>
+                <p><strong>Radio 1:</strong> J017.00.05.0</p>
+                <p><strong>Radio 2:</strong> 35.0.0.0</p>
+                <p style="text-align: center; margin-top: 20px;">
+                    <a href="https://drive.google.com/open?id=1uJQWm-xcmF6pWdEW7Yk3eFrCqWcOeGNa&usp=drive_fs" 
+                       target="_blank" 
+                       style="font-size: 20px; font-weight: bold; color: white; text-decoration: underline;">
+                        Release note
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 </header>
+
 
 
     <main>
