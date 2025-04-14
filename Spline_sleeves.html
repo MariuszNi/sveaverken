@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Lista Adapterów Spline Sleeve</title>
@@ -55,6 +55,10 @@
             margin-left: auto;
             padding: 10px;
         }
+
+        .highlight {
+            background-color: #ffeaa7 !important;
+        }
     </style>
     <script>
         let fullData = [];
@@ -80,10 +84,10 @@
 
                 jsonData.slice(1).forEach(row => {
                     if (row[3]) {
-                        row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
+                        row[3].split(',').forEach(brand => adaptedBrands.add(String(brand).trim()));
                     }
                     if (row[5] != null) {
-                       seriesList.add(String(row[5]).trim());
+                        seriesList.add(String(row[5]).trim());
                     }
 
                     fullData.push({
@@ -127,17 +131,30 @@
             const series = document.getElementById('series-input').value.trim().toLowerCase();
 
             const filtered = fullData.filter(row => {
-                const brandMatch = !brand || (
+                return !brand || (
                     row.adaptedBrand &&
                     row.adaptedBrand.split(',').map(b => b.trim().toLowerCase()).includes(brand)
                 );
-                const seriesMatch = !series || (
-                    row.series && row.series.trim().toLowerCase() === series
-                );
-                return brandMatch && seriesMatch;
             });
 
             displayTableData(filtered);
+
+            if (series) {
+                highlightSeriesMatches(series);
+            }
+        }
+
+        function highlightSeriesMatches(seriesValue) {
+            const rows = document.querySelectorAll('#data-table-body tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                const seriesCell = cells[4];
+                if (seriesCell && seriesCell.textContent.trim().toLowerCase() === seriesValue) {
+                    row.classList.add('highlight');
+                } else {
+                    row.classList.remove('highlight');
+                }
+            });
         }
 
         function displayTableData(data) {
@@ -211,7 +228,7 @@
             <input list="brands" id="brand-input" placeholder="Wpisz markę..." autocomplete="off">
             <datalist id="brands"></datalist>
 
-            <label for="series-input">Filtruj po serii:</label>
+            <label for="series-input">Filtruj po serii (podświetlenie):</label>
             <input list="series" id="series-input" placeholder="Wpisz serię..." autocomplete="off">
             <datalist id="series"></datalist>
 
