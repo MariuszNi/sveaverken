@@ -82,8 +82,8 @@
                     if (row[3]) {
                         row[3].split(',').forEach(brand => adaptedBrands.add(brand.trim()));
                     }
-                    if (row[5]) {
-                        seriesList.add(row[5].trim());
+                    if (row[5] != null) {
+                       seriesList.add(String(row[5]).trim());
                     }
 
                     fullData.push({
