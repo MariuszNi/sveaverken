@@ -165,7 +165,7 @@ footer { margin-bottom: 20px; }
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
       pageLanguage: 'pl',
-      includedLanguages: 'en,pl,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,hu,tr',
+      includedLanguages: 'en,pl,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,hu,tr,cz,sk',
       layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
       autoDisplay: false
     }, 'google_translate_element');
@@ -174,7 +174,7 @@ footer { margin-bottom: 20px; }
   function translatePageToBrowserLanguage() {
     var userLang = navigator.language || navigator.userLanguage;
     userLang = userLang.split('-')[0];
-    var supported = ['en','pl','es','zh-CN','fr','de','pt','ru','ja','ko','it','nl','ar','hi','bn','id','tr'];
+    var supported = ['en','pl','es','zh-CN','fr','de','pt','ru','ja','ko','it','nl','ar','hi','bn','id','hu','cz','sk','tr'];
     var langToUse = supported.includes(userLang) ? userLang : 'en';
 
     var interval = setInterval(function () {
