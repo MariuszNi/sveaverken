@@ -83,7 +83,7 @@
   <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
   <script>
-    const proxy = url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const proxy = url => `https://corsproxy.io/?${encodeURIComponent(url)}`;
 
     async function fetchSolarStatus() {
       const container = document.getElementById("solar-status-container");
@@ -148,6 +148,18 @@
     }
 
     fetchSolarStatus();
-  </script>
+  <script>
+  function translateTo(lang) {
+    const interval = setInterval(() => {
+      const select = document.querySelector("select.goog-te-combo");
+      if (select) {
+        select.value = lang;
+        select.dispatchEvent(new Event("change"));
+        clearInterval(interval);
+      }
+    }, 500);
+  }
+</script>
+
 </body>
 </html>
