@@ -16,7 +16,161 @@
       flex-wrap: wrap;
       gap: 20px;
       margin-top: 20px;
+    }<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Status aktywności słonecznej</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
     }
+
+    #solar-status-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .status-box {
+      flex: 1;
+      min-width: 250px;
+      padding: 16px;
+      border-radius: 12px;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .flag-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .flag {
+      width: 32px;
+      height: 22px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+
+    #google_translate_element {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="flag-container">
+    <img src="https://flagcdn.com/w40/pl.png" class="flag" onclick="translateTo('pl')" alt="Polski">
+    <img src="https://flagcdn.com/w40/gb.png" class="flag" onclick="translateTo('en')" alt="English">
+    <img src="https://flagcdn.com/w40/es.png" class="flag" onclick="translateTo('es')" alt="Español">
+    <img src="https://flagcdn.com/w40/de.png" class="flag" onclick="translateTo('de')" alt="Deutsch">
+    <img src="https://flagcdn.com/w40/fr.png" class="flag" onclick="translateTo('fr')" alt="Français">
+  </div>
+
+  <h1>Status aktywności słonecznej</h1>
+  <div id="solar-status-container">
+    <p>Ładowanie danych...</p>
+  </div>
+
+  <!-- Google Translate widget -->
+  <div id="google_translate_element"></div>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'pl',
+        includedLanguages: 'pl,en,es,de,fr',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+
+    function translateTo(lang) {
+      const select = document.querySelector("select.goog-te-combo");
+      if (select) {
+        select.value = lang;
+        select.dispatchEvent(new Event("change"));
+      }
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script>
+    const proxy = url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+
+    async function fetchSolarStatus() {
+      const container = document.getElementById("solar-status-container");
+
+      try {
+        const xrayRes = await fetch(proxy('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json'));
+        const xrayData = await xrayRes.json();
+        const latestXray = parseFloat(xrayData[xrayData.length - 1].flux);
+        let flareLevel = 'Brak danych', flareColor = 'gray';
+        if (latestXray < 1e-6) {
+          flareLevel = 'Bardzo niskie (klasa A)'; flareColor = '#8bc34a';
+        } else if (latestXray < 1e-5) {
+          flareLevel = 'Niskie (klasa B)'; flareColor = '#cddc39';
+        } else if (latestXray < 1e-4) {
+          flareLevel = 'Umiarkowane (klasa C)'; flareColor = '#ff9800';
+        } else if (latestXray < 1e-3) {
+          flareLevel = 'Wysokie (klasa M)'; flareColor = '#ff5722';
+        } else {
+          flareLevel = 'Ekstremalne (klasa X)'; flareColor = '#f44336';
+        }
+
+        const protonRes = await fetch(proxy('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json'));
+        const protonData = await protonRes.json();
+        const latestProton = parseFloat(protonData[protonData.length - 1].proton_flux);
+        let protonStatus = 'Brak danych', protonColor = 'gray';
+        if (latestProton < 1) {
+          protonStatus = 'Normalny'; protonColor = '#8bc34a';
+        } else if (latestProton < 10) {
+          protonStatus = 'Podwyższony'; protonColor = '#ffeb3b';
+        } else {
+          protonStatus = 'Silna burza protonowa'; protonColor = '#f44336';
+        }
+
+        const kpRes = await fetch(proxy('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json'));
+        const kpData = await kpRes.json();
+        const latestKp = parseFloat(kpData[kpData.length - 1].kp_index);
+        let kpLevel = '', kpColor = '';
+        if (latestKp < 4) {
+          kpLevel = `Niska (${latestKp})`; kpColor = '#8bc34a';
+        } else if (latestKp < 6) {
+          kpLevel = `Umiarkowana (${latestKp})`; kpColor = '#ffeb3b';
+        } else if (latestKp < 7) {
+          kpLevel = `Silna (${latestKp})`; kpColor = '#ff9800';
+        } else {
+          kpLevel = `Burza geomagnetyczna (${latestKp})`; kpColor = '#f44336';
+        }
+
+        container.innerHTML = `
+          <div class="status-box" style="background-color: ${flareColor}">
+            ☀️ <strong>Rozbłyski słoneczne:</strong><br>${flareLevel}
+          </div>
+          <div class="status-box" style="background-color: ${protonColor}">
+            🧨 <strong>Strumień protonów:</strong><br>${protonStatus}
+          </div>
+          <div class="status-box" style="background-color: ${kpColor}">
+            🧲 <strong>Indeks zakłóceń geomagnetycznych (Kp):</strong><br>${kpLevel}
+          </div>
+        `;
+      } catch (e) {
+        container.innerHTML = `<p style="color:red;">Błąd ładowania danych z NOAA. Spróbuj ponownie później.</p>`;
+        console.error(e);
+      }
+    }
+
+    fetchSolarStatus();
+  </script>
+</body>
+</html>
+
 
     .status-box {
       flex: 1;
