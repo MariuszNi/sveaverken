@@ -2,6 +2,8 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
     #kp-widget {
         background-color: #e0e0e0;
@@ -271,6 +273,12 @@ table tr:nth-child(even) {
             </div>
         </div>
         <section id="Mapa zakłóceń sygnału GPS">
+            <h2>Aktywność Słoneczna</h2>
+<div style="max-width: 1000px; margin: 0 auto;">
+    <canvas id="xrayChart" height="200"></canvas>
+    <canvas id="protonChart" height="200" style="margin-top: 40px;"></canvas>
+</div>
+
             <h2>Mapa zakłóceń sygnału GPS</h2>
             <ul>
                 <li><a href="https://www.flightradar24.com/data/gps-jamming" target="_blank">Mapa zakłóceń sygnału GPS</a></li>
@@ -529,5 +537,73 @@ table tr:nth-child(even) {
             }
         }
     </script>
+            <script>
+async function fetchXrayData() {
+    const response = await fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json');
+    const data = await response.json();
+    return data.map(entry => ({
+        time: new Date(entry.time_tag),
+        short: parseFloat(entry.flux),
+    }));
+}
+
+async function fetchProtonData() {
+    const response = await fetch('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json');
+    const data = await response.json();
+    return data.map(entry => ({
+        time: new Date(entry.time_tag),
+        flux: parseFloat(entry['proton_flux'] || 0),
+    }));
+}
+
+function createChart(ctx, label, data, color = 'rgba(255, 99, 132, 1)', log = false) {
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map(d => d.time.toLocaleTimeString()),
+            datasets: [{
+                label: label,
+                data: data.map(d => d[label === 'X-ray Flux' ? 'short' : 'flux']),
+                borderColor: color,
+                borderWidth: 1,
+                pointRadius: 0,
+                fill: false,
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    type: log ? 'logarithmic' : 'linear',
+                    beginAtZero: false
+                },
+                x: {
+                    ticks: {
+                        maxTicksLimit: 12
+                    }
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: label
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const xrayData = await fetchXrayData();
+    const protonData = await fetchProtonData();
+
+    createChart(document.getElementById('xrayChart'), 'X-ray Flux', xrayData, 'orange', true);
+    createChart(document.getElementById('protonChart'), 'Proton Flux', protonData, 'green', true);
+});
+</script>
+
 </body>
         </html>
