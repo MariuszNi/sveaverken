@@ -8,6 +8,7 @@
     body {
       font-family: sans-serif;
       padding: 20px;
+      background-color: #f5f5f5;
     }
 
     #solar-status-container {
@@ -35,12 +36,14 @@
   </div>
 
   <script>
+    const proxy = url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+
     async function fetchSolarStatus() {
       const container = document.getElementById("solar-status-container");
 
       try {
         // X-ray flux
-        const xrayRes = await fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json');
+        const xrayRes = await fetch(proxy('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json'));
         const xrayData = await xrayRes.json();
         const latestXray = parseFloat(xrayData[xrayData.length - 1].flux);
         let flareLevel = 'Brak danych', flareColor = 'gray';
@@ -57,7 +60,7 @@
         }
 
         // Proton flux
-        const protonRes = await fetch('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json');
+        const protonRes = await fetch(proxy('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json'));
         const protonData = await protonRes.json();
         const latestProton = parseFloat(protonData[protonData.length - 1].proton_flux);
         let protonStatus = 'Brak danych', protonColor = 'gray';
@@ -70,7 +73,7 @@
         }
 
         // Kp index
-        const kpRes = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+        const kpRes = await fetch(proxy('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json'));
         const kpData = await kpRes.json();
         const latestKp = parseFloat(kpData[kpData.length - 1].kp_index);
         let kpLevel = '', kpColor = '';
@@ -97,7 +100,7 @@
           </div>
         `;
       } catch (e) {
-        container.innerHTML = `<p style="color:red;">Błąd ładowania danych z NOAA. Sprawdź połączenie z internetem.</p>`;
+        container.innerHTML = `<p style="color:red;">Błąd ładowania danych z NOAA. Spróbuj ponownie później.</p>`;
         console.error(e);
       }
     }
