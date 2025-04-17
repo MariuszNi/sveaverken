@@ -2,6 +2,46 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <style>
+    #kp-widget {
+        background-color: #e0e0e0;
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin: 10px auto;
+        max-width: 400px;
+        font-family: sans-serif;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: background-color 0.5s ease;
+    }
+</style>
+
+<script>
+    function updateKpIndex() {
+        fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json')
+            .then(response => response.json())
+            .then(data => {
+                const last = data[data.length - 1];
+                const kp = parseFloat(last.kp_index).toFixed(1);
+                const box = document.getElementById('kp-widget');
+                box.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+
+                if (kp >= 7) {
+                    box.style.backgroundColor = '#e53935'; // czerwony
+                } else if (kp >= 6) {
+                    box.style.backgroundColor = '#ff9800'; // pomarańczowy
+                } else if (kp >= 5) {
+                    box.style.backgroundColor = '#ffeb3b'; // żółty
+                } else {
+                    box.style.backgroundColor = '#8bc34a'; // zielony
+                }
+            });
+    }
+
+    setInterval(updateKpIndex, 60000); // aktualizacja co 1 minutę
+    document.addEventListener('DOMContentLoaded', updateKpIndex);
+</script>
+
     <meta charset="UTF-8">
     <title>Sveaverken - Filmy i Instrukcje</title>
     <link rel="stylesheet" href="styles.css">
@@ -203,6 +243,8 @@ table tr:nth-child(even) {
 
 
     <main>
+        <div id="kp-widget">Ładowanie danych geomagnetycznych...</div>
+
         <div class="button-container">
     <button id="news-button" onclick="openPopup()">📰 Sprawdź najnowsze informacje</button>
 </div>
