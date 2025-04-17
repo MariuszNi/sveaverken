@@ -4,11 +4,7 @@
   <meta charset="UTF-8">
   <title>Status aktywności słonecznej</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f6f6f6;
-      padding: 20px;
-    }
+    body { font-family: Arial, sans-serif; background: #f6f6f6; padding: 20px; }
     .status-box {
       background: #fff;
       padding: 16px;
@@ -29,8 +25,10 @@
 <div id="google_translate_element" style="margin-bottom: 20px;"></div>
 
 <h1>Status aktywności słonecznej</h1>
-<div id="kp-box" class="status-box">Ładowanie danych...</div>
-<div id="error-box" class="error"></div>
+<div id="solar-status" class="status-box">Ładowanie danych...</div>
+<div id="xray-status" class="status-box">Ładowanie danych promieniowania rentgenowskiego...</div>
+<div id="proton-status" class="status-box">Ładowanie danych strumienia protonów...</div>
+<div id="error" class="error"></div>
 
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script>
@@ -42,31 +40,46 @@
     }, 'google_translate_element');
   }
 
-  async function loadKpIndex() {
-    const box = document.getElementById('kp-box');
-    const error = document.getElementById('error-box');
+  async function loadSolarStatus() {
+    const kpBox = document.getElementById('solar-status');
+    const xrayBox = document.getElementById('xray-status');
+    const protonBox = document.getElementById('proton-status');
+    const errorBox = document.getElementById('error');
 
     try {
-      const response = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
-      const data = await response.json();
-      const latest = data[data.length - 1];
-      const kp = parseFloat(latest.kp_index);
+      // Fetch Kp index
+      const kpResponse = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+      const kpData = await kpResponse.json();
+      const latestKp = kpData[kpData.length - 1];
+      const kp = parseFloat(latestKp.kp_index);
 
-      box.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+      kpBox.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+      kpBox.classList.remove("low", "moderate", "high", "extreme");
+      if (kp >= 7) kpBox.classList.add("extreme");
+      else if (kp >= 6) kpBox.classList.add("high");
+      else if (kp >= 5) kpBox.classList.add("moderate");
+      else kpBox.classList.add("low");
 
-      box.classList.remove("low", "moderate", "high", "extreme");
+      // Fetch X-ray flux
+      const xrayResponse = await fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json');
+      const xrayData = await xrayResponse.json();
+      const lastXray = xrayData[xrayData.length - 1];
+      xrayBox.innerText = `Promieniowanie rentgenowskie (X-ray flux): ${lastXray.flux}`;
+      xrayBox.style.backgroundColor = '#ffe0b2';
 
-      if (kp >= 7) box.classList.add("extreme");
-      else if (kp >= 6) box.classList.add("high");
-      else if (kp >= 5) box.classList.add("moderate");
-      else box.classList.add("low");
-    } catch (e) {
-      box.innerText = '';
-      error.innerText = 'Nie udało się pobrać danych z NOAA.';
+      // Fetch Proton flux
+      const protonResponse = await fetch('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json');
+      const protonData = await protonResponse.json();
+      const lastProton = protonData[protonData.length - 1];
+      protonBox.innerText = `Strumień protonów (Proton flux): ${lastProton.proton_flux} pfu`;
+      protonBox.style.backgroundColor = '#dcedc8';
+
+    } catch (err) {
+      errorBox.innerText = 'Błąd ładowania danych z NOAA. Spróbuj ponownie później.';
     }
   }
 
-  document.addEventListener('DOMContentLoaded', loadKpIndex);
+  document.addEventListener('DOMContentLoaded', loadSolarStatus);
 </script>
 
 </body>
