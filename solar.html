@@ -22,6 +22,8 @@
 
 <h1>Status aktywności słonecznej</h1>
 <div id="solar-status" class="status-box">Ładowanie danych...</div>
+<div id="xray-status" class="status-box"></div>
+<div id="proton-status" class="status-box"></div>
 <div id="error" class="error"></div>
 
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -35,21 +37,48 @@
   }
 
   async function loadSolarStatus() {
-    const box = document.getElementById('solar-status');
+    const kpBox = document.getElementById('solar-status');
+    const xrayBox = document.getElementById('xray-status');
+    const protonBox = document.getElementById('proton-status');
     const errorBox = document.getElementById('error');
+
     try {
-      const url = 'https://api.allorigins.win/raw?url=https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
-      const response = await fetch(url);
-      const data = await response.json();
-      const last = data[data.length - 1];
-      const kp = parseFloat(last.kp_index).toFixed(1);
+      const kpUrl = 'https://api.codetabs.com/v1/proxy/?quest=https://services.swpc.noaa.gov/json/planetary_k_index_1m.json';
+      const xrayUrl = 'https://api.codetabs.com/v1/proxy/?quest=https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json';
+      const protonUrl = 'https://api.codetabs.com/v1/proxy/?quest=https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json';
 
-      box.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+      const [kpRes, xrayRes, protonRes] = await Promise.all([
+        fetch(kpUrl),
+        fetch(xrayUrl),
+        fetch(protonUrl)
+      ]);
 
-      if (kp >= 7) box.style.backgroundColor = '#e53935';
-      else if (kp >= 6) box.style.backgroundColor = '#ff9800';
-      else if (kp >= 5) box.style.backgroundColor = '#fff176';
-      else box.style.backgroundColor = '#c8e6c9';
+      const kpData = await kpRes.json();
+      const xrayData = await xrayRes.json();
+      const protonData = await protonRes.json();
+
+      const lastKp = kpData[kpData.length - 1];
+      const lastXray = xrayData[xrayData.length - 1];
+      const lastProton = protonData[protonData.length - 1];
+
+      const kp = parseFloat(lastKp.kp_index).toFixed(1);
+      const xray = parseFloat(lastXray.flux).toExponential(2);
+      const proton = parseFloat(lastProton.proton_flux || 0).toExponential(2);
+
+      // Kp Index
+      kpBox.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
+      if (kp >= 7) kpBox.style.backgroundColor = '#e53935';
+      else if (kp >= 6) kpBox.style.backgroundColor = '#ff9800';
+      else if (kp >= 5) kpBox.style.backgroundColor = '#fff176';
+      else kpBox.style.backgroundColor = '#c8e6c9';
+
+      // X-ray flux
+      xrayBox.innerText = `Ostatni pomiar promieniowania rentgenowskiego (X-ray flux): ${xray} W/m²`;
+      xrayBox.style.backgroundColor = '#ffe0b2';
+
+      // Proton flux
+      protonBox.innerText = `Ostatni pomiar strumienia protonów (Proton flux): ${proton} pfu`;
+      protonBox.style.backgroundColor = '#dcedc8';
 
     } catch (err) {
       errorBox.innerText = 'Błąd ładowania danych z NOAA. Spróbuj ponownie później.';
