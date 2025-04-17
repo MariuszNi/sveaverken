@@ -273,12 +273,11 @@ table tr:nth-child(even) {
             </div>
         </div>
        <section id="solar-activity">
-    <h2>Aktywność Słoneczna</h2>
-    <div style="max-width: 1000px; margin: 0 auto;">
-        <canvas id="xrayChart" height="200"></canvas>
-        <canvas id="protonChart" height="200" style="margin-top: 40px;"></canvas>
-    </div>
+    <section id="solar-status">
+  <h2>Status aktywności słonecznej</h2>
+  <div id="solar-status-container" style="display: flex; flex-wrap: wrap; gap: 20px;"></div>
 </section>
+
 
 <section id="gps-interference-map">
     <h2>Mapa zakłóceń sygnału GPS</h2>
@@ -543,71 +542,72 @@ table tr:nth-child(even) {
     </script>
 
 <script>
-async function fetchXrayData() {
-    const response = await fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json');
-    const data = await response.json();
-    return data.map(entry => ({
-        time: new Date(entry.time_tag),
-        short: parseFloat(entry.flux),
-    }));
+async function fetchSolarStatus() {
+    const container = document.getElementById("solar-status-container");
+
+    // Rozbłyski słoneczne
+    const xrayRes = await fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-1-day.json');
+    const xrayData = await xrayRes.json();
+    const latestXray = parseFloat(xrayData[xrayData.length - 1].flux);
+    let flareLevel = 'Brak danych', flareColor = 'gray';
+
+    if (latestXray < 1e-6) {
+        flareLevel = 'Bardzo niskie (klasa A)'; flareColor = '#8bc34a';
+    } else if (latestXray < 1e-5) {
+        flareLevel = 'Niskie (klasa B)'; flareColor = '#cddc39';
+    } else if (latestXray < 1e-4) {
+        flareLevel = 'Umiarkowane (klasa C)'; flareColor = '#ff9800';
+    } else if (latestXray < 1e-3) {
+        flareLevel = 'Wysokie (klasa M)'; flareColor = '#ff5722';
+    } else {
+        flareLevel = 'Ekstremalne (klasa X)'; flareColor = '#f44336';
+    }
+
+    // Strumień protonów
+    const protonRes = await fetch('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json');
+    const protonData = await protonRes.json();
+    const latestProton = parseFloat(protonData[protonData.length - 1].proton_flux);
+    let protonStatus = 'Brak danych', protonColor = 'gray';
+
+    if (latestProton < 1) {
+        protonStatus = 'Normalny'; protonColor = '#8bc34a';
+    } else if (latestProton < 10) {
+        protonStatus = 'Podwyższony'; protonColor = '#ffeb3b';
+    } else {
+        protonStatus = 'Silna burza protonowa'; protonColor = '#f44336';
+    }
+
+    // Indeks Kp (bazuje na tym co masz)
+    const kpRes = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json');
+    const kpData = await kpRes.json();
+    const latestKp = parseFloat(kpData[kpData.length - 1].kp_index);
+    let kpLevel = '', kpColor = '';
+
+    if (latestKp < 4) {
+        kpLevel = `Niska (${latestKp})`; kpColor = '#8bc34a';
+    } else if (latestKp < 6) {
+        kpLevel = `Umiarkowana (${latestKp})`; kpColor = '#ffeb3b';
+    } else if (latestKp < 7) {
+        kpLevel = `Silna (${latestKp})`; kpColor = '#ff9800';
+    } else {
+        kpLevel = `Burza geomagnetyczna (${latestKp})`; kpColor = '#f44336';
+    }
+
+    // Render
+    container.innerHTML = `
+      <div style="flex: 1; min-width: 250px; background-color: ${flareColor}; padding: 16px; border-radius: 12px;">
+        <strong>Rozbłyski słoneczne:</strong><br>${flareLevel}
+      </div>
+      <div style="flex: 1; min-width: 250px; background-color: ${protonColor}; padding: 16px; border-radius: 12px;">
+        <strong>Strumień protonów:</strong><br>${protonStatus}
+      </div>
+      <div style="flex: 1; min-width: 250px; background-color: ${kpColor}; padding: 16px; border-radius: 12px;">
+        <strong>Indeks zakłóceń geomagnetycznych (Kp):</strong><br>${kpLevel}
+      </div>
+    `;
 }
 
-async function fetchProtonData() {
-    const response = await fetch('https://services.swpc.noaa.gov/json/goes/primary/integrated-protons-1-day.json');
-    const data = await response.json();
-    return data.map(entry => ({
-        time: new Date(entry.time_tag),
-        flux: parseFloat(entry['proton_flux'] || 0),
-    }));
-}
-
-function createChart(ctx, label, data, color = 'rgba(255, 99, 132, 1)', log = false) {
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data.map(d => d.time.toLocaleTimeString()),
-            datasets: [{
-                label: label,
-                data: data.map(d => d[label === 'X-ray Flux' ? 'short' : 'flux']),
-                borderColor: color,
-                borderWidth: 1,
-                pointRadius: 0,
-                fill: false,
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    type: log ? 'logarithmic' : 'linear',
-                    beginAtZero: false
-                },
-                x: {
-                    ticks: {
-                        maxTicksLimit: 12
-                    }
-                }
-            },
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                },
-                title: {
-                    display: true,
-                    text: label
-                }
-            }
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const xrayData = await fetchXrayData();
-    const protonData = await fetchProtonData();
-
-    createChart(document.getElementById('xrayChart'), 'X-ray Flux', xrayData, 'orange', true);
-    createChart(document.getElementById('protonChart'), 'Proton Flux', protonData, 'green', true);
-});
+document.addEventListener('DOMContentLoaded', fetchSolarStatus);
 </script>
 
 
