@@ -11,6 +11,19 @@
       background-color: #f5f5f5;
     }
 
+    .flag-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .flag {
+      width: 32px;
+      height: 22px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+
     #solar-status-container {
       display: flex;
       flex-wrap: wrap;
@@ -25,20 +38,7 @@
       border-radius: 12px;
       color: #000;
       font-weight: bold;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .flag-container {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .flag {
-      width: 32px;
-      height: 22px;
-      cursor: pointer;
-      border: 1px solid #ccc;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
     #google_translate_element {
@@ -60,7 +60,7 @@
     <p>Ładowanie danych...</p>
   </div>
 
-  <!-- Google Translate widget -->
+  <!-- Google Translate -->
   <div id="google_translate_element"></div>
   <script type="text/javascript">
     function googleTranslateElementInit() {
@@ -139,12 +139,11 @@
             🧨 <strong>Strumień protonów:</strong><br>${protonStatus}
           </div>
           <div class="status-box" style="background-color: ${kpColor}">
-            🧲 <strong>Indeks zakłóceń geomagnetycznych (Kp):</strong><br>${kpLevel}
+            🧲 <strong>Indeks geomagnetyczny (Kp):</strong><br>${kpLevel}
           </div>
         `;
       } catch (e) {
         container.innerHTML = `<p style="color:red;">Błąd ładowania danych z NOAA. Spróbuj ponownie później.</p>`;
-        console.error(e);
       }
     }
 
