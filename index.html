@@ -1,197 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Sveaverken FAE Availability</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto Mono', monospace;
-        }
-        .available { background-color: lightgreen; }
-        .unavailable { background-color: lightcoral; }
-        #faeTable {
-            border-collapse: collapse;
-            width: 90%;
-            margin: 20px auto;
-            border: 2px solid #333;
-        }
-        #faeTable th, #faeTable td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: center;
-        }
-        #faeTable th { background-color: #f0f0f0; }
-        #header {
-            text-align: center;
-        }
-        #logo {
-            width: 500px;
-            height: auto;
-            margin-right: 20px;
-            vertical-align: middle;
-        }
-        #upcomingWeekend {
-            text-align: center;
-            padding: 20px;
-            border: 3px solid #333;
-            border-radius: 10px;
-            background-color: #ADD8E6;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            width: 60%;
-        }
-        #holidayBanner {
-            text-align: center;
-            margin: 30px auto;
-            width: 80%;
-            padding: 20px;
-            border: 2px dashed #444;
-            background: #fffacd;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Sveaverken FAE Availability</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Roboto Mono', monospace; }
+    .available { background-color: lightgreen; }
+    .unavailable { background-color: lightcoral; }
+    #faeTable {
+      border-collapse: collapse;
+      width: 90%;
+      margin: 20px auto;
+      border: 2px solid #333;
+    }
+    #faeTable th, #faeTable td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: center;
+    }
+    #faeTable th { background-color: #f0f0f0; }
+    #header { text-align: center; }
+    #logo {
+      width: 500px;
+      height: auto;
+      margin-right: 20px;
+      vertical-align: middle;
+    }
+    #upcomingWeekend {
+      text-align: center;
+      padding: 20px;
+      border: 3px solid #333;
+      border-radius: 10px;
+      background-color: #ADD8E6;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+      margin: 20px auto;
+      width: 60%;
+    }
+    #holidayBanner {
+      text-align: center;
+      margin: 30px auto;
+      width: 80%;
+      padding: 20px;
+      border: 2px dashed #444;
+      background: #fffacd;
+    }
+  </style>
 </head>
 <body>
-    <div id="header">
-        <img id="logo" src="https://www-sveaverken-com.azureedge.net/web/image/website/5/logo/Sveaverken%20-%20Official%20Website?unique=54b527b" alt="Sveaverken Logo">
-        <h2>Sveaverken FAE Availability</h2>
-    </div>
+  <div id="header">
+    <img id="logo" src="https://www-sveaverken-com.azureedge.net/web/image/website/5/logo/Sveaverken%20-%20Official%20Website?unique=54b527b" alt="Sveaverken Logo">
+    <h2>Sveaverken FAE Availability</h2>
+  </div>
 
-    <div id="holidayBanner">
-        <h3>Countries with a public holiday today (with active FAE):</h3>
-        <ul id="holidayList"></ul>
-    </div>
+  <div id="holidayBanner">
+    <h3>Countries with a public holiday today (with active FAE):</h3>
+    <ul id="holidayList"></ul>
+  </div>
 
-    <table id="faeTable">
-        <tr>
-            <th>Name</th>
-            <th>Work Hours (GTM+8)</th>
-            <th>Work Hours (Local Time)</th>
-            <th>Country</th>
-            <th>Actual Local Time</th>
-            <th>Languages Spoken</th>
-            <th>Status</th>
-        </tr>
-    </table>
+  <table id="faeTable">
+    <tr>
+      <th>Name</th>
+      <th>Work Hours (GTM+8)</th>
+      <th>Work Hours (Local Time)</th>
+      <th>Country</th>
+      <th>Actual Local Time</th>
+      <th>Languages Spoken</th>
+      <th>Status</th>
+    </tr>
+  </table>
 
-    <div id="upcomingWeekend">
-        <h3>Upcoming Weekend Schedule</h3>
-        <div id="saturdaySchedule"></div>
-        <div id="sundaySchedule"></div>
-    </div>
+  <div id="upcomingWeekend">
+    <h3>Upcoming Weekend Schedule</h3>
+    <div id="saturdaySchedule"></div>
+    <div id="sundaySchedule"></div>
+  </div>
 
-    <script>
-        const faeData = [
-            { "Engineer": "Jeffery Zhu", "GTM+8": "12:00-24:00", "Local Time": "12:00-24:00", "Country": "CN", "Languages": "English, Chinese", "UTCOffset": 8 },
-            { "Engineer": "Dincer Meydanli", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "UTCOffset": 3 },
-            { "Engineer": "Mehmet Cebe", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "UTCOffset": 3 },
-            { "Engineer": "Dogukan Karabuga", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "UTCOffset": 3 },
-            { "Engineer": "Guven Ulas", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "UTCOffset": 3 },
-            { "Engineer": "Roque Martinez", "GTM+8": "22:30-10:00", "Local Time": "08:30-20:00", "Country": "MX", "Languages": "English, Spanish", "UTCOffset": -6 },
-            { "Engineer": "Xengges Sai", "GTM+8": "12:00-24:00", "Local Time": "10:00-24:00", "Country": "CN", "Languages": "English, Chinese", "UTCOffset": 8 },
-            { "Engineer": "Xin Yang", "GTM+8": "10:00-24:00", "Local Time": "10:00-24:00", "Country": "CN", "Languages": "English, Chinese", "UTCOffset": 8 },
-            { "Engineer": "Jesus Casassixto", "GTM+8": "22:30-10:00", "Local Time": "09:30-21:00", "Country": "MX", "Languages": "English, Spanish", "UTCOffset": -6 },
-            { "Engineer": "Alexa Bautista", "GTM+8": "15:00-02:00", "Local Time": "15:00-02:00", "Country": "PH", "Languages": "English", "UTCOffset": 8 },
-            { "Engineer": "Jeffersson Nolasco", "GTM+8": "15:00-02:00", "Local Time": "15:00-02:00", "Country": "PH", "Languages": "English", "UTCOffset": 8 },
-            { "Engineer": "Ilgner Boer", "GTM+8": "22:30-10:00", "Local Time": "11:30-23:00", "Country": "BR", "Languages": "English, Portuguese", "UTCOffset": -3 },
-            { "Engineer": "Mariusz Niezgoda", "GTM+8": "14:30-03:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish", "UTCOffset": 1 },
-            { "Engineer": "Kamil Jabłoński", "GTM+8": "14:30-03:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish", "UTCOffset": 1 }
-        ];
+  <script>
+    const faeData = [
+      { "Engineer": "Jeffery Zhu", "GTM+8": "12:00-24:00", "Local Time": "12:00-24:00", "Country": "CN", "Languages": "English, Chinese", "TimeZone": "Asia/Shanghai" },
+      { "Engineer": "Dincer Meydanli", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
+      { "Engineer": "Mehmet Cebe", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
+      { "Engineer": "Dogukan Karabuga", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
+      { "Engineer": "Guven Ulas", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
+      { "Engineer": "Roque Martinez", "GTM+8": "22:30-10:00", "Local Time": "08:30-20:00", "Country": "MX", "Languages": "English, Spanish", "TimeZone": "America/Mexico_City" },
+      { "Engineer": "Xengges Sai", "GTM+8": "12:00-24:00", "Local Time": "10:00-24:00", "Country": "CN", "Languages": "English, Chinese", "TimeZone": "Asia/Shanghai" },
+      { "Engineer": "Xin Yang", "GTM+8": "10:00-24:00", "Local Time": "10:00-24:00", "Country": "CN", "Languages": "English, Chinese", "TimeZone": "Asia/Shanghai" },
+      { "Engineer": "Jesus Casassixto", "GTM+8": "22:30-10:00", "Local Time": "09:30-21:00", "Country": "MX", "Languages": "English, Spanish", "TimeZone": "America/Mexico_City" },
+      { "Engineer": "Alexa Bautista", "GTM+8": "15:00-02:00", "Local Time": "15:00-02:00", "Country": "PH", "Languages": "English", "TimeZone": "Asia/Manila" },
+      { "Engineer": "Jeffersson Nolasco", "GTM+8": "15:00-02:00", "Local Time": "15:00-02:00", "Country": "PH", "Languages": "English", "TimeZone": "Asia/Manila" },
+      { "Engineer": "Ilgner Boer", "GTM+8": "22:30-10:00", "Local Time": "11:30-23:00", "Country": "BR", "Languages": "English, Portuguese", "TimeZone": "America/Sao_Paulo" },
+      { "Engineer": "Mariusz Niezgoda", "GTM+8": "14:30-03:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish", "TimeZone": "Europe/Warsaw" },
+      { "Engineer": "Kamil Jabłoński", "GTM+8": "14:30-03:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish", "TimeZone": "Europe/Warsaw" }
+    ];
 
-        const weekendSchedule = [
-            { date: '2025-06-21', day: 'Saturday', fae: 'Kamil-PL (GMT+1)--Jeff' },
-            { date: '2025-06-22', day: 'Sunday', fae: 'Mehmet Sehmus (GMT+3)--Jeff' }
-        ];
+    const weekendSchedule = [
+      { date: '2025-06-21', day: 'Saturday', fae: 'Kamil-PL (GMT+1)--Jeff' },
+      { date: '2025-06-22', day: 'Sunday', fae: 'Mehmet Sehmus (GMT+3)--Jeff' }
+    ];
 
-        function displayFAE() {
-            const table = document.getElementById('faeTable');
-            faeData.forEach(fae => {
-                let row = table.insertRow();
-                row.className = isFAEAvailable(fae['GTM+8']) ? 'available' : 'unavailable';
+    function displayFAE() {
+      const table = document.getElementById('faeTable');
+      faeData.forEach(fae => {
+        const row = table.insertRow();
+        row.className = isFAEAvailable(fae['GTM+8']) ? 'available' : 'unavailable';
+        row.insertCell(0).innerHTML = fae['Engineer'];
+        row.insertCell(1).innerHTML = fae['GTM+8'];
+        row.insertCell(2).innerHTML = fae['Local Time'];
+        row.insertCell(3).innerHTML = fae['Country'];
 
-                row.insertCell(0).innerHTML = fae['Engineer'];
-                row.insertCell(1).innerHTML = fae['GTM+8'];
-                row.insertCell(2).innerHTML = fae['Local Time'];
-                row.insertCell(3).innerHTML = fae['Country'];
+        const localTimeCell = row.insertCell(4);
+        updateLocalTime(localTimeCell, fae.TimeZone);
 
-                let localTimeCell = row.insertCell(4);
-                updateLocalTime(localTimeCell, fae['UTCOffset']);
+        row.insertCell(5).innerHTML = fae['Languages'];
+        row.insertCell(6).innerHTML = row.className === 'available' ? 'Available' : 'Unavailable';
+      });
+    }
 
-                row.insertCell(5).innerHTML = fae['Languages'];
-                row.insertCell(6).innerHTML = row.className === 'available' ? 'Available' : 'Unavailable';
-            });
+    function isFAEAvailable(workHours) {
+      const [startTime, endTime] = workHours.split('-').map(time => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours % 24 + minutes / 60;
+      });
+
+      const now = new Date();
+      const currentHourGTM8 = now.getUTCHours() + 8;
+      const currentDecimalHour = currentHourGTM8 % 24 + now.getUTCMinutes() / 60;
+
+      return startTime > endTime
+        ? currentDecimalHour >= startTime || currentDecimalHour < endTime
+        : currentDecimalHour >= startTime && currentDecimalHour < endTime;
+    }
+
+    function updateLocalTime(cell, timeZone) {
+      function update() {
+        const now = new Date();
+        const time = new Intl.DateTimeFormat('en-GB', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+          timeZone
+        }).format(now);
+        cell.textContent = time;
+      }
+      update();
+      setInterval(update, 1000);
+    }
+
+    function displayUpcomingWeekend() {
+      const now = new Date();
+      const saturday = new Date();
+      saturday.setDate(now.getDate() + (6 - now.getDay()));
+      const sunday = new Date(saturday);
+      sunday.setDate(saturday.getDate() + 1);
+
+      const satStr = saturday.toISOString().split('T')[0];
+      const sunStr = sunday.toISOString().split('T')[0];
+
+      const sat = weekendSchedule.find(d => d.date === satStr);
+      const sun = weekendSchedule.find(d => d.date === sunStr);
+
+      document.getElementById('saturdaySchedule').textContent = sat ? `Saturday: ${sat.fae}` : 'Saturday: No schedule available';
+      document.getElementById('sundaySchedule').textContent = sun ? `Sunday: ${sun.fae}` : 'Sunday: No schedule available';
+    }
+
+    async function displayPublicHolidays() {
+      const holidayList = document.getElementById('holidayList');
+      const faeCountries = [...new Set(faeData.map(fae => fae.Country))];
+      const today = new Date().toISOString().split('T')[0];
+
+      for (const code of faeCountries) {
+        try {
+          const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${new Date().getFullYear()}/${code}`);
+          if (!res.ok) continue;
+          const holidays = await res.json();
+          const todayHoliday = holidays.find(h => h.date === today);
+          if (todayHoliday) {
+            const item = document.createElement('li');
+            item.textContent = `${todayHoliday.localName} (${code})`;
+            holidayList.appendChild(item);
+          }
+        } catch (e) {
+          console.warn(`Error for ${code}:`, e);
         }
+      }
 
-        function isFAEAvailable(workHours) {
-            const [startTime, endTime] = workHours.split('-').map(time => {
-                const [hours, minutes] = time.split(':').map(Number);
-                return hours % 24 + minutes / 60;
-            });
+      if (holidayList.children.length === 0) {
+        holidayList.innerHTML = '<li>No public holidays today in FAE countries.</li>';
+      }
+    }
 
-            const now = new Date();
-            const currentHourGTM8 = now.getUTCHours() + 8;
-            const currentDecimalHour = currentHourGTM8 % 24 + now.getUTCMinutes() / 60;
-
-            return startTime > endTime
-                ? currentDecimalHour >= startTime || currentDecimalHour < endTime
-                : currentDecimalHour >= startTime && currentDecimalHour < endTime;
-        }
-
-        function updateLocalTime(cell, offset) {
-            function update() {
-                const utcTime = new Date();
-                const localTime = new Date(utcTime.getTime() + offset * 3600000);
-                cell.textContent = localTime.toISOString().substr(11, 8);
-            }
-            update();
-            setInterval(update, 1000);
-        }
-
-        function displayUpcomingWeekend() {
-            const now = new Date();
-            const saturday = new Date();
-            saturday.setDate(now.getDate() + (6 - now.getDay()));
-            const sunday = new Date(saturday);
-            sunday.setDate(saturday.getDate() + 1);
-
-            const saturdaySchedule = weekendSchedule.find(item => item.date === saturday.toISOString().split('T')[0]);
-            const sundaySchedule = weekendSchedule.find(item => item.date === sunday.toISOString().split('T')[0]);
-
-            document.getElementById('saturdaySchedule').innerHTML = saturdaySchedule ? `Saturday: ${saturdaySchedule.fae}` : 'Saturday: No schedule available';
-            document.getElementById('sundaySchedule').innerHTML = sundaySchedule ? `Sunday: ${sundaySchedule.fae}` : 'Sunday: No schedule available';
-        }
-
-        async function displayPublicHolidays() {
-            const holidayList = document.getElementById('holidayList');
-            const uniqueCountries = [...new Set(faeData.map(fae => fae.Country))];
-            const today = new Date().toISOString().split("T")[0];
-
-            for (const code of uniqueCountries) {
-                try {
-                    const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${new Date().getFullYear()}/${code}`);
-                    if (!res.ok) continue;
-                    const holidays = await res.json();
-                    const todayHoliday = holidays.find(h => h.date === today);
-                    if (todayHoliday) {
-                        const item = document.createElement('li');
-                        item.textContent = `${todayHoliday.localName} (${code})`;
-                        holidayList.appendChild(item);
-                    }
-                } catch (e) {
-                    console.warn(`Error fetching for ${code}`, e);
-                }
-            }
-
-            if (holidayList.children.length === 0) {
-                holidayList.innerHTML = '<li>No public holidays today in FAE countries.</li>';
-            }
-        }
-
-        window.onload = function () {
-            displayFAE();
-            displayUpcomingWeekend();
-            displayPublicHolidays();
-        };
-    </script>
+    window.onload = function () {
+      displayFAE();
+      displayUpcomingWeekend();
+      displayPublicHolidays();
+    };
+  </script>
 </body>
 </html>
