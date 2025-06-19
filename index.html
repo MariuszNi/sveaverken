@@ -1,201 +1,551 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Sveaverken FAE Availability</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Roboto Mono', monospace; }
-    .available { background-color: lightgreen; }
-    .unavailable { background-color: lightcoral; }
-    #faeTable {
-      border-collapse: collapse;
-      width: 90%;
-      margin: 20px auto;
-      border: 2px solid #333;
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+    #kp-widget {
+        background-color: #e0e0e0;
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin: 10px auto;
+        max-width: 400px;
+        font-family: sans-serif;
+        font-weight: bold;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: background-color 0.5s ease;
     }
-    #faeTable th, #faeTable td {
-      border: 1px solid #333;
-      padding: 8px;
-      text-align: center;
-    }
-    #faeTable th { background-color: #f0f0f0; }
-    #header { text-align: center; }
-    #logo {
-      width: 500px;
-      height: auto;
-      margin-right: 20px;
-      vertical-align: middle;
-    }
-    #upcomingWeekend {
-      text-align: center;
-      padding: 20px;
-      border: 3px solid #333;
-      border-radius: 10px;
-      background-color: #ADD8E6;
-      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-      margin: 20px auto;
-      width: 60%;
-    }
-    #holidayBanner {
-      text-align: center;
-      margin: 30px auto;
-      width: 80%;
-      padding: 20px;
-      border: 2px dashed #444;
-      background: #fffacd;
-    }
-  </style>
-</head>
-<body>
-  <div id="header">
-    <img id="logo" src="https://www-sveaverken-com.azureedge.net/web/image/website/5/logo/Sveaverken%20-%20Official%20Website?unique=54b527b" alt="Sveaverken Logo">
-    <h2>Sveaverken FAE Availability</h2>
-  </div>
+</style>
 
-  <div id="holidayBanner">
-    <h3>Countries with a public holiday today (with active FAE):</h3>
-    <ul id="holidayList"></ul>
-  </div>
+<script>
+    function updateKpIndex() {
+        fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json')
+            .then(response => response.json())
+            .then(data => {
+                const last = data[data.length - 1];
+                const kp = parseFloat(last.kp_index).toFixed(1);
+                const box = document.getElementById('kp-widget');
+                box.innerText = `Aktualny indeks zakłóceń geomagnetycznych (Kp): ${kp}`;
 
-  <table id="faeTable">
-    <tr>
-      <th>Name</th>
-      <th>Work Hours (GTM+8)</th>
-      <th>Work Hours (Local Time)</th>
-      <th>Country</th>
-      <th>Actual Local Time</th>
-      <th>Languages Spoken</th>
-      <th>Status</th>
-    </tr>
-  </table>
-
-  <div id="upcomingWeekend">
-    <h3>Upcoming Weekend Schedule</h3>
-    <div id="saturdaySchedule"></div>
-    <div id="sundaySchedule"></div>
-  </div>
-
-  <script>
-    const faeData = [
-      { "Engineer": "Jeffery Zhu", "GTM+8": "12:00-24:00", "Local Time": "12:00-24:00", "Country": "CN", "Languages": "English, Chinese", "TimeZone": "Asia/Shanghai" },
-      { "Engineer": "Dincer Meydanli", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
-      { "Engineer": "Mehmet Cebe", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
-      { "Engineer": "Dogukan Karabuga", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
-      { "Engineer": "Guven Ulas", "GTM+8": "13:30-02:30", "Local Time": "08:30-21:30", "Country": "TR", "Languages": "English, Turkish", "TimeZone": "Europe/Istanbul" },
-      { "Engineer": "Roque Martinez", "GTM+8": "22:30-10:00", "Local Time": "08:30-20:00", "Country": "MX", "Languages": "English, Spanish", "TimeZone": "America/Mexico_City" },
-      { "Engineer": "Xengges Sai", "GTM+8": "12:00-24:00", "Local Time": "10:00-24:00", "Country": "CN", "Languages": "English, Chinese", "TimeZone": "Asia/Shanghai" },
-      { "Engineer": "Xin Yang", "GTM+8": "10:00-24:00", "Local Time": "10:00-24:00", "Country": "CN", "Languages": "English, Chinese", "TimeZone": "Asia/Shanghai" },
-      { "Engineer": "Jesus Casassixto", "GTM+8": "22:30-10:00", "Local Time": "09:30-21:00", "Country": "MX", "Languages": "English, Spanish", "TimeZone": "America/Mexico_City" },
-      { "Engineer": "Alexa Bautista", "GTM+8": "15:00-02:00", "Local Time": "15:00-02:00", "Country": "PH", "Languages": "English", "TimeZone": "Asia/Manila" },
-      { "Engineer": "Jeffersson Nolasco", "GTM+8": "15:00-02:00", "Local Time": "15:00-02:00", "Country": "PH", "Languages": "English", "TimeZone": "Asia/Manila" },
-      { "Engineer": "Ilgner Boer", "GTM+8": "22:30-10:00", "Local Time": "11:30-23:00", "Country": "BR", "Languages": "English, Portuguese", "TimeZone": "America/Sao_Paulo" },
-      { "Engineer": "Mariusz Niezgoda", "GTM+8": "14:30-03:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish", "TimeZone": "Europe/Warsaw" },
-      { "Engineer": "Kamil Jabłoński", "GTM+8": "14:30-03:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish", "TimeZone": "Europe/Warsaw" }
-    ];
-
-    const weekendSchedule = [
-      { date: '2025-06-21', day: 'Saturday', fae: 'Kamil-PL (GMT+1)--Jeff' },
-      { date: '2025-06-22', day: 'Sunday', fae: 'Mehmet Sehmus (GMT+3)--Jeff' }
-    ];
-
-    function displayFAE() {
-      const table = document.getElementById('faeTable');
-      faeData.forEach(fae => {
-        const row = table.insertRow();
-        row.className = isFAEAvailable(fae['GTM+8']) ? 'available' : 'unavailable';
-        row.insertCell(0).innerHTML = fae['Engineer'];
-        row.insertCell(1).innerHTML = fae['GTM+8'];
-        row.insertCell(2).innerHTML = fae['Local Time'];
-        row.insertCell(3).innerHTML = fae['Country'];
-
-        const localTimeCell = row.insertCell(4);
-        updateLocalTime(localTimeCell, fae.TimeZone);
-
-        row.insertCell(5).innerHTML = fae['Languages'];
-        row.insertCell(6).innerHTML = row.className === 'available' ? 'Available' : 'Unavailable';
-      });
+                if (kp >= 7) {
+                    box.style.backgroundColor = '#e53935'; // czerwony
+                } else if (kp >= 6) {
+                    box.style.backgroundColor = '#ff9800'; // pomarańczowy
+                } else if (kp >= 5) {
+                    box.style.backgroundColor = '#ffeb3b'; // żółty
+                } else {
+                    box.style.backgroundColor = '#8bc34a'; // zielony
+                }
+            });
     }
 
-    function isFAEAvailable(workHours) {
-      const [startTime, endTime] = workHours.split('-').map(time => {
-        const [hours, minutes] = time.split(':').map(Number);
-        return hours % 24 + minutes / 60;
-      });
+    setInterval(updateKpIndex, 60000); // aktualizacja co 1 minutę
+    document.addEventListener('DOMContentLoaded', updateKpIndex);
+</script>
 
-      const now = new Date();
-      const currentHourGTM8 = now.getUTCHours() + 8;
-      const currentDecimalHour = currentHourGTM8 % 24 + now.getUTCMinutes() / 60;
+    <meta charset="UTF-8">
+    <title>Sveaverken - Filmy i Instrukcje</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-      return startTime > endTime
-        ? currentDecimalHour >= startTime || currentDecimalHour < endTime
-        : currentDecimalHour >= startTime && currentDecimalHour < endTime;
-    }
-
-    function updateLocalTime(cell, timeZone) {
-      function update() {
-        const now = new Date();
-        const time = new Intl.DateTimeFormat('en-GB', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false,
-          timeZone
-        }).format(now);
-        cell.textContent = time;
-      }
-      update();
-      setInterval(update, 1000);
-    }
-
-    function displayUpcomingWeekend() {
-      const now = new Date();
-      const saturday = new Date();
-      saturday.setDate(now.getDate() + (6 - now.getDay()));
-      const sunday = new Date(saturday);
-      sunday.setDate(saturday.getDate() + 1);
-
-      const satStr = saturday.toISOString().split('T')[0];
-      const sunStr = sunday.toISOString().split('T')[0];
-
-      const sat = weekendSchedule.find(d => d.date === satStr);
-      const sun = weekendSchedule.find(d => d.date === sunStr);
-
-      document.getElementById('saturdaySchedule').textContent = sat ? `Saturday: ${sat.fae}` : 'Saturday: No schedule available';
-      document.getElementById('sundaySchedule').textContent = sun ? `Sunday: ${sun.fae}` : 'Sunday: No schedule available';
-    }
-
-    async function displayPublicHolidays() {
-      const holidayList = document.getElementById('holidayList');
-      const faeCountries = [...new Set(faeData.map(fae => fae.Country))];
-      const today = new Date().toISOString().split('T')[0];
-
-      for (const code of faeCountries) {
-        try {
-          const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${new Date().getFullYear()}/${code}`);
-          if (!res.ok) continue;
-          const holidays = await res.json();
-          const todayHoliday = holidays.find(h => h.date === today);
-          if (todayHoliday) {
-            const item = document.createElement('li');
-            item.textContent = `${todayHoliday.localName} (${code})`;
-            holidayList.appendChild(item);
-          }
-        } catch (e) {
-          console.warn(`Error for ${code}:`, e);
+    <style>
+        html {
+            scroll-behavior: smooth;
         }
-      }
 
-      if (holidayList.children.length === 0) {
-        holidayList.innerHTML = '<li>No public holidays today in FAE countries.</li>';
-      }
-    }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
 
-    window.onload = function () {
-      displayFAE();
-      displayUpcomingWeekend();
-      displayPublicHolidays();
-    };
-  </script>
+table th, table td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+table thead {
+    background-color: #f0f0f0;
+}
+
+table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+.tractor-container {
+  position: fixed;
+  bottom: 40px;
+  left: -200px;
+  width: 120px;
+  z-index: 9999;
+  animation: drive 26s ease-in-out forwards;
+}
+
+.tractor {
+  width: 100%;
+  animation: bounce 0.8s infinite alternate;
+}
+
+.smoke {
+  position: absolute;
+  top: -20px;
+  left: 10px;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, #999 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: smokeUp 2s ease-out forwards;
+}
+
+@keyframes drive {
+  0% { left: -200px; }
+  100% { left: 110%; }
+}
+
+@keyframes bounce {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+
+@keyframes smokeUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-50px) scale(1.8);
+    opacity: 0;
+  }
+}
+
+    </style>
+
+    <!-- Google Translate -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'pl',
+                includedLanguages: 'en,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,tr,sk,cs,bg,da,et,fi,el,hu,lt,lv,mt,no,ro,sv,uk',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function translatePageToBrowserLanguage() {
+            var userLang = navigator.language || navigator.userLanguage;
+            userLang = userLang.split('-')[0];
+            var supportedLanguages = ['en', 'es', 'zh-CN', 'fr', 'de', 'pt', 'ru', 'ja', 'ko', 'it', 'nl', 'ar', 'hi', 'bn', 'id', 'tr', 'pl', 'sk', 'cs', 'bg', 'da', 'et', 'fi', 'el', 'hu', 'lt', 'lv', 'mt', 'no', 'ro', 'sv', 'uk'];
+            if (userLang !== 'pl') {
+                var translateElement = new google.translate.TranslateElement({
+                    pageLanguage: 'pl',
+                    includedLanguages: supportedLanguages.join(','),
+                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+
+                setTimeout(function () {
+                    var iframe = document.querySelector('.goog-te-banner-frame');
+                    if (iframe) {
+                        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        var langSelect = innerDoc.querySelector('.goog-te-menu-value span');
+                        if (langSelect) {
+                            langSelect.click();
+                            var langToClick = innerDoc.querySelector('a[lang=' + userLang + ']') || innerDoc.querySelector('a[lang=en]');
+                            if (langToClick) {
+                                langToClick.click();
+                            }
+                        }
+                    }
+                }, 1000);
+            }
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+
+<body onload="translatePageToBrowserLanguage()">
+<!-- 🚜 Animacja traktorka -->
+<div class="tractor-container" id="tractor">
+  <img src="tractor.png" class="tractor" alt="tractor" />
+  <div class="smoke"></div>
+</div>
+
+<!-- 🌐 MENU NAWIGACYJNE -->
+<nav style="background-color: #002b5c; padding: 10px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <div style="color: white; font-weight: bold; font-size: 18px;">
+            Sveaverken
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <a href="#home" style="color: white; text-decoration: none;">Strona główna</a>
+            <a href="#getting-started" style="color: white; text-decoration: none;">Pierwsze kroki</a>
+            <a href="#next-step" style="color: white; text-decoration: none;">Funkcje F100</a>
+            <a href="#manuals" style="color: white; text-decoration: none;">Instrukcje</a>
+            <a href="#PROBLEMY" style="color: white; text-decoration: none;">Problemy</a>
+            <a href="#FAE" style="color: white; text-decoration: none;">FAE i wyszukiwnie tuleii</a>
+            <a href="#marketing" style="color: white; text-decoration: none;">Marketing</a>
+            <a href="#Stacje-bazowe" style="color: white; text-decoration: none;">Stacje bazowe</a>
+            <a href="#NIMBO Robot podgarniający" style="color: white; text-decoration: none;">NIMBO</a>
+            <a href="#Moo Collar" style="color: white; text-decoration: none;">Moo Collar</a>
+            <a href="#Svea brush" style="color: white; text-decoration: none;">Szczotka</a>
+            <a href="#Svea ap" style="color: white; text-decoration: none;">LoRa ND67</a>
+            <a href="#video list" style="color: white; text-decoration: none;">Filmy YouTube</a>
+
+            <!-- 🌍 Google Translate Widget -->
+            <div id="google_translate_element" style="margin-left: 15px;"></div>
+        </div>
+    </div>
+</nav>
+
+
+<!-- 🔷 NAGŁÓWEK Z LOGO I OBRAZKIEM -->
+<header style="background-color: #003366; color: white; padding: 40px 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 40px;">
+
+        <!-- Lewa kolumna: logo + obrazek -->
+        <div style="flex: 1; min-width: 300px; text-align: center;">
+            <img src="logo.png" alt="Sveaverken Logo" style="max-width: 160px; height: auto; margin-bottom: 20px;">
+            <div style="background-color: white; padding: 10px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.3);">
+                <img src="SVEA F100.webp" alt="SVEA F100" style="max-width: 100%; height: auto; border-radius: 8px;">
+            </div>
+        </div>
+
+        <!-- Prawa kolumna: informacje o wersjach -->
+        <div style="flex: 1; min-width: 300px;">
+            <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px;">Aktualna wersja oprogramowania</h2>
+            <div style="background-color: #004080; padding: 20px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,0,0,0.2);">
+                <p><strong>APP:</strong> 24.102.3.26</p>
+                <p><strong>ECU1 old:</strong> 3.0.5.3</p>
+                <p><strong>ECU2 new:</strong> 103.0.4.12</p>
+                <p><strong>IMU:</strong> 3.0.0.79</p>
+                <p><strong>Motor old:</strong> 1.1.13.9</p>
+                <p><strong>Motor NEW:</strong> 2.1.1.8</p>
+                <p><strong>Board L1 old:</strong> 23005</p>
+                <p><strong>Board L3 new:</strong> 11491</p>
+                <p><strong>System:</strong> 202501081622</p>
+                <p><strong>Radio 1:</strong> J017.00.05.0</p>
+                <p><strong>Radio 2:</strong> 35.0.0.0</p>
+                <p style="text-align: center; margin-top: 20px;">
+                    <a href="https://drive.google.com/open?id=1uJQWm-xcmF6pWdEW7Yk3eFrCqWcOeGNa&usp=drive_fs" 
+                       target="_blank" 
+                       style="font-size: 20px; font-weight: bold; color: white; text-decoration: underline;">
+                        Release note
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+    <main>
+        <div id="kp-widget">Ładowanie danych geomagnetycznych...</div>
+
+        <div class="button-container">
+    <button id="news-button" onclick="openPopup()">📰 Sprawdź najnowsze informacje</button>
+</div>
+        <input type="text" id="search-input" placeholder="Szukaj w treści..." onkeyup="filterContent()">
+        <section id="home">
+            <h1>Witamy na stronie Sveaverken</h1>
+            <p>Sveaverken produkuje innowacyjne urządzenia dla rolnictwa, w tym systemy zarządzania hodowlą zwierząt, maszyny do karmienia, systemy monitoringu stanu zdrowia zwierząt oraz systemy zarządzania gospodarstwami. Te innowacyjne rozwiązania pomagają rolnikom zwiększać efektywność i zyski.</p>
+            <p>Na tej witrynie znajdziesz:</p>
+            <ul>
+                <li>Filmy instruktażowe i promocyjne dotyczące naszych produktów.</li>
+                <li>Opisy i instrukcje obsługi naszych urządzeń, dostępne do pobrania.</li>
+                <li>Listę aktualnie dostepnych inżynierów serwisu (FAE)</li>
+                <li>Informacje kto pełni dyżur w najbliższy weekend</li>
+            </ul>
+             </section>
+      
+            </section>
+            <div id="popup" class="popup">
+                <div class="popup-content">
+                <span class="close-button" onclick="closePopup()">&times;</span>
+                <h2>Aktualności</h2>
+                    <div id="news-content">
+                </div>
+            </div>
+        </div>
+       <section id="solar-activity">
+    <section id="solar-status">
+  <h2>Status aktywności słonecznej</h2>
+ <ul>
+        <li><a href="https://www.swpc.noaa.gov/communities/global-positioning-system-gps-community-dashboard?utm_source=chatgpt.com#"_blank">Status aktywności słonecznej</a></li>
+    </ul>
+</section>
+
+
+<section id="gps-interference-map">
+    <h2>Mapa zakłóceń sygnału GPS</h2>
+    <ul>
+        <li><a href="https://www.flightradar24.com/data/gps-jamming" target="_blank">Mapa zakłóceń sygnału GPS</a></li>
+    </ul>
+</section>
+
+<section id="NTRIP">
+    <h2>Dostawcy NTRIP w Europie</h2>
+    <ul>
+        <li><a href="NTRIP.html" target="_blank">Dostawcy NTRIP w Europie</a></li>
+    </ul>
+</section>
+
+        <section id="NMEA">
+            <h2>NMEA 0183 V.4.1</h2>
+            <ul>
+                <li><a href="nmea.html" target="_blank">NMEA 0183 V.4.1</a></li>
+            </ul>
+        </div>
+            <section id="ISOBUS">
+            <h2>ISOBUS</h2>
+            <ul>
+                <li><a href="isobus.html" target="_blank">ISOBUS</a></li>
+            </ul>
+        </div>
+             </section>
+        <section id="marketing">
+            <h2>Materiały marketingowe PL</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1OTWwJKdunxfPkFHoQbIAIlmKR1ejsHj5&usp=drive_fs">Materiały marketingowe</a></li>
+            </ul>
+        </div>
+         </section>
+        <section id="getting-started">
+            <h2>Pierwsze kroki po uruchomieniu nawigacji-VIDEO TUTORIAL</h2>
+            <ul>
+                <li><a href="https://drive.google.com/file/d/19sgjlq9vhnwjyPkLuo_DnxFmH677UJMJ/view?usp=drivesdk" target="_blank">Utworzenie konta</a></li>
+                <li><a href="https://drive.google.com/file/d/1hRWlQyibGXSVix895dbH-fWaTcF9rZPL/view?usp=drivesdk" target="_blank">Podłączenie do źródła sygnału korekcyjnego</a></li>
+                <li><a href="https://drive.google.com/file/d/15iLf5mf0I2OXDm4PSu9RCww9WsmOfyFx/view?usp=drivesdk" target="_blank">Informacje o pojeździe</a></li>
+                <li><a href="https://drive.google.com/file/d/1Jk2pDdD4yZj_JhHMhvCBNQAVffucBxHn/view?usp=drivesdk" target="_blank">Kalibracja czujnika skrętu</a></li>
+                <li><a href="https://drive.google.com/file/d/1yRgx2Tc1XQYOAGIvs47n8cUKB7zpkvFz/view?usp=drivesdk" target="_blank">Kalibracja pojazdu</a></li>
+                <li><a href="https://drive.google.com/file/d/1Lq9k853Foxme29xrKI9kv82qJFt9-Spd/view?usp=drivesdk" target="_blank">Kalibracja narzędzia</a></li>
+            </ul>
+        </div>
+        </section>
+        <section id="next-step">
+            <h2>Funkcje F100-VIDEO TUTORIAL</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1rmRgQdd9gllM8B2ZP1Am1Lx8PK1q930S&usp=drive_fs" target="_blank">Tworzenie linii A+</a></li>
+                <li><a href="https://drive.google.com/open?id=1ivJ7IShm1mD2mFCmUGy57WFG-frVvZqP&usp=drive_fs" target="_blank">Aktywacja wersji zaawansowanej</a></li>
+                <li><a href="https://drive.google.com/open?id=1y8kDSdNkR4DEmHL6pNwXaK_vEQ8GnghS&usp=drive_fs" target="_blank">Tworzenie linii AB</a></li>
+                <li><a href="https://drive.google.com/open?id=1NisnfxnpapIbf6-mazX_Xe9kD2rbevkh&usp=drive_fs" target="_blank">Tworzenie granicy (tylko wersja zaawansowana)</a></li>
+                <li><a href="https://drive.google.com/open?id=1yhdT3AMTf3S35sQCb-qeyZARXfH-G7xj&usp=drive_fs" target="_blank">Tworzenie linii krzywej</a></li>
+                <li><a href="https://drive.google.com/open?id=1_iLGofWV_muD7Ur6MbfnX_tb95BbBR2t&usp=drive_fs" target="_blank">Tworzenie okręgu</a></li>
+                <li><a href="https://drive.google.com/open?id=1Png_pEral-C1vqtbyJ0IFWmTGFx08Uw2&usp=drive_fs" target="_blank">Operacje na granicach (tylko wersja zaawansowana)</a></li>
+                <li><a href="https://drive.google.com/open?id=12MrpT5L-Ju6PyvU3uhzyQOYNLcm8Yhn5&usp=drive_fs" target="_blank">Ustawianie jednostek</a></li>
+                <li><a href="https://drive.google.com/open?id=1b5oJ5fcu0DydjPShS9eojNisWgcKILJJ&usp=drive_fs" target="_blank">Kalibracja anteny do centralnej osi pojazdu</a></li>
+                <li><a href="https://drive.google.com/open?id=1m_Jb0qvfsaJhe42fRtHfHmTF3WoT3afP&usp=drive_fs" target="_blank">Udostępnianie linni online</a></li>
+                <li><a href="https://drive.google.com/open?id=18B2ytQtNVdu5p2cD02JFQcfzDYcFVHCN&usp=drive_fs" target="_blank">Jak zacząć operacje (tylko wersja zaawansowana)</a></li>
+                <li><a href="https://drive.google.com/open?id=1z-LnzVyFxW_srKjUR3Pu0AEvQf4VsIqD&usp=drive_fs" target="_blank">Udostępnianie linni przez USB</a></li>
+                <li><a href="https://drive.google.com/open?id=1tTez-4Ey9x9GQSIMC7im_Uii_bLaNshe&usp=drive_fs" target="_blank">Aktualizacja systemu</a></li>
+                <li><a href="https://drive.google.com/open?id=1GsB1PCzd0fHOt3cA3nhw09N7giZCSVQ-&usp=drive_fs" target="_blank">Przesunięcie linii</a></li>
+                <li><a href="https://drive.google.com/open?id=1ExhSgZyJQbMmLho2iLH9RY5QsFbva6MI&usp=drive_fs" target="_blank">Jak zacząć operacje (wersja sandard)</a></li>
+                <li><a href="https://drive.google.com/open?id=1TCgh4ZfjtWvQ4wWh6L6hoY9ey_rjOI_y&usp=drive_fs" target="_blank">Jak używać opcji dostrajania (Współczynnik dostrajania)</a></li>
+                <li><a href="https://drive.google.com/open?id=12yCWhRzxwBP6SC9gRIAnd_ZkZ7tZpvQ6&usp=drive_fs" target="_blank">Aktualizacja poprzez USB</a></li>
+                <li><a href="https://drive.google.com/open?id=1gk-Tvnk39NVIermd7-NS_ZrBRYlO0gXu&usp=drive_fs" target="_blank">Jak używać pilota Easy Control</a></li>
+                <li><a href="https://drive.google.com/open?id=1_AFPAW6JaumMqsc0OOMwLWzDLBc7Qj3h&usp=drive_fs" target="_blank">Jak używać bibliotekę narzędzi</a></li>
+                <li><a href="https://drive.google.com/open?id=1JonCh1ka-dP-huz3nYCJU0tDOck5aep3&usp=drive_fs" target="_blank">Jak używać funkcji NMEA</a></li>
+                <li><a href="https://drive.google.com/open?id=1rXFbLZZLYHqjgQNhHqiJJfgOcQ44GGPu&usp=drive_fs" target="_blank">Jak używać Farm Management System (FMS)</a></li>
+                <li><a href="https://drive.google.com/open?id=19STiCqEx_Yp-5JN4P3ThYNtZXoF__ZhP&usp=drive_fs" target="_blank">Jak używać funkcji trimm</a></li>
+                <li><a href="https://drive.google.com/open?id=1-_OqC-SclzaKb9rH3qAcW8WhtNDN-Vnq&usp=drive_fs" target="_blank">Jak używać biblioteki pojazdów</a></li>
+                <li><a href="https://drive.google.com/open?id=1y6v48BfIcjNUvLN8694cS_JL7TjqnmPe&usp=drive_fs" target="_blank">Jak używać basic uturn</a></li>
+                <li><a href="https://drive.google.com/open?id=1pokERSVgSMeyAgWFjHI8Whz_SUJFcEPo&usp=drive_fs" target="_blank">Jak używać smart uturn</a></li>
+                
+            </ul>
+        </div>
+        <section id="PROBLEMY">
+            <h2>Rozwiązywanie problemów</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1MIqILb1dPGc1P7r08Sz0ibBVN0PANYi3&usp=drive_fs" target="_blank">Jak wyczyścić cache</a></li>
+        <li><a href="https://drive.google.com/open?id=12HkENs3xLrZlG6JHyuqscbC6shWP51rq&usp=drive_fs" target="_blank">Jak postępować z przy problemach z 4G</a></li>
+        <li><a href="https://drive.google.com/open?id=1ck-duCMkU5scvo3x-ukM0nbKTA7b8Wkp&usp=drive_fs" target="_blank">Jak postepować z problemem czujnika kątas</a></li>
+        <li><a href="https://drive.google.com/open?id=1W2EmSXcgwZWrBsaAhrzH-4jN3e38AFEb&usp=drive_fs" target="_blank">Jak postepowac z problemem RTK</a></li>
+            </ul>
+        </section>
+        <section id="FAE">
+            <h2>FAE</h2>
+            <ul>
+        <li><a href="FAE.html" target="_blank">Dostępność FAE i dyżur w weekend</a></li>
+        <li><a href="Spline_sleeves.html" target="_blank">Lista adapterów kierownicy</a></li> 
+        <li><a href="slevefilter.html" target="_blank">Wyszukiwarka adapterów kierownicy po wymiarach</a></li>         
+            </ul>
+            
+        </section>
+        <section id="manuals">
+            <h2>Instrukcje F100</h2>
+                <ul>
+                    <li><a href="https://drive.google.com/drive/folders/1qdx5cS1ztcoLIucgLVFVsQPANHQo1j-U?usp=sharing" target="_blank">Dysk Google</a></li>
+                    <li><a href="https://drive.google.com/open?id=1qq0ZRjBmLxN3m-4yPnLI1bydzuGLbuqq&usp=drive_fs" target="_blank">Instrukcja obsługi dla wersji interfejsu urzytkownika >3.1.6 (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1r40zZGEsil78agJnX9vhEWFBM2sGj86i&usp=drive_fs" target="_blank">Krótka instrukcja obsługi dla wersji interfejsu urzytkownika >3.1.6 (14 języków)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OIeOZAxnMAtiyDIXJDTmKyYCVD15aesl&usp=drive_fs" target="_blank">ISOBUS COMPATIBILITY CHECK (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OJ40mnlzsbO2-FThJS2sN_qABntralPQ&usp=drive_fs" target="_blank">ISOBUS KOMPATYBILNOŚĆ (pl)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OKsH96R__ZVOlEmeIMVz4Z_LHLX45uYZ&usp=drive_fs" target="_blank">ISOBUS COMPATIBILITY CHECK (es)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1sA_QAE9zUv--dPJ_H-xnH55ydGUrYDzH&usp=drive_fs" target="_blank">Test napięcia wiązki ISOBUS</a></li>
+                    <li><a href="https://drive.google.com/open?id=1oktOMFu4mFnv_kxIBbgdXjavgDCfftuZ&usp=drive_fs" target="_blank">Instrukcja ISOBUS</a></li>
+                    <li><a href="https://drive.google.com/open?id=1NxJJEWl9ahH5Kjt8YYgoE5eJWgwKWWMH&usp=drive_fs" target="_blank">Instrukcja rozwiązywania problemów (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1OLBQ0tzE8-qsW2lWHsE-fhqpEwYVOPuq&usp=drive_fs" target="_blank">Instrukcja rozwiązywania problemów (pl)</a></li>
+                    <li><a href="offsetv6.html"_blank">Kalkulator dla podwójnego narzędzia</a></li>
+                    <li><a href="https://drive.google.com/open?id=148Qg0fYVWWLTxR9N5fX6QGtHT5x62Ssq&usp=drive_fs" target="_blank">Instrukcja kalkulatora podwójnego narzędzia</a></li>
+                    <li><a href="https://drive.google.com/open?id=1dAyGcCc1NLuMzHIcoA2ccUyiA7I84pRV&usp=drive_fs" target="_blank">Instrukcja NMEA</a></li>
+                    <li><a href="https://drive.google.com/file/d/11lcsDdRLOvZ5ujUpsdJZl5SZeVDC6ZWv/view?usp=drivesdk" target="_blank">NTRIP RTK EBOOK</a></li>
+                    <li><a href="https://drive.google.com/file/d/11WDNm_LPltzfxZ5iKB-_-qQNajZSwFk-/view?usp=drivesdk" target="_blank">Instrukcja pomiarów kolumny kierowniczej</a></li>
+                    <li><a href="https://drive.google.com/file/d/1rNvstt4cFVIrDn6gQ1o_wCBbFLp-fjS3/view?usp=drivesdk" target="_blank">Instrukcja konfiguracji NTRIP RTK ASG-EUPOS Polska</a></li>
+                    <li><a href="https://drive.google.com/file/d/1s6auzeFp2Q-2EOdJjybGGIJmk1JWOqYx/view?usp=drivesdk" target="_blank">Przewodnik FMS (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1eXGREISwgB560YVjC1vbu3qF-QHusDwN&usp=drive_fs" target="_blank">Instrukcja FMS (en)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1refC6YDpEgLtn-DLGsutJ-0NRTQPUwkq&usp=drive_fs=" target="_blank">Aktualizacja przez USB / Pliki i instrukcje</a></li>
+                    <li><a href="https://drive.google.com/open?id=1ErvoLkhHcZdn_gHPRm7pig-4EXo_pdid&usp=drive_fs" target="_blank">Klonowanie ekranu terminala na PC</a></li>
+                    <li><a href="https://drive.google.com/open?id=1MtPULk8AteS5JcoMCnolceyAx9rdNlr4&usp=drive_fs" target="_blank">Przeglądarka Chrome do instalacji na terminalu (z USB)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1MxWb68hQkQ3R2M2desowlFQtzHlYZQG8&usp=drive_fs" target="_blank">Przeglądarka plików do instalacji na terminalu (z USB)</a></li>
+                    <li><a href="https://drive.google.com/open?id=1qx583Sw4vlLAIhbOaWGzbnRQzRfZZ11j&usp=drive_fs" target="_blank">Instrukcja obsługi aplikacji Sveaverken na Android</a></li>
+                    <li><a href="https://drive.google.com/open?id=1PWDPn-PAo7wW_DRveOUtDyCcxFwjsdvC&usp=drive_fs"_blank">Release note wersji 23.102.2.4</a></li>
+                    <li><a href="https://drive.google.com/open?id=1O2FCGk98vSkH_HMrqOQ-MXrzWftpy_eL&usp=drive_fs"_blank">Instrukcja obsługi platformy zdalnej pomocy (en)</a></li>
+                    <li><a href="uturn.html" target="_blank">Instrukcja przeliczania minimalnej liczby nawrotów na polu dla funkcji Smart U-turn (pl)</a></li>
+                </ul>
+            </section>
+        <section id="F100H NON-CAN">
+            <h2>F100H NON-CAN</h2>
+            <ul>
+                <li><a href="https://docs.google.com/presentation/d/1-Gd1DP-ocQTwvFX8Yxtd3y-rmiORPAkY/edit?usp=drivesdk&ouid=103561026551793102014&rtpof=true&sd=true" target="_blank">Prezentacja systemu F100H</a></li>
+                <li><a href="https://drive.google.com/open?id=1x1uYjRCphirLbg5rkRtHtyyDKmuSkmFw&usp=drive_fs" target="_blank">Wymagania dla F100H</a></li>
+                <li><a href="https://drive.google.com/open?id=1H4QCBUn_WY8ZswDTJe3F_elJfkROEDpB&usp=drive_fs" target="_blank">Istalacja układów hydraulicznych, różne rodzaje układów</a></li>
+        
+            </ul>
+            <section id="F100H CAN">
+            <h2>F100H CAN</h2>
+            <ul>
+                <li>Proszę o kontakt z FAE w sprawie instrukcji</a></li>
+            
+            </ul>
+            </section>
+        <section id="Stacje-bazowe">
+            <h2>Stacje bazowe</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1H4Qg8U8veIpneX6O8DlWMI6qLLrG5Bt0&usp=drive_fs" target="_blank">Sveaverken CORS N10</a></li>
+        <li><a href="https://drive.google.com/open?id=1H45DhZhi-7YW9F-iAJaxUWQvw8ROnTRD&usp=drive_fs" target="_blank">Sveaverken Stacjonarna Stacja Bazowa N20</a></li> 
+        <li><a href="https://drive.google.com/open?id=1OD_3PyraboOP7eg0F2TfaIa-QN-_ouOt&usp=drive_fs" target="_blank">Sveaverken Mobilna Stacja Bazowa V1</a></li>
+        <li><a href="https://drive.google.com/open?id=1OC6kzWy7hos7I3RtpcnyHwGzdsWe9VFv&usp=drive_fs" target="_blank">Sveaverken Mobilna Stacja Bazowa V1 manual</a></li>
+        <li><a href="https://drive.google.com/open?id=1LJyNhg9Swn5IO6vl9if58asp5H3nb_Os&usp=drive_fs" target="_blank">Aplikacja do obsługi V1 na telefon z Android</a></li>
+        <li><a href="https://drive.google.com/open?id=1Or8hElAKtjnVkmFM86juiMeoVIuNAccK&usp=drive_fs" target="_blank">Instrukcja obsługi aplikacji V1 Android</a></li>
+        <li><a href="https://drive.google.com/open?id=1OVLfaqD9vzp-XuwvByW1tMd7ijJxBmIH&usp=drive_fs" target="_blank">Instrukcja obsługi aplikacji V1 iOS Iphone</a></li>
+        <li><a href="https://drive.google.com/open?id=1OY8iF-f8dU2NWZLmpUbJkaHjHKIC4pOi&usp=drive_fs" target="_blank">Instrukcja połączenia F110 z V1 Android</a></li>
+        <li><a href="https://drive.google.com/open?id=1OVxfB5BeylfLHP2puB13SExZNaY2DOZt&usp=drive_fs" target="_blank">Instalacja V1 Video</a></li>
+        <li><a href="https://drive.google.com/open?id=1eKB6f0wNxxopHDq4vBDVGqQXcv22dSDx&usp=drive_fs" target="_blank">Instalacja Stacjonarnej Stacji Bazowej N20</a></li>
+            </ul>
+            </section>
+        <section id="NIMBO Robot podgarniający">
+            <h2>NIMBO</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1ra6ojD4M-hJYoI2i5ukI9eWVgM5PKJ6k&usp=drive_fs" target="_blank">NIMBO instrukcja obsługi (pl)</a></li>
+        <li><a href="https://drive.google.com/open?id=1wFqgQGA8AIzeWFXEivjtoZiD5I2auyhW&usp=drive_fs" target="_blank">Lista anarzędzi i pierwsze kroki</a></li> 
+        <li><a href="https://drive.google.com/open?id=1Zl8bQ263qxzNv3yUc9nMfcDltb2w-7Ge&usp=drive_fs" target="_blank">Przewodnik po aplikacji MooConnect</a></li>
+        <li><a href="https://drive.google.com/open?id=1wIpyEyx-tyh5VJKyEVKt72wMkXwpKceo&usp=drive_fs" target="_blank">Zmiana serwera</a></li>
+        <li><a href="https://drive.google.com/open?id=1wJuw91TlAi17F2ZkJlwQkrcomIz9iDDB&usp=drive_fs" target="_blank">Zmiana strefy czasowej</a></li>
+        <li><a href="https://drive.google.com/open?id=1wH02ByUf7Ox-TuIaQx7T29wdFqJsBcdX&usp=drive_fs" target="_blank">Aktualizacja oprogramowania robota</a></li>
+        <li><a href="https://drive.google.com/open?id=1wOYiX9la9LtGdBRXf9HfA7dffLByZSkc&usp=drive_fs" target="_blank">Instrukcja obsługi Web Client</a></li>
+        <li><a href="https://drive.google.com/open?id=1O3kTDhRHkK3SJVgo2kMijSVkOVw5vyCq&usp=drive_fs" target="_blank">Aktualna wersja FW</a></li>
+            </ul>
+             </section>
+        <section id="Moo Collar">
+            <h2>Moo Collar</h2>
+            <ul>
+        <li><a href="https://drive.google.com/open?id=1Oe9YuzgUjIaUox3ep9BNDLIHGpua0a-V&usp=drive_fs" target="_blank">Skrócona instrukcja obsługi (en)</a></li>
+            </ul>
+             </section>
+        <section id="Svea brush">
+            <h2>Sveaverken Brush SCEB200</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1Odc0N2l9dn54t4413Am4HtbeNIPjPomz&usp=drive_fs" target="_blank">Instrukcja obsługi szczotki Sveaverken (en)</a></li>
+                <li><a href="https://drive.google.com/open?id=1Odfv4dVgm0m8y9jpyHEwXRS_-Cd2tos7&usp=drive_fs" target="_blank">Instrukcja obsługi szczotki Sveaverken (pl)</a></li>
+            </ul>
+             </section>
+        <section id="Svea ap">
+            <h2>Bramka LoRaWAN® ND67</h2>
+            <ul>
+                <li><a href="https://drive.google.com/open?id=1ObH-NqHOCeS2FB2Jder8Mqv7X_z9sMjy&usp=drive_fs"_blank">Instrukcja obsługi Bramki LoRaWAN® ND67 (en)</a></li>
+                <li><a href="https://drive.google.com/open?id=1OcReaVjoGnq5qTb9T7kUJ_ACY7-lg3h0&usp=drive_fs" target="_blank">Instrukcja obsługi Bramki LoRaWAN® ND67 (pl)</a></li>
+            </ul>
+            </section>
+            <section id="BONUS">
+            <h2>BONUS</h2>
+            <ul>
+        <li><a href="tracgame.html" target="_blank">Gra traktor</a></li>   
+        <li><a href="Game.html" target="_blank">O&X</a></li>
+        <li><a href="snake.html" target="_blank">Wąż</a></li>
+        
+            </ul>
+        </section>
+        <section id="video list">
+            <h2>Linki do filmów na YouTube</h2>
+            <ul>
+        <li><a href="Videos.html" target="_blank">Linki do folmów na YouTube</a></li>
+            </ul>
+        
+                </div>
+            </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sveaverken www.sveaverken.com</p>
+        <p>Sugestie i pytania: mariusz.niezgoda@sveav.com</p>
+    </footer>
+  <script type="text/javascript">
+        function fetchNews() {
+            fetch('aktual.txt')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('news-content').innerHTML = data.replace(/\n/g, '<br>');
+                })
+                .catch(error => console.error('Błąd wczytywania aktualności:', error));
+        }
+
+        function openPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function filterContent() {
+            const filterInput = document.getElementById('search-input');
+            const filterValue = filterInput.value.toLowerCase();
+            const sections = document.querySelectorAll('section');
+
+            sections.forEach(section => {
+                const items = section.querySelectorAll('li, p, a, h2, h3');
+                let sectionVisible = false;
+                items.forEach(item => {
+                    const text = item.textContent || item.innerText;
+                    if (text.toLowerCase().includes(filterValue)) {
+                        item.style.display = '';
+                        sectionVisible = true;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                section.style.display = sectionVisible ? '' : 'none';
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNews();
+        });
+
+        window.onclick = function(event) {
+            const popup = document.getElementById("popup");
+            if (event.target == popup) {
+                popup.style.display = "none";
+            }
+        }
+    </script>
+
+
+</script>
+
+
 </body>
-</html>
+        </html>
