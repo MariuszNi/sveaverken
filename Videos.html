@@ -1,352 +1,346 @@
-
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>Lista Filmów - Sveaverken</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <style>
-        :root {
-            --main-blue: #0076bd;
-            --light-gray: #f4f4f4;
-        }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: white;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: var(--main-blue);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 28px;
-        }
-        main {
-            padding: 30px 20px;
-            max-width: 1000px;
-            margin: auto;
-        }
-        h2 {
-            color: var(--main-blue);
-        }
-        #filter-input {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background-color: var(--light-gray);
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
-        li a {
-            color: #0076bd;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        li a:hover {
-            text-decoration: underline;
-        }
-        li img {
-            vertical-align: middle;
-            height: 40px;
-            margin-right: 10px;
-            border-radius: 4px;
-        }
-        button {
-            background-color: var(--main-blue);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            font-size: 14px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #005a96;
-        }
-        #youtube-channels {
-    margin-bottom: 30px;
-}
-.channel-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-.channel-buttons a {
-    background-color: var(--main-blue);
-    color: white;
-    padding: 8px 14px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-}
-.channel-buttons a:hover {
-    background-color: #005a96;
-}
-#video-list-section ul {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-@media (max-width: 768px) {
-    #video-list-section ul {
-        grid-template-columns: 1fr;
+  <meta charset="UTF-8" />
+  <title>Lista Filmów - Sveaverken</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Vendors -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
+  <style>
+    :root{
+      --blue:#0076bd;
+      --blue-2:#005a96;
+      --ink:#222;
+      --muted:#666;
+      --card:#f7f9fc;
+      --line:#e5e7eb;
+      --radius:12px;
+      --shadow:0 2px 12px rgba(0,0,0,.12);
     }
-}
-footer {
-            background-color: #eee;
-            text-align: center;
-            padding: 15px;
-            margin-top: 30px;
-            font-size: 14px;
-        }
-
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        header, #youtube-channels {
-    margin-bottom: 30px;
-}
-.channel-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-.channel-buttons a {
-    background-color: var(--main-blue);
-    color: white;
-    padding: 8px 14px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 500;
-}
-.channel-buttons a:hover {
-    background-color: #005a96;
-}
-#video-list-section ul {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-@media (max-width: 768px) {
-    #video-list-section ul {
-        grid-template-columns: 1fr;
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--ink);background:#fff}
+    header{background:var(--blue);color:#fff;padding:18px 16px;position:sticky;top:0;z-index:5}
+    header .wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    #google_translate_element{justify-self:end}
+    header h1{margin:0;font-size:24px}
+    #filter-input{
+      width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px; font-size:16px; margin-top:10px
     }
-}
-footer { margin-bottom: 20px; }
-        #filter-input { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
-        ul { list-style: none; padding: 0; }
-        li { margin: 5px 0; }
-        li img { vertical-align: middle; height: 40px; margin-right: 10px; }
-        button { margin-right: 10px; padding: 5px 10px; }
-    </style>
 
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'pl',
-      includedLanguages: 'en,pl,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,hu,tr,cz,sk',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-      autoDisplay: false
-    }, 'google_translate_element');
-  }
+    main{max-width:1100px;margin:24px auto;padding:0 16px}
+    .channels{margin:0 0 10px}
+    .channel-buttons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .channel-buttons a{
+      background:var(--blue);color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:600;box-shadow:var(--shadow)
+    }
+    .channel-buttons a:hover{background:var(--blue-2)}
 
-  function translatePageToBrowserLanguage() {
-    var userLang = navigator.language || navigator.userLanguage;
-    userLang = userLang.split('-')[0];
-    var supported = ['en','pl','es','zh-CN','fr','de','pt','ru','ja','ko','it','nl','ar','hi','bn','id','hu','cz','sk','tr'];
-    var langToUse = supported.includes(userLang) ? userLang : 'en';
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:12px 0}
+    .toolbar .left, .toolbar .right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    button{
+      background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)
+    }
+    button.secondary{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+    .chip{background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-weight:600;box-shadow:var(--shadow)}
 
-    var interval = setInterval(function () {
-      const iframe = document.querySelector('iframe.goog-te-banner-frame');
-      if (iframe) {
-        clearInterval(interval);
-        const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-        const langSelect = innerDoc.querySelector('.goog-te-menu-value span');
-        if (langSelect) {
-          langSelect.click();
-          const langToClick = innerDoc.querySelector(`a[lang="${langToUse}"]`);
-          if (langToClick) langToClick.click();
-        }
-      }
-    }, 1500);
-  }
+    .list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:768px){ .list{grid-template-columns:1fr} }
 
-  document.addEventListener('DOMContentLoaded', translatePageToBrowserLanguage);
-</script>
-<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    .item{
+      display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);
+      border-radius:12px;padding:10px;box-shadow:var(--shadow)
+    }
+    .thumb{width:72px;min-width:72px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+    .meta{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+    .title{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .url{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .actions a{ text-decoration:none }
+    .small{font-size:12px;color:var(--muted)}
+    .hidden{display:none !important}
 
+    .section{margin:28px 0}
+    .section h2{color:var(--blue); margin:0 0 10px}
+
+    .loading{display:flex;gap:10px;align-items:center;color:var(--muted);padding:10px}
+    .spinner{width:16px;height:16px;border:3px solid #ddd;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    footer{background:#eee;text-align:center;padding:15px;margin-top:28px;font-size:14px}
+  </style>
+
+  <script>
+    // Google Translate
+    function googleTranslateElementInit(){
+      try{
+        new google.translate.TranslateElement({
+          pageLanguage:'pl',
+          includedLanguages:'en,pl,es,zh-CN,fr,de,pt,ru,ja,ko,it,nl,ar,hi,bn,id,hu,tr,cs,sk',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay:false
+        }, 'google_translate_element');
+      }catch(e){}
+    }
+  </script>
 </head>
 <body>
-    <header>
-<div id="google_translate_element" style="float:right;"></div>
+  <header>
+    <div class="wrap">
+      <div>
         <h1>Lista Filmów Sveaverken</h1>
-        <input type="text" id="filter-input" placeholder="Filtruj filmy..." list="autocomplete-datalist">
-    </header>
-    <main>
-    <section id="youtube-channels">
-        <div class="channel-buttons">
-            <a href="https://www.youtube.com/@Sveaverken-FAE" target="_blank">📺 FAE</a>
-            <a href="https://www.youtube.com/@Sveaverken-Global" target="_blank">🌍 Global</a>
-            <a href="https://www.youtube.com/@SveaF100" target="_blank">🧭 F100</a>
-            <a href="https://www.youtube.com/@dinomey" target="_blank">🎮 Dinomey</a>
-            <a href="https://www.youtube.com/@EvelynLin-yolo" target="_blank">🚜 Evelyn Lin</a>
-            <a href="https://www.youtube.com/@sveaverkenabjudyzhu1339" target="_blank">📡 Judy Zhu</a>
-        </div>
+        <input id="filter-input" type="text" placeholder="Filtruj filmy (tytuł lub link)..." autocomplete="off" />
+      </div>
+      <div id="google_translate_element"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="channels">
+      <div class="channel-buttons">
+        <a href="https://www.youtube.com/@Sveaverken-FAE" target="_blank" rel="noopener">FAE</a>
+        <a href="https://www.youtube.com/@Sveaverken-Global" target="_blank" rel="noopener">Global</a>
+        <a href="https://www.youtube.com/@SveaF100" target="_blank" rel="noopener">F100</a>
+        <a href="https://www.youtube.com/@dinomey" target="_blank" rel="noopener">Dinomey</a>
+        <a href="https://www.youtube.com/@EvelynLin-yolo" target="_blank" rel="noopener">Evelyn Lin</a>
+        <a href="https://www.youtube.com/@sveaverkenabjudyzhu1339" target="_blank" rel="noopener">Judy Zhu</a>
+      </div>
     </section>
-    
-        <button onclick="exportVisibleListToExcel()">📥 Eksportuj do Excel</button>
-        <button onclick="exportVisibleListToPDF()">📄 Eksportuj do PDF</button>
-        <section id="video-list-section">
-            <ul id="video-list"></ul>
-        </section>
-        <section id="youtube-channels">
-            <h2>Nasze kanały YouTube</h2>
-            <ul>
-                <li><a href="https://www.youtube.com/@Sveaverken-FAE" target="_blank">📺 Sveaverken FAE</a></li>
-                <li><a href="https://www.youtube.com/@Sveaverken-Global" target="_blank">🌍 Sveaverken Global</a></li>
-                <li><a href="https://www.youtube.com/@SveaF100" target="_blank">🧭 Svea F100</a></li>
-                <li><a href="https://www.youtube.com/@dinomey" target="_blank">🎮 Dinomey</a></li>
-                <li><a href="https://www.youtube.com/@EvelynLin-yolo" target="_blank">🚜 Evelyn Lin - Yolo</a></li>
-                <li><a href="https://www.youtube.com/@sveaverkenabjudyzhu1339" target="_blank">📡 Judy Zhu - Sveaverken AB</a></li>
-            </ul>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Sveaverken</p>
-    </footer>
-    <datalist id="autocomplete-datalist"></datalist>
-    <script>
-        let allTitles = [];
-        const listElement = document.getElementById('video-list');
 
-        const sampleData = [
-            ["Film 1", "https://www.youtube.com/watch?v=dQw4w9WgXcQ"],
-            ["Film 2", "https://www.youtube.com/watch?v=3JZ_D3ELwOQ"],
-            ["Film 3", "https://example.com/nonyoutube"]
-        ];
+    <div class="toolbar">
+      <div class="left">
+        <button id="btnExcel">Eksportuj widoczne → Excel</button>
+        <button id="btnPDF" class="secondary">Eksportuj widoczne → PDF</button>
+        <button id="btnCopy" class="secondary">Kopiuj widoczne linki</button>
+      </div>
+      <div class="right">
+        <span class="chip">Wszystkie: <strong id="totalCount">0</strong></span>
+        <span class="chip">Widoczne: <strong id="visibleCount">0</strong></span>
+        <span class="chip">Źródła: <strong id="loadedSheets">0/3</strong></span>
+      </div>
+    </div>
 
-        function getYoutubeID(url) {
-            const match = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
-            return match ? match[1] : '';
+    <section id="video-list-section" class="section">
+      <div id="loading" class="loading">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Wczytywanie list…</span>
+      </div>
+      <ul id="video-list" class="list" aria-live="polite"></ul>
+      <div id="empty" class="small hidden">Brak wyników. Zmień filtr.</div>
+    </section>
+
+    <section class="section">
+      <h2>Nasze kanały YouTube</h2>
+      <ul>
+        <li><a href="https://www.youtube.com/@Sveaverken-FAE" target="_blank" rel="noopener">Sveaverken FAE</a></li>
+        <li><a href="https://www.youtube.com/@Sveaverken-Global" target="_blank" rel="noopener">Sveaverken Global</a></li>
+        <li><a href="https://www.youtube.com/@SveaF100" target="_blank" rel="noopener">Svea F100</a></li>
+        <li><a href="https://www.youtube.com/@dinomey" target="_blank" rel="noopener">Dinomey</a></li>
+        <li><a href="https://www.youtube.com/@EvelynLin-yolo" target="_blank" rel="noopener">Evelyn Lin - Yolo</a></li>
+        <li><a href="https://www.youtube.com/@sveaverkenabjudyzhu1339" target="_blank" rel="noopener">Judy Zhu - Sveaverken AB</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Sveaverken</p>
+  </footer>
+
+  <script>
+    // ---------- Data sources ----------
+    const SOURCES = [
+      'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista1.xlsx',
+      'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista2.xlsx',
+      'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista3.xlsx'
+    ];
+
+    // ---------- State ----------
+    const state = {
+      all: [],          // {title, url}
+      visible: [],      // filtered
+      loaded: 0
+    };
+
+    // ---------- DOM ----------
+    const el = {
+      list: document.getElementById('video-list'),
+      filter: document.getElementById('filter-input'),
+      total: document.getElementById('totalCount'),
+      visible: document.getElementById('visibleCount'),
+      loaded: document.getElementById('loadedSheets'),
+      empty: document.getElementById('empty'),
+      loading: document.getElementById('loading'),
+      btnExcel: document.getElementById('btnExcel'),
+      btnPDF: document.getElementById('btnPDF'),
+      btnCopy: document.getElementById('btnCopy')
+    };
+
+    // ---------- Utils ----------
+    function isYouTube(u){
+      try{
+        const url = new URL(u);
+        return /(^|\.)youtube\.com$/.test(url.hostname) || /(^|\.)youtu\.be$/.test(url.hostname);
+      }catch{ return false }
+    }
+    function getYouTubeId(u){
+      try{
+        const url = new URL(u);
+        if (/youtu\.be$/.test(url.hostname)) return url.pathname.slice(1);
+        if (/youtube\.com$/.test(url.hostname)){
+          if (url.pathname.startsWith('/watch')) return url.searchParams.get('v') || '';
+          if (url.pathname.startsWith('/shorts/')) return url.pathname.split('/')[2] || '';
+          if (url.pathname.startsWith('/embed/')) return url.pathname.split('/')[2] || '';
         }
+      }catch{}
+      const m = u.match(/(?:v=|\/shorts\/|\/embed\/|youtu\.be\/)([0-9A-Za-z_-]{11})/);
+      return m ? m[1] : '';
+    }
+    function uniqueByUrl(arr){
+      const seen = new Set();
+      return arr.filter(({url})=>{
+        if(!url || seen.has(url)) return false;
+        seen.add(url);
+        return true;
+      });
+    }
+    function deb(fn, ms=250){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); } }
 
-        function loadData(data) {
-            const sortedData = data.sort((a, b) => a[0].localeCompare(b[0]));
-            sortedData.forEach(([title, url]) => {
-                if (title && url) {
-                    if (!allTitles.includes(title)) allTitles.push(title);
-                    const li = document.createElement('li');
-                    const isYoutube = url.includes("youtube.com");
-                    const thumb = isYoutube ? `<img src="https://img.youtube.com/vi/${getYoutubeID(url)}/0.jpg">` : '';
-                    li.innerHTML = `<a href="${url}" target="_blank">${thumb}${title}</a>`;
-                    listElement.appendChild(li);
-                }
-            });
-        }
+    // ---------- Render ----------
+    function render(){
+      el.list.innerHTML = '';
+      state.visible.forEach(({title,url})=>{
+        const li = document.createElement('li');
+        li.className = 'item';
 
-        function exportVisibleListToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let y = 10;
-            document.querySelectorAll('#video-list li').forEach(li => {
-                if (li.style.display !== 'none') {
-                    doc.text(li.textContent.trim(), 10, y);
-                    y += 10;
-                }
-            });
-            doc.save("ListaFilmow.pdf");
-        }
+        const youtube = isYouTube(url);
+        const vid = youtube ? getYouTubeId(url) : '';
+        const thumb = youtube && vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : '';
+        const img = document.createElement('img');
+        img.className = 'thumb';
+        img.loading = 'lazy';
+        img.alt = 'Miniatura';
+        img.src = thumb || 'https://www.google.com/s2/favicons?sz=64&domain_url='+encodeURIComponent(url);
 
-        function exportVisibleListToExcel() {
-            const wb = XLSX.utils.book_new();
-            const ws_data = [];
-            document.querySelectorAll('#video-list li').forEach(li => {
-                if (li.style.display !== 'none') {
-                    ws_data.push([li.textContent.trim()]);
-                }
-            });
-            const ws = XLSX.utils.aoa_to_sheet(ws_data);
-            XLSX.utils.book_append_sheet(wb, ws, "Filmy");
-            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-            saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'ListaFilmow.xlsx');
-        }
+        const meta = document.createElement('div'); meta.className = 'meta';
+        const titleEl = document.createElement('div'); titleEl.className = 'title'; titleEl.textContent = title;
+        const urlEl = document.createElement('div'); urlEl.className = 'url'; urlEl.textContent = url;
 
-        function filterVideos() {
-            const val = document.getElementById('filter-input').value.toLowerCase();
-            document.querySelectorAll('#video-list li').forEach(li => {
-                li.style.display = li.textContent.toLowerCase().includes(val) ? '' : 'none';
-            });
-        }
+        const actions = document.createElement('div'); actions.className = 'actions';
+        const open = document.createElement('a'); open.href = url; open.target = '_blank'; open.rel='noopener';
+        open.innerHTML = '<button>Otwórz</button>';
+        const copy = document.createElement('button'); copy.className='secondary'; copy.textContent='Kopiuj link';
+        copy.addEventListener('click', ()=>navigator.clipboard?.writeText(url));
 
-        document.getElementById('filter-input').addEventListener('input', function () {
-            filterVideos();
-            const val = this.value.toLowerCase();
-            const suggestions = allTitles.filter(t => t.toLowerCase().includes(val)).slice(0, 10);
-            const datalist = document.getElementById('autocomplete-datalist');
-            datalist.innerHTML = suggestions.map(s => `<option value="${s}">`).join('');
+        actions.append(open, copy);
+        meta.append(titleEl, urlEl, actions);
+
+        li.append(img, meta);
+        el.list.appendChild(li);
+      });
+
+      el.total.textContent = state.all.length;
+      el.visible.textContent = state.visible.length;
+      el.empty.classList.toggle('hidden', state.visible.length !== 0);
+    }
+
+    // ---------- Filter ----------
+    function applyFilter(){
+      const q = el.filter.value.trim().toLowerCase();
+      if (!q){
+        state.visible = [...state.all];
+        render();
+        return;
+      }
+      const terms = q.split(/\s+/).filter(Boolean);
+      state.visible = state.all.filter(({title,url})=>{
+        const hay = (title+' '+url).toLowerCase();
+        return terms.every(t => hay.includes(t));
+      });
+      render();
+    }
+
+    // ---------- Loaders ----------
+    async function fetchSheet(url){
+      try{
+        const res = await fetch(url, {cache:'no-store'});
+        if(!res.ok) throw new Error(res.status+' '+res.statusText);
+        const buf = await res.arrayBuffer();
+        const wb = XLSX.read(buf, {type:'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1});
+        const out = [];
+        rows.slice(1).forEach(r=>{
+          const title = (r[0] ?? '').toString().trim();
+          const link = (r[1] ?? '').toString().trim();
+          if (title && link) out.push({title, url: link});
         });
+        return out;
+      }catch(e){
+        console.warn('Błąd pobierania', url, e);
+        return [];
+      }finally{
+        state.loaded += 1;
+        el.loaded.textContent = `${state.loaded}/${SOURCES.length}`;
+      }
+    }
 
-        
-        const listsToLoad = [
-            { id: 'video-list', url: 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista1.xlsx' },
-            { id: 'video-list', url: 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista2.xlsx' },
-            { id: 'video-list', url: 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/Lista3.xlsx' }
-        ];
+    async function loadAll(){
+      const batches = await Promise.all(SOURCES.map(fetchSheet));
+      const merged = uniqueByUrl(batches.flat());
+      merged.sort((a,b)=> a.title.localeCompare(b.title, 'pl', {sensitivity:'base'}));
+      state.all = merged;
+      state.visible = [...state.all];
+      el.loading.classList.add('hidden');
+      render();
+    }
 
-        async function loadExcelData(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Błąd pobierania: ' + url);
-                const data = await response.arrayBuffer();
-                const wb = XLSX.read(data, { type: 'array' });
-                const ws = wb.Sheets[wb.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(ws, { header: 1 });
-                return jsonData;
-            } catch (error) {
-                console.error(error);
-                return [];
-            }
-        }
+    // ---------- Export ----------
+    function exportExcel(){
+      const rows = state.visible.map(v=>[v.title, v.url]);
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet([['Tytuł','URL'], ...rows]);
+      XLSX.utils.book_append_sheet(wb, ws, 'Filmy');
+      const wbout = XLSX.write(wb, { bookType:'xlsx', type:'array' });
+      saveAs(new Blob([wbout], {type:'application/octet-stream'}), 'ListaFilmow.xlsx');
+    }
 
-        async function loadAllExcelLists() {
-            for (const { id, url } of listsToLoad) {
-                const data = await loadExcelData(url);
-                data.slice(1).forEach(([title, url]) => {
-                    if (title && url) {
-                        if (!allTitles.includes(title)) allTitles.push(title);
-                        const li = document.createElement('li');
-                        const isYoutube = url.includes("youtube.com");
-                        const thumb = isYoutube ? `<img src="https://img.youtube.com/vi/${getYoutubeID(url)}/0.jpg">` : '';
-                        li.innerHTML = `<a href="${url}" target="_blank">${thumb}${title}</a>`;
-                        listElement.appendChild(li);
-                    }
-                });
-            }
-        }
+    function exportPDF(){
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({unit:'pt', format:'a4'});
+      const left = 40, line = 18; let y = 40;
+      doc.setFont('helvetica','bold'); doc.setFontSize(14);
+      doc.text('Lista Filmów Sveaverken (widoczne)', left, y); y+=22;
+      doc.setFont('helvetica','normal'); doc.setFontSize(10);
+      state.visible.forEach(({title,url}, i)=>{
+        const lines = doc.splitTextToSize(`${i+1}. ${title}`, 515);
+        if (y + lines.length*line + line > 820){ doc.addPage(); y=40; }
+        lines.forEach(t=>{ doc.text(t, left, y); y+=line; });
+        const urlLines = doc.splitTextToSize(url, 515);
+        urlLines.forEach(t=>{ if (y>820){doc.addPage(); y=40;} doc.text(t, left, y); y+=line; });
+        y+=6;
+      });
+      doc.save('ListaFilmow.pdf');
+    }
 
-        document.addEventListener('DOMContentLoaded', loadAllExcelLists);
+    async function copyVisible(){
+      const text = state.visible.map(v=>v.url).join('\n');
+      await navigator.clipboard?.writeText(text);
+    }
 
-    </script>
+    // ---------- Events ----------
+    el.filter.addEventListener('input', deb(applyFilter, 150));
+    el.btnExcel.addEventListener('click', exportExcel);
+    el.btnPDF.addEventListener('click', exportPDF);
+    el.btnCopy.addEventListener('click', copyVisible);
+
+    // ---------- Init ----------
+    window.addEventListener('load', loadAll);
+  </script>
 </body>
 </html>
+```
