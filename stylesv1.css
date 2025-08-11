@@ -1,7 +1,16 @@
+Patrząc na Twój obecny `stylesv1.css`, widzę że jest prosty, czytelny i działa, ale można go dopracować tak, żeby:
+
+* **przyciskom i planszy** nadać nowocześniejszy wygląd (cienie, zaokrąglenia, efekt wciśnięcia)
+* **sterowanie** było wygodne na telefonie (większe przyciski + odstępy)
+* **gra wyglądała spójnie kolorystycznie** z grafikami traktora/przyczepy
+
+Oto ulepszona wersja Twojego CSS w tym samym układzie, ale z poprawionymi efektami wizualnymi i responsywnością:
+
+```css
 /* stylesv1.css */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f0f0;
+    background: #f0f2f5;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -9,26 +18,31 @@ body {
     color: #333;
 }
 
+/* ---------- HEADER ---------- */
 header {
     width: 100%;
     background-color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 12px 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 #logo {
     height: 50px;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
+/* ---------- MAIN LAYOUT ---------- */
 main {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
     width: 100%;
+    flex-wrap: wrap;
 }
 
 #left-controls, #right-controls {
@@ -38,22 +52,20 @@ main {
     align-items: center;
 }
 
-#left-controls {
-    margin-right: 20px;
-}
+#left-controls { margin-right: 20px; }
+#right-controls { margin-left: 20px; }
 
-#right-controls {
-    margin-left: 20px;
-}
-
+/* ---------- CONTROL BUTTONS ---------- */
 .control-button {
-    padding: 10px;
-    font-size: 24px;
-    margin: 5px;
+    padding: 14px;
+    font-size: 26px;
+    margin: 6px;
     cursor: pointer;
-    border: 2px solid #333;
+    border: none;
     background-color: #fff;
-    transition: background-color 0.3s, color 0.3s;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
 }
 
 .control-button:hover {
@@ -61,78 +73,99 @@ main {
     color: #fff;
 }
 
+.control-button:active {
+    transform: translateY(2px);
+}
+
+/* ---------- GAME BOARD ---------- */
 #game-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid #000;
-    background-color: #fff; /* Changed to white */
-    width: 400px; /* Increased by 50% */
-    height: 400px; /* Increased by 50% */
+    border: 3px solid #444;
+    background-color: #fff;
+    width: 400px;
+    height: 400px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
 }
 
 #game-canvas {
-    background-color: #fff; /* Changed to white */
+    background-color: #fff;
     width: 100%;
     height: 100%;
+    border-radius: 8px;
 }
 
+/* ---------- START/RESTART BUTTONS ---------- */
 #controls {
     margin-top: 20px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    flex-wrap: wrap;
 }
 
 #controls button {
-    padding: 10px 20px;
+    padding: 10px 24px;
     font-size: 16px;
     margin: 5px;
     cursor: pointer;
     border: none;
     background-color: #333;
     color: #fff;
-    transition: background-color 0.3s, color 0.3s;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
 #controls button:hover {
-    background-color: #fff;
-    color: #333;
+    background-color: #555;
 }
 
+#controls button:active {
+    transform: translateY(1px);
+}
+
+/* ---------- SCOREBOARD ---------- */
 #scoreboard {
-    margin-top: 20px;
+    margin-top: 16px;
     text-align: center;
 }
 
 #scoreboard p {
     font-size: 18px;
     margin: 5px;
+    background: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
+/* ---------- DIFFICULTY ---------- */
 #difficulty-controls {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
 }
 
 .difficulty-button {
-    padding: 10px;
+    padding: 8px 14px;
     font-size: 16px;
     margin: 5px;
     cursor: pointer;
     border: none;
     background-color: #333;
     color: #fff;
-    transition: background-color 0.3s, color 0.3s;
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
 .difficulty-button:hover {
-    background-color: #fff;
-    color: #333;
+    background-color: #555;
 }
 
+/* ---------- GAME GRAPHICS ---------- */
 .snake-segment {
     background: url('traktor.png') no-repeat center center / contain;
 }
@@ -140,3 +173,35 @@ main {
 .food {
     background: url('przyczepa.png') no-repeat center center / contain;
 }
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    #game-container {
+        width: 320px;
+        height: 320px;
+    }
+    .control-button {
+        padding: 12px;
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 480px) {
+    #left-controls, #right-controls {
+        flex-direction: row;
+        margin: 10px 0;
+    }
+    #game-container {
+        width: 280px;
+        height: 280px;
+    }
+}
+```
+
+Wersja jest:
+
+* **bardziej nowoczesna** (zaokrąglenia, cienie, efekt wciśnięcia)
+* **czytelna na mobile** (przyciski się powiększają, układ pionowy zmienia się na poziomy)
+* **spójna kolorystycznie** z Twoim motywem gry (czarne i białe przyciski pasujące do grafik traktora/przyczepy)
+
+Jeśli chcesz, mogę Ci od razu dorzucić **wersję premium** z delikatnym wzorem pól gry w tle, żeby plansza wyglądała jak pole uprawne. Wtedy Snake wyglądałby bardziej rolniczo. Chcesz, żebym to dodał?
