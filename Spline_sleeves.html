@@ -1,255 +1,386 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>Lista Adapterów Spline Sleeve</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+  <meta charset="UTF-8" />
+  <title>Lista Adapterów Spline Sleeve</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+  <!-- XLSX -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js" defer></script>
 
-        table th, table td {
-            border: 1px solid #ccc;
-            padding: 8px 12px;
-            text-align: left;
-        }
+  <!-- Google Translate -->
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'pl',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
 
-        table thead {
-            background-color: #f0f0f0;
-        }
+  <style>
+    :root{
+      --ink:#111;
+      --muted:#666;
+      --line:#ccc;
+      --card:#f7f9fc;
+      --radius:12px;
+      --shadow:0 2px 10px rgba(0,0,0,.12);
+      --brand:#005bbb;
+      --hi:#ffeaa7;
+    }
+    *{box-sizing:border-box}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:20px;color:var(--ink)}
+    header{display:flex;align-items:center;gap:16px;justify-content:space-between;flex-wrap:wrap}
+    header img{height:50px}
+    main{margin-top:10px}
+    h1{margin:10px 0 14px}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field input{padding:8px 10px;border:1px solid var(--line);border-radius:10px;min-width:220px}
+    button{padding:10px 14px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+    button.secondary{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+    .wrap{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px}
+    .hint{color:var(--muted);font-size:12px}
 
-        table tr:nth-child(even) {
-            background-color: #fafafa;
-        }
+    .meta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    .chip{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:6px 10px;font-weight:600;box-shadow:var(--shadow)}
 
-        input, select, button {
-            padding: 8px 12px;
-            margin: 10px 10px 10px 0;
-            font-size: 16px;
-        }
+    .table-wrap{margin-top:12px;border:1px solid #eee;border-radius:12px;overflow:auto}
+    table{width:100%;border-collapse:collapse;min-width:900px}
+    th,td{border:1px solid #ddd;padding:10px;text-align:left}
+    thead th{background:#f0f0f0;position:sticky;top:0;z-index:1;cursor:pointer;user-select:none}
+    tbody tr:nth-child(even){background:#fafafa}
+    .highlight{background:var(--hi)!important}
 
-        button {
-            cursor: pointer;
-        }
+    .loading{display:flex;gap:10px;align-items:center;color:var(--muted);padding:10px}
+    .spinner{width:16px;height:16px;border:3px solid #ddd;border-top-color:var(--brand);border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        header img {
-            height: 50px;
-        }
-
-        #google_translate_element {
-            margin-left: auto;
-            padding: 10px;
-        }
-
-        .highlight {
-            background-color: #ffeaa7 !important;
-        }
-    </style>
-    <script>
-        let fullData = [];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadExcelData('spline_sleeves', 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx');
-            autoTranslateToBrowserLanguage();
-        });
-
-        async function loadExcelData(listId, url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error('Problem z pobraniem pliku Excel: ' + response.statusText);
-                }
-                const data = await response.arrayBuffer();
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-
-                const adaptedBrands = new Set();
-                const seriesList = new Set();
-
-                jsonData.slice(1).forEach(row => {
-                    if (row[3]) {
-                        row[3].split(',').forEach(brand => adaptedBrands.add(String(brand).trim()));
-                    }
-                    if (row[5] != null) {
-                        seriesList.add(String(row[5]).trim());
-                    }
-
-                    fullData.push({
-                        name: row[0],
-                        coding: row[1],
-                        version: row[2],
-                        adaptedBrand: row[3],
-                        parameter: row[4],
-                        series: row[5]
-                    });
-                });
-
-                const brandInput = document.getElementById('brand-input');
-                const brandDatalist = document.getElementById('brands');
-                adaptedBrands.forEach(brand => {
-                    const option = document.createElement('option');
-                    option.value = brand;
-                    brandDatalist.appendChild(option);
-                });
-
-                const seriesInput = document.getElementById('series-input');
-                const seriesDatalist = document.getElementById('series');
-                seriesList.forEach(serie => {
-                    const option = document.createElement('option');
-                    option.value = serie;
-                    seriesDatalist.appendChild(option);
-                });
-
-                brandInput.addEventListener('input', filterData);
-                seriesInput.addEventListener('input', filterData);
-
-                displayTableData(fullData);
-
-            } catch (error) {
-                alert('Wystąpił błąd podczas ładowania danych z pliku Excel: ' + error.message);
-            }
-        }
-
-        function filterData() {
-            const brand = document.getElementById('brand-input').value.trim().toLowerCase();
-            const series = document.getElementById('series-input').value.trim().toLowerCase();
-
-            const filtered = fullData.filter(row => {
-                return !brand || (
-                    row.adaptedBrand &&
-                    row.adaptedBrand.split(',').map(b => b.trim().toLowerCase()).includes(brand)
-                );
-            });
-
-            displayTableData(filtered);
-
-            if (series) {
-                highlightSeriesMatches(series);
-            }
-        }
-
-        function highlightSeriesMatches(seriesValue) {
-            const rows = document.querySelectorAll('#data-table-body tr');
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                const seriesCell = cells[4];
-                if (seriesCell && seriesCell.textContent.trim().toLowerCase() === seriesValue) {
-                    row.classList.add('highlight');
-                } else {
-                    row.classList.remove('highlight');
-                }
-            });
-        }
-
-        function displayTableData(data) {
-            const tableBody = document.getElementById('data-table-body');
-            tableBody.innerHTML = '';
-
-            if (data.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td colspan="5">Brak wyników dla wybranych filtrów.</td>`;
-                tableBody.appendChild(row);
-                return;
-            }
-
-            data.forEach(row => {
-                const { name, coding, version, parameter, series } = row;
-                const rowElement = document.createElement('tr');
-                rowElement.innerHTML = `
-                    <td>${name || ''}</td>
-                    <td>${coding || ''}</td>
-                    <td>${version || ''}</td>
-                    <td>${parameter || ''}</td>
-                    <td>${series || ''}</td>
-                `;
-                tableBody.appendChild(rowElement);
-            });
-        }
-
-        function showAll() {
-            document.getElementById('brand-input').value = '';
-            document.getElementById('series-input').value = '';
-            displayTableData(fullData);
-        }
-
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'pl',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-            }, 'google_translate_element');
-        }
-
-        function autoTranslateToBrowserLanguage() {
-            const lang = navigator.language || navigator.userLanguage;
-            if (!lang || lang.startsWith('pl')) return;
-
-            const trySetLang = () => {
-                const select = document.querySelector('select.goog-te-combo');
-                if (select && select.options.length > 1) {
-                    select.value = lang.substring(0, 2);
-                    select.dispatchEvent(new Event('change'));
-                    return true;
-                }
-                return false;
-            };
-
-            const interval = setInterval(() => {
-                if (trySetLang()) clearInterval(interval);
-            }, 500);
-        }
-    </script>
+    .empty{padding:16px;text-align:center;color:var(--muted)}
+    .sr{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+  </style>
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="Sveaverken Logo">
-        <div id="google_translate_element"></div>
-    </header>
-    <main>
-        <section id="spline_sleeves">
-            <h1>Lista Adapterów Spline Sleeve</h1>
+  <header>
+    <img src="logo.png" alt="Sveaverken Logo">
+    <div id="google_translate_element"></div>
+  </header>
 
-            <label for="brand-input">Filtruj po marce:</label>
-            <input list="brands" id="brand-input" placeholder="Wpisz markę..." autocomplete="off">
+  <main>
+    <section id="spline_sleeves">
+      <h1>Lista Adapterów Spline Sleeve</h1>
+
+      <div class="wrap">
+        <div class="controls">
+          <div class="field">
+            <label for="brand-input">Filtruj po marce</label>
+            <input list="brands" id="brand-input" placeholder="np. Fendt, John Deere…" autocomplete="off">
             <datalist id="brands"></datalist>
+          </div>
 
-            <label for="series-input">Filtruj po serii (podświetlenie):</label>
-            <input list="series" id="series-input" placeholder="Wpisz serię..." autocomplete="off">
+          <div class="field">
+            <label for="series-input">Filtruj po serii (podświetlenie)</label>
+            <input list="series" id="series-input" placeholder="np. 700 Vario…" autocomplete="off">
             <datalist id="series"></datalist>
+            <div class="hint">Wiersze z dopasowaną serią zostaną podświetlone</div>
+          </div>
 
-            <button onclick="showAll()">Pokaż wszystkie</button>
+          <div class="field">
+            <label for="q">Wyszukaj w tabeli (pełnotekstowo)</label>
+            <input id="q" placeholder="nazwa / kod / wersja / parametr / seria">
+          </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nazwa</th>
-                        <th>Kod produktu</th>
-                        <th>Wersja</th>
-                        <th>Parametr</th>
-                        <th>Seria</th>
-                    </tr>
-                </thead>
-                <tbody id="data-table-body"></tbody>
-            </table>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Sveaverken</p>
-    </footer>
+          <div class="field">
+            <button id="btnShowAll" type="button">Pokaż wszystkie</button>
+          </div>
+          <div class="field">
+            <button id="btnCSV" type="button" class="secondary">Eksport CSV</button>
+          </div>
+        </div>
+
+        <div class="meta" aria-live="polite">
+          <span class="chip">Wyników: <strong id="count">0</strong></span>
+          <span class="chip">Źródło: <code>List.xlsx</code></span>
+          <span class="chip" id="sortInfo">Sort: domyślny</span>
+        </div>
+      </div>
+
+      <div id="loading" class="loading">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Wczytywanie danych z Excela…</span>
+      </div>
+
+      <div class="table-wrap" aria-live="polite">
+        <table id="table">
+          <thead>
+            <tr>
+              <th data-key="name">Nazwa</th>
+              <th data-key="coding">Kod produktu</th>
+              <th data-key="version">Wersja</th>
+              <th data-key="parameter">Parametr</th>
+              <th data-key="series">Seria</th>
+            </tr>
+          </thead>
+          <tbody id="data-table-body"></tbody>
+        </table>
+        <div id="emptyState" class="empty" style="display:none">Brak wyników dla wybranych filtrów.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Sveaverken</p>
+  </footer>
+
+  <script>
+    // -------- STATE --------
+    let fullData = [];
+    let viewData = [];
+    const sourceURL = 'https://raw.githubusercontent.com/MariuszNi/sveaverken/main/List.xlsx';
+
+    const els = {
+      brand: document.getElementById('brand-input'),
+      series: document.getElementById('series-input'),
+      q: document.getElementById('q'),
+      brands: document.getElementById('brands'),
+      seriesList: document.getElementById('series'),
+      tbody: document.getElementById('data-table-body'),
+      empty: document.getElementById('emptyState'),
+      count: document.getElementById('count'),
+      loading: document.getElementById('loading'),
+      sortInfo: document.getElementById('sortInfo'),
+      btnShowAll: document.getElementById('btnShowAll'),
+      btnCSV: document.getElementById('btnCSV'),
+      thead: document.querySelector('#table thead')
+    };
+
+    const sortState = { key: null, dir: 1 }; // 1 asc, -1 desc
+
+    // -------- LOAD --------
+    document.addEventListener('DOMContentLoaded', () => {
+      loadExcelData(sourceURL).then(() => {
+        autoTranslateToBrowserLanguage();
+      });
+    });
+
+    async function loadExcelData(url){
+      try{
+        const res = await fetch(url, { cache: 'no-store' });
+        if(!res.ok) throw new Error(res.status + ' ' + res.statusText);
+
+        const buf = await res.arrayBuffer();
+        const wb = XLSX.read(buf, { type:'array' });
+        const sheet = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header:1 });
+
+        const adaptedBrands = new Set();
+        const seriesSet = new Set();
+
+        // Expected columns:
+        // 0: name, 1: coding, 2: version, 3: adaptedBrand (comma sep), 4: parameter, 5: series
+        rows.slice(1).forEach(row=>{
+          const name = safe(row[0]);
+          const coding = safe(row[1]);
+          const version = safe(row[2]);
+          const adaptedBrand = safe(row[3]);
+          const parameter = safe(row[4]);
+          const series = safe(row[5]);
+
+          if (adaptedBrand){
+            adaptedBrand.split(',').forEach(b => adaptedBrands.add(b.trim()));
+          }
+          if (series) seriesSet.add(series.trim());
+
+          fullData.push({ name, coding, version, adaptedBrand, parameter, series });
+        });
+
+        // Datalists
+        adaptedBrands.forEach(b=>{
+          const o = document.createElement('option'); o.value = b; els.brands.appendChild(o);
+        });
+        seriesSet.forEach(s=>{
+          const o = document.createElement('option'); o.value = s; els.seriesList.appendChild(o);
+        });
+
+        viewData = [...fullData];
+        els.loading.style.display = 'none';
+        render();
+      }catch(e){
+        els.loading.innerHTML = `<span class="spinner" aria-hidden="true"></span><span>Nie udało się wczytać danych: ${e.message}</span>`;
+      }
+    }
+
+    const safe = v => (v === undefined || v === null) ? '' : String(v).trim();
+
+    // -------- FILTERS --------
+    function applyFilters(){
+      const brand = els.brand.value.trim().toLowerCase();
+      const series = els.series.value.trim().toLowerCase();
+      const q = els.q.value.trim().toLowerCase();
+
+      viewData = fullData.filter(r=>{
+        // brand filter: any of comma-separated brands contains value
+        const brandOk = !brand || (
+          r.adaptedBrand &&
+          r.adaptedBrand.split(',').map(x=>x.trim().toLowerCase()).includes(brand)
+        );
+
+        // full-text filter across visible columns + adaptedBrand for convenience
+        const hay = [r.name, r.coding, r.version, r.parameter, r.series, r.adaptedBrand].join(' | ').toLowerCase();
+        const qOk = !q || hay.includes(q);
+
+        return brandOk && qOk;
+      });
+
+      // sort (if any)
+      if (sortState.key){
+        sortData(sortState.key, sortState.dir);
+      }
+
+      render(series);
+    }
+
+    function render(seriesHighlight=''){
+      els.tbody.innerHTML = '';
+      els.count.textContent = viewData.length;
+      els.empty.style.display = viewData.length ? 'none' : 'block';
+
+      const seriesValue = seriesHighlight.trim().toLowerCase();
+
+      viewData.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(r.name)}</td>
+          <td>${escapeHtml(r.coding)}</td>
+          <td>${escapeHtml(r.version)}</td>
+          <td>${escapeHtml(r.parameter)}</td>
+          <td>${escapeHtml(r.series)}</td>
+        `;
+
+        if (seriesValue && String(r.series).trim().toLowerCase().includes(seriesValue)){
+          tr.classList.add('highlight');
+        }
+        els.tbody.appendChild(tr);
+      });
+      updateSortInfo();
+    }
+
+    function showAll(){
+      els.brand.value = '';
+      els.series.value = '';
+      els.q.value = '';
+      sortState.key = null; sortState.dir = 1;
+      viewData = [...fullData];
+      render();
+    }
+
+    // -------- SORT --------
+    function sortData(key, dir){
+      viewData.sort((a,b)=>{
+        const av = (a[key] ?? '').toString().toLowerCase();
+        const bv = (b[key] ?? '').toString().toLowerCase();
+        if (av < bv) return -1 * dir;
+        if (av > bv) return  1 * dir;
+        return 0;
+      });
+    }
+
+    function updateSortInfo(){
+      if (!sortState.key) els.sortInfo.textContent = 'Sort: domyślny';
+      else els.sortInfo.textContent = `Sort: ${colLabel(sortState.key)} ${sortState.dir===1 ? '↑' : '↓'}`;
+    }
+
+    function colLabel(key){
+      switch(key){
+        case 'name': return 'Nazwa';
+        case 'coding': return 'Kod produktu';
+        case 'version': return 'Wersja';
+        case 'parameter': return 'Parametr';
+        case 'series': return 'Seria';
+        default: return key;
+      }
+    }
+
+    // header click -> sort
+    els.thead.addEventListener('click', (e)=>{
+      const th = e.target.closest('th[data-key]');
+      if(!th) return;
+      const key = th.getAttribute('data-key');
+      if (sortState.key === key){
+        sortState.dir *= -1; // toggle
+      } else {
+        sortState.key = key;
+        sortState.dir = 1;
+      }
+      sortData(sortState.key, sortState.dir);
+      render(els.series.value);
+    });
+
+    // -------- EXPORT --------
+    function exportCSV(){
+      if (!viewData.length) return;
+      const header = ['Nazwa','Kod produktu','Wersja','Parametr','Seria'];
+      const lines = [header.join(',')];
+      viewData.forEach(r=>{
+        lines.push([
+          csvSafe(r.name),
+          csvSafe(r.coding),
+          csvSafe(r.version),
+          csvSafe(r.parameter),
+          csvSafe(r.series)
+        ].join(','));
+      });
+      const blob = new Blob([lines.join('\n')], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'spline_sleeves.csv';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    const csvSafe = v => {
+      const s = (v ?? '').toString();
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+    };
+
+    const escapeHtml = s => (s ?? '').toString()
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+
+    // -------- AUTOTRANSLATE --------
+    function autoTranslateToBrowserLanguage() {
+      const lang = navigator.language || navigator.userLanguage;
+      if (!lang || lang.startsWith('pl')) return;
+
+      const trySetLang = () => {
+        const select = document.querySelector('select.goog-te-combo');
+        if (select && select.options.length > 1) {
+          select.value = lang.substring(0, 2);
+          select.dispatchEvent(new Event('change'));
+          return true;
+        }
+        return false;
+      };
+      const interval = setInterval(() => { if (trySetLang()) clearInterval(interval); }, 500);
+    }
+
+    // -------- EVENTS --------
+    const debounce = (fn, ms=200)=>{
+      let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args), ms); };
+    };
+
+    els.brand.addEventListener('input', debounce(applyFilters));
+    els.series.addEventListener('input', debounce(()=>render(els.series.value)));
+    els.q.addEventListener('input', debounce(applyFilters));
+    els.btnShowAll.addEventListener('click', showAll);
+    els.btnCSV.addEventListener('click', exportCSV);
+  </script>
 </body>
 </html>
+```
