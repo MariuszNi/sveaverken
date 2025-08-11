@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -161,19 +162,16 @@
       { "Engineer": "Ilgner Boer",        "GMT+8": "22:30-10:00", "Local Time": "11:30-23:00", "Country": "BR", "Languages": "English, Portuguese","TimeZone": "America/Sao_Paulo" },
       { "Engineer": "Mariusz Niezgoda",   "GMT+8": "14:30-02:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish",    "TimeZone": "Europe/Warsaw" },
       { "Engineer": "Kamil Jabłoński",    "GMT+8": "14:30-02:30", "Local Time": "07:30-20:30", "Country": "PL", "Languages": "English, Polish",    "TimeZone": "Europe/Warsaw" },
-      { "Engineer": "Darko Nosovic",    "GMT+8": "14:30-02:30", "Local Time": "07:30-20:30", "Country": "SRB", "Languages": "English, Serbian",    "TimeZone": "Europe/Warsaw" }
-       
+      { "Engineer": "Darko Nosovic",      "GMT+8": "14:30-02:30", "Local Time": "07:30-20:30", "Country": "RS", "Languages": "English, Serbian",   "TimeZone": "Europe/Belgrade" }
     ];
 
-    // Keep as many future entries as you want here
     const weekendSchedule = [
-      { date: '2025-08-16', day: 'Saturday', fae: 'XENGGES-CN (GMT+8) ' },
-      { date: '2025-08-17', day: 'Sunday', fae: 'DİNÇER-TR (GMT+3) ' },
+      { date: '2025-08-16', day: 'Saturday', fae: 'XENGGES-CN (GMT+8)' },
+      { date: '2025-08-17', day: 'Sunday',   fae: 'DİNÇER-TR (GMT+3)' },
       { date: '2025-08-23', day: 'Saturday', fae: 'DOGUKAN-TR (GMT+3)' },
-      { date: '2025-08-24', day: 'Sunday', fae: 'MARIUSZ-PL (GMT+1)' },
+      { date: '2025-08-24', day: 'Sunday',   fae: 'MARIUSZ-PL (GMT+1)' }
     ];
 
-    // ------- Utils -------
     function toDecimal(hhmm){
       const [h,m] = hhmm.split(':').map(Number);
       return (h % 24) + (m || 0)/60;
@@ -190,27 +188,36 @@
     function isInRangeGMT8(rangeStr){
       const [start,end] = parseRange(rangeStr);
       const t = nowInGMT8Decimal();
-      if (start === end) return true; // 24/7
+      if (start === end) return true;
       return start > end ? (t >= start || t < end) : (t >= start && t < end);
     }
-    function pad(n){ return String(n).padStart(2,'0'); }
+    function pad2(n){ return String(n).padStart(2,'0'); }
+    function fmtISOlocal(d){
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    }
 
-    // ------- Clocks -------
     function tickClocks(){
       const now = new Date();
-      const g8 = new Date(now.getTime() + (8 - now.getTimezoneOffset()/60)*3600*1000 - now.getHours()*3600*1000 + now.getHours()*3600*1000); // display via formatter instead
       document.getElementById('clockLocal').textContent =
         new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
-
-      const gmt8Text = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Shanghai'}).format(now);
-      document.getElementById('clockG8').textContent = gmt8Text;
+      document.getElementById('clockG8').textContent =
+        new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false,timeZone:'Asia/Shanghai'}).format(now);
     }
     setInterval(tickClocks, 1000);
     tickClocks();
 
-    // ------- Table rendering -------
     const tbody = document.getElementById('faeBody');
-    let currentRows = [];
+
+    function startLocalClock(cell, timeZone){
+      function update(){
+        const t = new Intl.DateTimeFormat('en-GB',{
+          hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone
+        }).format(new Date());
+        cell.textContent = t;
+      }
+      update();
+      setInterval(update, 1000);
+    }
 
     function rowFor(fae){
       const tr = document.createElement('tr');
@@ -230,7 +237,7 @@
       const status = tr.insertCell();
       const badge = document.createElement('span');
       badge.className = 'status-badge ' + (available ? 'status-ok' : 'status-bad');
-      badge.innerHTML = (available ? 'Available' : 'Unavailable');
+      badge.textContent = available ? 'Available' : 'Unavailable';
       status.appendChild(badge);
 
       tr.dataset.country = fae.Country;
@@ -238,17 +245,6 @@
       tr.dataset.search = [fae.Engineer, fae.Languages, fae.Country].join(' ').toLowerCase();
 
       return tr;
-    }
-
-    function startLocalClock(cell, timeZone){
-      function update(){
-        const t = new Intl.DateTimeFormat('en-GB',{
-          hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, timeZone
-        }).format(new Date());
-        cell.textContent = t;
-      }
-      update();
-      setInterval(update, 1000);
     }
 
     function renderTable(list){
@@ -270,7 +266,7 @@
       });
       updateSummary();
     }
-    setInterval(updateStatuses, 30_000);
+    setInterval(updateStatuses, 30000);
 
     function updateSummary(){
       const rows = [...tbody.rows];
@@ -278,7 +274,6 @@
       document.getElementById('availableCount').textContent = available;
     }
 
-    // ------- Filters & Sort -------
     const searchBox = document.getElementById('searchBox');
     const countryFilter = document.getElementById('countryFilter');
     const statusFilter = document.getElementById('statusFilter');
@@ -329,30 +324,30 @@
       });
     }
 
-    // ------- Weekend schedule -------
     function nextWeekendDates(){
       const now = new Date();
       const day = now.getDay(); // 0=Sun..6=Sat
-      const sat = new Date(now);
-      sat.setHours(0,0,0,0);
+      const sat = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       sat.setDate(now.getDate() + ((6 - day + 7) % 7));
-      const sun = new Date(sat);
-      sun.setDate(sat.getDate() + 1);
+      sat.setHours(0,0,0,0);
+      const sun = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate()+1);
       return { sat, sun };
     }
 
-    function fmtISO(d){ return d.toISOString().slice(0,10); }
-
     function displayUpcomingWeekend(){
       const { sat, sun } = nextWeekendDates();
-      const satStr = fmtISO(sat), sunStr = fmtISO(sun);
+      const satStr = fmtISOlocal(sat), sunStr = fmtISOlocal(sun);
 
       const satEntry = weekendSchedule.find(d=>d.date === satStr);
       const sunEntry = weekendSchedule.find(d=>d.date === sunStr);
 
+      const today = new Date(); today.setHours(0,0,0,0);
       const fallbackNext = weekendSchedule
-        .map(d=>({ ...d, when: new Date(d.date+'T00:00:00Z') }))
-        .filter(d=> d.when >= new Date(new Date().toISOString().slice(0,10)+'T00:00:00Z'))
+        .map(d => {
+          const [yy,mm,dd] = d.date.split('-').map(Number);
+          return { ...d, when: new Date(yy, mm-1, dd, 0,0,0,0) };
+        })
+        .filter(d => d.when >= today)
         .sort((a,b)=> a.when - b.when);
 
       document.getElementById('saturdaySchedule').textContent =
@@ -375,13 +370,12 @@
       }
     }
 
-    // ------- Holidays (Nager API) -------
     async function displayPublicHolidays(){
       const ul = document.getElementById('holidayList');
       ul.innerHTML = '<li>Checking…</li>';
 
       const countries = [...new Set(faeData.map(f=>f.Country))];
-      const todayISO = new Date().toISOString().slice(0,10);
+      const todayISO = fmtISOlocal(new Date());
       const year = new Date().getFullYear();
 
       const activeNow = new Set(
@@ -413,7 +407,6 @@
       }
     }
 
-    // ------- Init -------
     function init(){
       populateCountryFilter();
       renderTable(faeData);
@@ -426,3 +419,4 @@
   </script>
 </body>
 </html>
+```
