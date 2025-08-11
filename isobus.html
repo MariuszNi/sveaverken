@@ -1,191 +1,381 @@
+```html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>ISOBUS w Rolnictwie Precyzyjnym</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            color: #333;
+  <meta charset="UTF-8" />
+  <title>ISOBUS w Rolnictwie Precyzyjnym | Sveaverken</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Translate -->
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'pl',
+        includedLanguages: 'pl,en,de,fr,es,it,pt,ru,uk,cs,sk,hu,nl,sv,fi,da,no,tr,ro,bg,el,lt,lv,et,ar,ja,ko,zh-CN,zh-TW',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+    // auto-translate to browser language (fallback en)
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = (navigator.language||'pl').split('-')[0];
+      const supported = new Set(['pl','en','de','fr','es','it','pt','ru','uk','cs','sk','hu','nl','sv','fi','da','no','tr','ro','bg','el','lt','lv','et','ar','ja','ko','zh','zh-CN','zh-TW']);
+      const target = supported.has(lang) ? lang : 'en';
+      const trySet = () => {
+        const sel = document.querySelector('select.goog-te-combo');
+        if (sel && sel.options.length) {
+          sel.value = target;
+          sel.dispatchEvent(new Event('change'));
+          return true;
         }
-        /* Nagłówek */
-        .header {
-            background-color: #00457C;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        /* Nawigacja */
-        .nav {
-            display: flex;
-            background-color: #002E5D;
-            justify-content: center;
-        }
-        .nav a {
-            color: white;
-            padding: 15px 20px;
-            text-decoration: none;
-            text-transform: uppercase;
-        }
-        .nav a:hover {
-            background-color: #001B3D;
-        }
-        /* Główna treść */
-        .main {
-            padding: 40px;
-            max-width: 1000px;
-            margin: auto;
-        }
-        .main h1, .main h2, .main h3 {
-            color: #00457C;
-        }
-        .main p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-        /* Stopka */
-        .footer {
-            background-color: #002E5D;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+        return false;
+      };
+      const iv = setInterval(()=>{ if (trySet()) clearInterval(iv); }, 600);
+    });
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+
+  <style>
+    :root{
+      --ink:#1f2937;
+      --bg:#ffffff;
+      --brand:#00457C;
+      --brand-2:#002E5D;
+      --muted:#6b7280;
+      --card:#f7fafc;
+      --line:#e5e7eb;
+      --good:#16a34a;
+      --warn:#f59e0b;
+      --bad:#dc2626;
+      --radius:12px;
+      --shadow:0 8px 26px rgba(0,0,0,.08);
+    }
+    [data-theme="dark"]{
+      --ink:#e5e7eb; --bg:#0b1220; --brand:#66a7ff; --brand-2:#193a71; --muted:#9aa6c3; --card:#0f1730; --line:#213055; --shadow:0 10px 30px rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+
+    /* Header */
+    .header{
+      background:linear-gradient(180deg,var(--brand),var(--brand-2));
+      color:#fff;padding:14px 16px;position:sticky;top:0;z-index:40;
+      box-shadow:var(--shadow)
+    }
+    .head-wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand img{height:44px;width:auto;border-radius:6px;background:#fff}
+    .brand h1{margin:0;font-size:20px;line-height:1.2}
+    #google_translate_element{justify-self:end}
+    .tools{display:flex;gap:8px;align-items:center;justify-content:flex-end}
+    .btn{
+      appearance:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);
+      color:#fff;padding:8px 12px;border-radius:10px;font-weight:700;cursor:pointer
+    }
+    .btn:hover{background:rgba(255,255,255,.18)}
+    .btn.secondary{background:#fff;color:var(--brand);border:0}
+    .search{
+      width:100%;max-width:380px;display:flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);padding:8px 12px;border-radius:10px
+    }
+    .search input{all:unset;color:#fff;width:100%}
+    .search input::placeholder{color:rgba(255,255,255,.8)}
+
+    /* Main */
+    .main{max-width:1100px;margin:22px auto;padding:0 16px;display:grid;grid-template-columns:280px 1fr;gap:18px}
+    @media (max-width: 960px){ .main{grid-template-columns:1fr} }
+
+    /* TOC */
+    .toc{
+      position:sticky;top:86px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 10px;
+      box-shadow:var(--shadow);max-height:calc(100vh - 110px);overflow:auto
+    }
+    .toc h3{margin:4px 8px 8px;font-size:14px;color:var(--muted)}
+    .toc a{display:block;padding:8px 10px;border-radius:8px;color:inherit;text-decoration:none}
+    .toc a:hover{background:rgba(0,0,0,.06)}
+    [data-theme="dark"] .toc a:hover{background:rgba(255,255,255,.06)}
+    .toc .sub{padding-left:14px;font-size:14px;color:var(--muted)}
+
+    /* Content */
+    article section{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
+    h1,h2,h3{color:var(--brand);margin:0 0 10px}
+    article p{line-height:1.65;font-size:16px;margin:8px 0}
+    .label{display:inline-block;font-size:12px;font-weight:800;color:#fff;background:var(--brand);padding:2px 8px;border-radius:999px;margin-left:6px}
+    .hint{color:var(--muted);font-size:14px}
+
+    /* Accordion */
+    details{border:1px solid var(--line);border-radius:10px;padding:10px;background:rgba(0,0,0,.02)}
+    [data-theme="dark"] details{background:rgba(255,255,255,.03)}
+    details+details{margin-top:10px}
+    summary{cursor:pointer;font-weight:800}
+    summary::marker{color:var(--brand)}
+
+    /* Pin list */
+    .pins{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px}
+    .pin{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;position:relative}
+    [data-theme="dark"] .pin{background:#0c1430}
+    .pin b{color:var(--brand)}
+    .copy{position:absolute;right:8px;top:8px;font-size:12px;border:1px solid var(--line);background:transparent;color:inherit;border-radius:8px;padding:4px 8px;cursor:pointer}
+    .copy:hover{background:rgba(0,0,0,.06)} [data-theme="dark"] .copy:hover{background:rgba(255,255,255,.06)}
+
+    /* Inline util */
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-weight:800;font-size:12px}
+    .ok{background:rgba(22,163,74,.12);color:#16a34a;border:1px solid rgba(22,163,74,.35)}
+    .need{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.35)}
+
+    /* Footer */
+    .footer{background:var(--brand-2);color:#fff;text-align:center;padding:12px;margin-top:24px}
+    .footer a{color:#fff;font-weight:800}
+
+    /* Floating */
+    .float{
+      position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:50
+    }
+    .fab{
+      border:0;border-radius:999px;padding:12px 14px;background:var(--brand);color:#fff;box-shadow:var(--shadow);cursor:pointer
+    }
+    .fab:hover{filter:brightness(1.05)}
+
+    /* Images */
+    .connector-image{width:100%;max-width:680px;border-radius:10px;border:1px solid var(--line);display:block}
+  </style>
 </head>
 <body>
 
-    <!-- Nagłówek -->
-    <div class="header">
+  <!-- Header -->
+  <div class="header" role="banner">
+    <div class="head-wrap">
+      <div class="brand">
+        <img src="https://www-sveaverken-com.azureedge.net/web/image/website/5/logo/Sveaverken%20-%20Official%20Website?unique=54b527b" alt="Sveaverken" />
         <h1>ISOBUS w Rolnictwie Precyzyjnym</h1>
+      </div>
+
+      <label class="search" title="Szukaj w treści">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="search" placeholder="Szukaj: VT, TC-SC, AUX-N, wtyczki..." />
+      </label>
+
+      <div class="tools">
+        <button class="btn" id="toggleTheme" type="button">Tryb ciemny</button>
+        <div id="google_translate_element" aria-label="Tłumacz"></div>
+      </div>
     </div>
+  </div>
 
-    
+  <!-- Main -->
+  <div class="main">
+    <!-- TOC -->
+    <nav class="toc" aria-label="Spis treści">
+      <h3>Nawigacja</h3>
+      <a href="#about">Czym jest ISOBUS?</a>
+      <a href="#functions">Funkcje ISOBUS</a>
+      <a class="sub" href="#vt">VT – Virtual Terminal</a>
+      <a class="sub" href="#tc-bas">TC-BAS</a>
+      <a class="sub" href="#tc-sc">TC-SC (Section Control)</a>
+      <a class="sub" href="#tc-geo">TC-GEO (mapy zmienne)</a>
+      <a class="sub" href="#auxn">AUX-N</a>
+      <a href="#compat">Sprawdzanie kompatybilności</a>
+      <a href="#connectors">Wtyczki ISOBUS</a>
+      <a class="sub" href="#conn1">Bus Extension</a>
+      <a class="sub" href="#conn2">IBBC</a>
+      <a class="sub" href="#conn3">In-cab (LBS)</a>
+      <a class="sub" href="#conn4">Diagnostic</a>
+      <a href="#j1939">J1939 w ISOBUS</a>
+    </nav>
 
-    <!-- Główna treść -->
-    <div class="main">
-        <h1 id="about">Czym jest ISOBUS?</h1>
-        <p>
-            ISOBUS to międzynarodowy standard komunikacji (ISO 11783) między ciągnikami a maszynami rolniczymi. Pozwala na wymianę danych i sterowanie urządzeniami różnych producentów, co znacznie ułatwia pracę rolników.
-        </p>
-        
-        <h2 id="functions">Funkcje ISOBUS</h2>
+    <!-- Content -->
+    <article id="content">
+      <section id="about">
+        <h1>Czym jest ISOBUS? <span class="label">ISO 11783</span></h1>
+        <p>ISOBUS to międzynarodowy standard (ISO 11783) komunikacji między ciągnikami a maszynami rolniczymi. Umożliwia wymianę danych i sterowanie urządzeniami różnych producentów w oparciu o magistralę CAN.</p>
+        <p class="hint">Cel: interoperacyjność, mniej monitorów w kabinie, zgodność funkcji VT/TC/AUX-N, jasne ścieżki serwisowe.</p>
+      </section>
 
-        <h3>VT – Virtual Terminal</h3>
-        <p>
-            **Uniwersalny ekran dotykowy ISOBUS**, który pozwala sterować wszystkimi kompatybilnymi maszynami za pomocą jednego terminala w kabinie ciągnika.  
-            Zamiast mieć osobny monitor do siewnika, opryskiwacza czy rozsiewacza, wszystkie urządzenia ISOBUS mogą być obsługiwane na jednym wyświetlaczu.
-        </p>
-        
-        <h3>TC-BAS – Task Controller Basic</h3>
-        <p>
-            **Podstawowa funkcja Task Controller**, pozwalająca na rejestrowanie i zarządzanie danymi dotyczącymi aplikacji nawozów, oprysków lub siewu.
-        </p>
+      <section id="functions">
+        <h1>Funkcje ISOBUS</h1>
 
-        <h3>TC-SC – Task Controller Section Control</h3>
-        <p>
-            **Automatyczne sterowanie sekcjami maszyny** (np. opryskiwacza, rozsiewacza, siewnika), włączając i wyłączając aplikację w odpowiednich miejscach.
-        </p>
-        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
+        <div id="vt">
+          <h2>VT – Virtual Terminal <span class="badge ok">plug-and-play</span></h2>
+          <p>Uniwersalny terminal dotykowy, na którym każda maszyna ISOBUS wyświetla własne UI. Jeden ekran zamiast wielu monitorów.</p>
+        </div>
 
-        <h3>TC-GEO – Task Controller GEO</h3>
-        <p>
-            **Precyzyjna aplikacja na podstawie map GPS** – dostosowuje dawki nawozów, środków ochrony roślin i siewu do konkretnych części pola.
-        </p>
-        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
+        <div id="tc-bas">
+          <h2>TC-BAS – Task Controller Basic</h2>
+          <p>Rejestrowanie i zarządzanie zadaniami/aplikacjami (nawóz, oprysk, siew). Eksport/Import z/do Farm Management (np. ISOXML).</p>
+        </div>
 
-        <h3>AUX-N – Rozszerzone sterowanie</h3>
-        <p>
-            **Możliwość sterowania maszynami ISOBUS za pomocą joysticków i dodatkowych przycisków** w kabinie, co ułatwia pracę i redukuje zmęczenie operatora.
-        </p>
-        <p><strong>⚠ Wymaga kodu aktywacyjnego.</strong></p>
+        <div id="tc-sc">
+          <h2>TC-SC – Section Control <span class="badge need">wymaga aktywacji</span></h2>
+          <p>Automatyczne sterowanie sekcjami (włącz/wyłącz) dla uniknięcia nakładek i oszczędności materiału.</p>
+        </div>
 
-        <h3>Sprawdzanie kompatybilności ISOBUS</h3>
-        <p>
-            Nie wszystkie maszyny i urządzenia ISOBUS są w pełni kompatybilne. Aby sprawdzić, czy dany sprzęt działa poprawnie w danym systemie, można skorzystać z <a href="https://www.aef-isobus-database.org/" target="_blank">bazy AEF</a>, gdzie znajdują się testowane i certyfikowane konfiguracje.
-        </p>
-    </ul>
-         <!-- Wtyczki ISOBUS -->
-    <h1 id="connectors">Wtyczki ISOBUS</h1>
+        <div id="tc-geo">
+          <h2>TC-GEO – Zmienna dawka <span class="badge need">wymaga aktywacji</span></h2>
+          <p>Precyzyjna aplikacja wg map aplikacyjnych (GPS). Dawka dostosowana do strefy pola.</p>
+        </div>
 
-    <h2>#1: Bus Extension Connector</h2>
-    <img src="connector1.jpg" alt="Bus Extension Connector" class="connector-image">
-    <p>
-        Ten złącze umożliwia rozszerzenie linii sygnałowych ISOBUS z urządzenia do wnętrza ciągnika. Jest wykorzystywane do dodawania dodatkowych urządzeń, takich jak terminale wirtualne.
-    </p>
-    <h3>Przypisania Pinów</h3>
-    <ul>
-        <li><strong>Pin 1:</strong> Zasilanie TBC (TBC Power)</li>
-        <li><strong>Pin 2:</strong> CAN High (CAN_H)</li>
-        <li><strong>Pin 3:</strong> Powrót TBC (TBC Return Path)</li>
-        <li><strong>Pin 4:</strong> CAN Low (CAN_L)</li>
-    </ul>
+        <div id="auxn">
+          <h2>AUX-N – Rozszerzone sterowanie <span class="badge need">wymaga aktywacji</span></h2>
+          <p>Sterowanie maszyną z joysticków/przycisków AUX-N; ergonomia i bezpieczeństwo w kabinie.</p>
+        </div>
+      </section>
 
-    <h2>#2: Implement Bus Breakaway Connector (IBBC)</h2>
-    <img src="connector2.jpg" alt="Implement Bus Breakaway Connector" class="connector-image">
-    <p>
-        IBBC umożliwia połączenie narzędzi z ciągnikiem. Znajduje się zazwyczaj z tyłu ciągnika i może być opcjonalnie instalowane także z przodu.
-    </p>
-    <h3>Przypisania Pinów</h3>
-    <ul>
-        <li><strong>Pin 1:</strong> Masa (Ground)</li>
-        <li><strong>Pin 2:</strong> Masa ECU (ECU Ground)</li>
-        <li><strong>Pin 3:</strong> Zasilanie (Power)</li>
-        <li><strong>Pin 4:</strong> Zasilanie ECU (ECU Power)</li>
-        <li><strong>Pin 5:</strong> TBC connect/remove</li>
-        <li><strong>Pin 6:</strong> TBC Power</li>
-        <li><strong>Pin 7:</strong> Powrót TBC</li>
-        <li><strong>Pin 8:</strong> CAN High (CAN_H)</li>
-        <li><strong>Pin 9:</strong> CAN Low (CAN_L)</li>
-    </ul>
+      <section id="compat">
+        <h1>Sprawdzanie kompatybilności</h1>
+        <p>Nie każdy zestaw ciągnik-narzędzie ma komplet zgodnych funkcji. Sprawdź certyfikację w <a href="https://www.aef-isobus-database.org/" target="_blank" rel="noopener">bazie AEF</a>.</p>
+        <div class="row">
+          <button class="btn secondary" id="openAEF" type="button">Otwórz bazę AEF</button>
+          <button class="btn" id="printPage" type="button">Drukuj / PDF</button>
+        </div>
+        <p class="hint">W bazie AEF filtruj po producencie, modelu, funkcji (VT/TC-BAS/TC-SC/TC-GEO/AUX-N) i wersji softu.</p>
+      </section>
 
-    <h2>#3: In-cab Connector (LBS)</h2>
-    <img src="connector3.jpg" alt="In-cab Connector" class="connector-image">
-    <p>
-        Kabina ciągnika może mieć opcjonalne wewnętrzne złącze do połączenia z siecią ISOBUS.
-    </p>
-    <h3>Przypisania Pinów</h3>
-    <ul>
-        <li><strong>Pin 1:</strong> Zasilanie ECU (ECU Power)</li>
-        <li><strong>Pin 2:</strong> CAN 1 L (input)</li>
-        <li><strong>Pin 3:</strong> CAN 2 L (output)</li>
-        <li><strong>Pin 4:</strong> CAN 1 H (input)</li>
-        <li><strong>Pin 5:</strong> CAN 2 H (output)</li>
-        <li><strong>Pin 6:</strong> TBC Power</li>
-        <li><strong>Pin 7:</strong> Zasilanie ECU (ECU Power)</li>
-        <li><strong>Pin 8:</strong> Masa TBC (TBC Ground)</li>
-        <li><strong>Pin 9:</strong> Masa ECU (ECU Ground)</li>
-    </ul>
+      <section id="connectors">
+        <h1>Wtyczki ISOBUS</h1>
 
-    <h2>#4: Diagnostic Connector</h2>
-    <img src="connector4.jpg" alt="Diagnostic Connector" class="connector-image">
-    <p>
-        Złącze diagnostyczne znajduje się w kabinie ciągnika w łatwo dostępnym miejscu. Jest używane do połączenia z zewnętrznymi rejestratorami danych w celu diagnostyki.
-    </p>
-    <h3>Przypisania Pinów</h3>
-    <ul>
-        <li><strong>A:</strong> Masa</li>
-        <li><strong>B:</strong> Zasilanie baterii (Battery Power)</li>
-        <li><strong>C:</strong> CAN 1 H (ciągnik)</li>
-        <li><strong>D:</strong> CAN 1 L (ciągnik)</li>
-        <li><strong>H:</strong> CAN 2 H (implement)</li>
-        <li><strong>J:</strong> CAN 2 L (implement)</li>
-    </ul>
+        <details id="conn1" open>
+          <summary><strong>#1: Bus Extension Connector</strong></summary>
+          <img src="connector1.jpg" alt="Bus Extension Connector" class="connector-image" />
+          <p>Rozszerzenie linii ISOBUS z urządzenia do wnętrza ciągnika – np. do podłączenia terminala.</p>
+          <div class="pins">
+            <div class="pin"><button class="copy" data-copy="Pin 1: TBC Power">Kopiuj</button><b>Pin 1:</b> TBC Power</div>
+            <div class="pin"><button class="copy" data-copy="Pin 2: CAN_H">Kopiuj</button><b>Pin 2:</b> CAN High (CAN_H)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 3: TBC Return">Kopiuj</button><b>Pin 3:</b> TBC Return</div>
+            <div class="pin"><button class="copy" data-copy="Pin 4: CAN_L">Kopiuj</button><b>Pin 4:</b> CAN Low (CAN_L)</div>
+          </div>
+        </details>
 
-        <h1 id="j1939">Protokół J1939 w ISOBUS</h1>
-        <p>
-            Protokół <strong>SAE J1939</strong> to standard komunikacji oparty na magistrali CAN, używany w pojazdach ciężarowych, maszynach budowlanych i rolniczych. W kontekście ISOBUS, J1939 stanowi podstawę dla warstwy komunikacyjnej, umożliwiając wymianę danych między urządzeniami.
-        </p>
+        <details id="conn2">
+          <summary><strong>#2: Implement Bus Breakaway Connector (IBBC)</strong></summary>
+          <img src="connector2.jpg" alt="Implement Bus Breakaway Connector" class="connector-image" />
+          <p>Złącze łączące narzędzie z ISOBUS ciągnika, zwykle z tyłu.</p>
+          <div class="pins">
+            <div class="pin"><button class="copy" data-copy="Pin 1: Ground">Kopiuj</button><b>Pin 1:</b> Masa (Ground)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 2: ECU Ground">Kopiuj</button><b>Pin 2:</b> Masa ECU</div>
+            <div class="pin"><button class="copy" data-copy="Pin 3: Power">Kopiuj</button><b>Pin 3:</b> Zasilanie</div>
+            <div class="pin"><button class="copy" data-copy="Pin 4: ECU Power">Kopiuj</button><b>Pin 4:</b> Zasilanie ECU</div>
+            <div class="pin"><button class="copy" data-copy="Pin 5: TBC connect/remove">Kopiuj</button><b>Pin 5:</b> TBC connect/remove</div>
+            <div class="pin"><button class="copy" data-copy="Pin 6: TBC Power">Kopiuj</button><b>Pin 6:</b> TBC Power</div>
+            <div class="pin"><button class="copy" data-copy="Pin 7: TBC Return">Kopiuj</button><b>Pin 7:</b> Powrót TBC</div>
+            <div class="pin"><button class="copy" data-copy="Pin 8: CAN_H">Kopiuj</button><b>Pin 8:</b> CAN High (CAN_H)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 9: CAN_L">Kopiuj</button><b>Pin 9:</b> CAN Low (CAN_L)</div>
+          </div>
+        </details>
 
-    </div>
+        <details id="conn3">
+          <summary><strong>#3: In-cab Connector (LBS)</strong></summary>
+          <img src="connector3.jpg" alt="In-cab Connector" class="connector-image" />
+          <p>Opcjonalne złącze wewnątrz kabiny do sieci ISOBUS.</p>
+          <div class="pins">
+            <div class="pin"><button class="copy" data-copy="Pin 1: ECU Power">Kopiuj</button><b>Pin 1:</b> ECU Power</div>
+            <div class="pin"><button class="copy" data-copy="Pin 2: CAN 1 L (in)">Kopiuj</button><b>Pin 2:</b> CAN 1 L (input)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 3: CAN 2 L (out)">Kopiuj</button><b>Pin 3:</b> CAN 2 L (output)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 4: CAN 1 H (in)">Kopiuj</button><b>Pin 4:</b> CAN 1 H (input)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 5: CAN 2 H (out)">Kopiuj</button><b>Pin 5:</b> CAN 2 H (output)</div>
+            <div class="pin"><button class="copy" data-copy="Pin 6: TBC Power">Kopiuj</button><b>Pin 6:</b> TBC Power</div>
+            <div class="pin"><button class="copy" data-copy="Pin 7: ECU Power">Kopiuj</button><b>Pin 7:</b> ECU Power</div>
+            <div class="pin"><button class="copy" data-copy="Pin 8: TBC Ground">Kopiuj</button><b>Pin 8:</b> TBC Ground</div>
+            <div class="pin"><button class="copy" data-copy="Pin 9: ECU Ground">Kopiuj</button><b>Pin 9:</b> ECU Ground</div>
+          </div>
+        </details>
 
-    <!-- Stopka -->
-    <div class="footer">
-        &copy; 2024 Sveaverken | <a href="https://www.aef-isobus-database.org/" target="_blank" style="color:white;">Sprawdź kompatybilność w bazie AEF</a>
-    </div>
+        <details id="conn4">
+          <summary><strong>#4: Diagnostic Connector</strong></summary>
+          <img src="connector4.jpg" alt="Diagnostic Connector" class="connector-image" />
+          <p>Złącze diagnostyczne w kabinie – do rejestratorów/diagnozy.</p>
+          <div class="pins">
+            <div class="pin"><button class="copy" data-copy="A: Ground">Kopiuj</button><b>A:</b> Masa</div>
+            <div class="pin"><button class="copy" data-copy="B: Battery Power">Kopiuj</button><b>B:</b> Zasilanie z baterii</div>
+            <div class="pin"><button class="copy" data-copy="C: CAN 1 H (tractor)">Kopiuj</button><b>C:</b> CAN 1 H (ciągnik)</div>
+            <div class="pin"><button class="copy" data-copy="D: CAN 1 L (tractor)">Kopiuj</button><b>D:</b> CAN 1 L (ciągnik)</div>
+            <div class="pin"><button class="copy" data-copy="H: CAN 2 H (implement)">Kopiuj</button><b>H:</b> CAN 2 H (implement)</div>
+            <div class="pin"><button class="copy" data-copy="J: CAN 2 L (implement)">Kopiuj</button><b>J:</b> CAN 2 L (implement)</div>
+          </div>
+        </details>
+      </section>
 
+      <section id="j1939">
+        <h1>Protokół J1939 w ISOBUS</h1>
+        <p><strong>SAE J1939</strong> – standard komunikacji (CAN, PGN, SPN) będący bazą warstwy transportowej ISOBUS. Zapewnia spójne adresowanie, diagnostykę i wymianę danych między ECU.</p>
+        <ul>
+          <li>Warstwa fizyczna: CAN 250 kbit/s (typowo)</li>
+          <li>PGN/SPN: identyfikacja ramek i sygnałów</li>
+          <li>Adresacja: dynamiczna (NAM), źródło/cele ECU</li>
+        </ul>
+        <p class="hint">W praktyce: zgodność J1939 ułatwia integrację monitoringu silnika, skrzyni, układów pomocniczych z terminalem.</p>
+      </section>
+    </article>
+  </div>
+
+  <!-- Floating actions -->
+  <div class="float" aria-live="polite">
+    <button class="fab" id="backTop" title="Do góry">↑</button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2024 Sveaverken • <a href="https://www.aef-isobus-database.org/" target="_blank" rel="noopener">Baza AEF</a>
+  </div>
+
+  <script>
+    // theme
+    (function(){
+      const root = document.documentElement;
+      const key = 'svk-theme';
+      const saved = localStorage.getItem(key);
+      if (saved) root.setAttribute('data-theme', saved);
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        root.setAttribute('data-theme','dark');
+      }
+      const btn = document.getElementById('toggleTheme');
+      const set = v => { root.setAttribute('data-theme', v); localStorage.setItem(key, v); btn.textContent = v==='dark' ? 'Tryb jasny' : 'Tryb ciemny'; };
+      set(root.getAttribute('data-theme') || 'light');
+      btn.addEventListener('click', ()=> set(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+    })();
+
+    // search filter
+    (function(){
+      const q = document.getElementById('search');
+      const content = document.getElementById('content');
+      const sections = [...content.querySelectorAll('section, details')];
+      const textOf = el => (el.textContent || '').toLowerCase();
+      q.addEventListener('input', ()=>{
+        const term = q.value.trim().toLowerCase();
+        sections.forEach(sec=>{
+          if (!term){ sec.style.display=''; return; }
+          const hit = textOf(sec).includes(term);
+          sec.style.display = hit ? '' : 'none';
+        });
+      });
+    })();
+
+    // copy buttons
+    (function(){
+      document.body.addEventListener('click', e=>{
+        const btn = e.target.closest('.copy');
+        if (!btn) return;
+        const txt = btn.getAttribute('data-copy') || btn.parentElement?.innerText || '';
+        navigator.clipboard?.writeText(txt).then(()=>{
+          const old = btn.textContent; btn.textContent='Skopiowano'; setTimeout(()=>btn.textContent=old, 900);
+        });
+      });
+    })();
+
+    // back to top
+    (function(){
+      const b = document.getElementById('backTop');
+      b.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+      window.addEventListener('scroll', ()=>{
+        b.style.display = (window.scrollY > 280) ? 'inline-block' : 'none';
+      }, {passive:true});
+    })();
+
+    // Quick actions
+    document.getElementById('openAEF').addEventListener('click', ()=> window.open('https://www.aef-isobus-database.org/', '_blank'));
+    document.getElementById('printPage').addEventListener('click', ()=> window.print());
+  </script>
 </body>
 </html>
+```
