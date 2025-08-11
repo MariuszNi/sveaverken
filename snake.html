@@ -1,41 +1,237 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
-    <link rel="stylesheet" href="stylesv1.css">
-</head>
-<body>
-    <header>
-        <img src="logo.png" alt="Logo" id="logo">
-    </header>
-    <main id="game-layout">
-        <div id="left-controls">
-            <button class="control-button" id="left-button">←</button>
-            <button class="control-button" id="right-button">→</button>
-        </div>
-        <div id="game-container">
-            <canvas id="game-canvas" width="400" height="400"></canvas>
-        </div>
-        <div id="right-controls">
-            <button class="control-button" id="up-button">↑</button>
-            <button class="control-button" id="down-button">↓</button>
-        </div>
-    </main>
-    <div id="difficulty-controls">
-        <button class="difficulty-button" id="easy-button">Easy</button>
-        <button class="difficulty-button" id="medium-button">Medium</button>
-        <button class="difficulty-button" id="hard-button">Hard</button>
-        <p>Current Difficulty: <span id="current-difficulty">Easy</span></p>
-    </div>
-    <div id="controls">
-        <button id="start-button">Start</button>
-        <button id="restart-button" style="display: none;">Restart</button>
-    </div>
-    <div id="scoreboard">
-        <p>Score: <span id="score">0</span></p>
-    </div>
-    <script src="gamesnake.js"></script>
-</body>
-</html>
+```css
+/* stylesv1.css */
+
+:root{
+  --bg:#0b1020;
+  --panel:#111931;
+  --edge:#1b2850;
+  --ink:#e9eefb;
+  --muted:#a5b2d9;
+  --accent:#00c2ff;
+  --accent-2:#29f37f;
+  --warn:#ffbf47;
+  --danger:#ff4d4d;
+  --radius:14px;
+  --shadow:0 12px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(0,194,255,.12), transparent 60%),
+    radial-gradient(1000px 800px at 100% 0%, rgba(41,243,127,.08), transparent 60%),
+    var(--bg);
+  color:var(--ink);
+}
+
+/* ----- Header ----- */
+header{
+  padding:16px 20px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+#logo{
+  height:54px;
+  width:auto;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.35));
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+/* ----- Layout ----- */
+#game-layout{
+  max-width:1000px;
+  margin:0 auto;
+  padding:10px 16px 0;
+  display:grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap:16px;
+  align-items:center;
+}
+
+#game-container{
+  background:linear-gradient(180deg,#121a34, #0e1427);
+  border:1px solid var(--edge);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:14px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+
+/* subtle grid backdrop behind canvas */
+#game-container::after{
+  content:"";
+  position:absolute; inset:14px;
+  pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  border-radius:10px;
+}
+
+#game-canvas{
+  display:block;
+  background:#ffffff;
+  border-radius:12px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+}
+
+/* ----- Arrow Controls ----- */
+#left-controls,
+#right-controls{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
+}
+
+.control-button{
+  width:84px;
+  height:84px;
+  border-radius:18px;
+  border:1px solid var(--edge);
+  background:
+    linear-gradient(180deg, #172243, #121a34 55%),
+    radial-gradient(120px 80px at 50% -10%, rgba(255,255,255,.08), transparent 60%);
+  color:var(--ink);
+  font-size:28px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  transition: transform .05s ease, filter .15s ease, border-color .2s ease;
+  user-select:none;
+}
+.control-button:hover{ filter:brightness(1.06) }
+.control-button:active{ transform: translateY(2px) scale(.98) }
+.control-button:focus{ outline:2px solid var(--accent); outline-offset:2px }
+
+/* ----- Difficulty & Start/Score ----- */
+#difficulty-controls,
+#controls,
+#scoreboard{
+  max-width:1000px;
+  margin:14px auto 0;
+  padding:0 16px;
+}
+
+#difficulty-controls{
+  display:flex;
+  gap:10px 14px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.difficulty-button{
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid var(--edge);
+  background:#121a34;
+  color:var(--ink);
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  transition: background .15s ease, transform .05s ease, border-color .2s ease;
+}
+.difficulty-button:hover{ background:#162044 }
+.difficulty-button:active{ transform: translateY(1px) }
+
+#current-difficulty{
+  font-weight:800;
+  color:var(--accent-2);
+}
+
+#controls{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  margin-top:10px;
+}
+
+#controls button{
+  padding:12px 18px;
+  border-radius:12px;
+  border:1px solid var(--edge);
+  background: linear-gradient(180deg, #00c2ff, #0088d1);
+  color:#00121a;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+  transition: transform .05s ease, filter .15s ease;
+}
+#controls button#restart-button{
+  background: linear-gradient(180deg, #ffbf47, #e89a00);
+  color:#251a00;
+}
+#controls button:hover{ filter:brightness(1.03) }
+#controls button:active{ transform: translateY(1px) }
+
+#scoreboard{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:12px auto 26px;
+}
+#scoreboard p{
+  margin:0;
+  padding:10px 14px;
+  background:#121a34;
+  border:1px solid var(--edge);
+  border-radius:999px;
+  box-shadow:var(--shadow);
+  color:var(--muted);
+  font-weight:700;
+}
+#scoreboard #score{
+  color:var(--accent);
+  font-weight:900;
+}
+
+/* ----- Responsive ----- */
+@media (max-width: 900px){
+  #game-layout{
+    grid-template-columns: 1fr;
+  }
+  #left-controls, #right-controls{
+    flex-direction:row;
+    gap:10px;
+    order: -1;
+  }
+  .control-button{
+    width:72px; height:72px; font-size:26px;
+  }
+}
+
+@media (max-width: 480px){
+  #logo{ height:44px }
+  .control-button{
+    width:64px; height:64px; font-size:24px;
+  }
+  #game-container{ padding:10px }
+  #game-container::after{ inset:10px }
+  #controls button{ padding:10px 14px }
+  .difficulty-button{ padding:8px 12px }
+}
+
+/* ----- Touch affordances ----- */
+@media (hover: none){
+  .control-button, .difficulty-button, #controls button{
+    filter: saturate(1.1);
+  }
+}
+
+/* ----- Utility states (optional classes if you want to toggle) ----- */
+.is-easy .difficulty-button#easy-button{ border-color: var(--accent-2) }
+.is-medium .difficulty-button#medium-button{ border-color: var(--accent) }
+.is-hard .difficulty-button#hard-button{ border-color: var(--danger) }
+```
