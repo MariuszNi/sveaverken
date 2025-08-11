@@ -1,3 +1,4 @@
+```javascript
 const canvas = document.getElementById('game-canvas');
 const context = canvas.getContext('2d');
 const scoreDisplay = document.getElementById('score');
@@ -18,16 +19,21 @@ canvas.height = 400;
 const cellSize = 40;
 let snake = [{ x: 200, y: 200 }];
 let direction = { x: 0, y: 0 };
+let pendingDirection = { x: 0, y: 0 };
 let food = { x: 0, y: 0 };
 let score = 0;
-let gameInterval;
-let gameSpeed = 150; // Default to medium speed
+let gameInterval = null;
+let gameSpeed = 150;
+let gameOver = false;
 
 const tractorImg = new Image();
 tractorImg.src = 'traktor.png';
 
 const trailerImg = new Image();
 trailerImg.src = 'przyczepa.png';
+
+const foodImg = new Image();
+foodImg.src = 'siano.png';
 
 document.addEventListener('keydown', changeDirection);
 leftButton.addEventListener('click', () => setDirection('ArrowLeft'));
@@ -41,120 +47,150 @@ mediumButton.addEventListener('click', () => setDifficulty('Medium', 150));
 hardButton.addEventListener('click', () => setDifficulty('Hard', 100));
 
 function startGame() {
-    startButton.style.display = 'none';
-    restartButton.style.display = 'inline';
-    score = 0;
-    direction = { x: 1, y: 0 }; // Start with moving to the right
-    snake = [{ x: 200, y: 200 }];
-    scoreDisplay.textContent = score;
-    placeFood();
-    gameInterval = setInterval(updateGame, gameSpeed);
+  startButton.style.display = 'none';
+  restartButton.style.display = 'inline';
+  score = 0;
+  direction = { x: 1, y: 0 };
+  pendingDirection = { ...direction };
+  gameOver = false;
+  snake = [{ x: 200, y: 200 }];
+  scoreDisplay.textContent = score;
+  placeFood();
+  resetLoop();
+  drawGame();
 }
 
 function restartGame() {
-    clearInterval(gameInterval);
-    startGame();
+  clearInterval(gameInterval);
+  startGame();
+}
+
+function resetLoop() {
+  if (gameInterval) clearInterval(gameInterval);
+  gameInterval = setInterval(updateGame, gameSpeed);
 }
 
 function updateGame() {
-    const head = { x: snake[0].x + direction.x * cellSize, y: snake[0].y + direction.y * cellSize };
+  direction = { ...pendingDirection };
 
-    if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height || snakeCollision(head)) {
-        endGame();
-        return;
-    }
+  const head = {
+    x: snake[0].x + direction.x * cellSize,
+    y: snake[0].y + direction.y * cellSize
+  };
 
-    snake.unshift(head);
+  if (outOfBounds(head) || snakeCollision(head)) {
+    endGame();
+    return;
+  }
 
-    if (head.x === food.x && head.y === food.y) {
-        score++;
-        scoreDisplay.textContent = score;
-        placeFood();
-    } else {
-        snake.pop();
-    }
+  snake.unshift(head);
 
-    drawGame();
+  if (head.x === food.x && head.y === food.y) {
+    score++;
+    scoreDisplay.textContent = score;
+    placeFood();
+  } else {
+    snake.pop();
+  }
+
+  drawGame();
 }
 
 function drawGame() {
-    context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-    context.fillStyle = '#fff'; // Set background to white
-    context.fillRect(0, 0, canvas.width, canvas.height); // Fill canvas with white color
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#ffffff';
+  context.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw each segment of the snake
-    snake.forEach((segment, index) => {
-        drawSegment(segment.x, segment.y, index === 0 ? tractorImg : trailerImg, getRotationAngle(index));
-    });
+  snake.forEach((segment, index) => {
+    drawSegment(segment.x, segment.y, index === 0 ? tractorImg : trailerImg, getRotationAngle(index));
+  });
 
-    // Draw the food
-    drawSegment(food.x, food.y, trailerImg, 0);
+  drawSegment(food.x, food.y, foodImg.complete ? foodImg : trailerImg, 0);
+
+  if (gameOver) drawGameOver();
 }
 
 function drawSegment(x, y, img, angle) {
-    context.save();
-    context.translate(x + cellSize / 2, y + cellSize / 2);
-    context.rotate(angle);
-    context.drawImage(img, -cellSize / 2, -cellSize / 2, cellSize, cellSize);
-    context.restore();
+  context.save();
+  context.translate(x + cellSize / 2, y + cellSize / 2);
+  context.rotate(angle);
+  context.drawImage(img, -cellSize / 2, -cellSize / 2, cellSize, cellSize);
+  context.restore();
 }
 
 function getRotationAngle(index) {
-    if (index === 0) {
-        if (direction.x === 1) return 0;
-        if (direction.x === -1) return Math.PI;
-        if (direction.y === 1) return Math.PI / 2;
-        if (direction.y === -1) return -Math.PI / 2;
-    } else {
-        const current = snake[index];
-        const next = snake[index - 1];
-        if (next.x > current.x) return 0;
-        if (next.x < current.x) return Math.PI;
-        if (next.y > current.y) return Math.PI / 2;
-        if (next.y < current.y) return -Math.PI / 2;
-    }
-    return 0;
+  if (index === 0) {
+    if (direction.x === 1) return 0;
+    if (direction.x === -1) return Math.PI;
+    if (direction.y === 1) return Math.PI / 2;
+    if (direction.y === -1) return -Math.PI / 2;
+  } else {
+    const current = snake[index];
+    const next = snake[index - 1];
+    if (next.x > current.x) return 0;
+    if (next.x < current.x) return Math.PI;
+    if (next.y > current.y) return Math.PI / 2;
+    if (next.y < current.y) return -Math.PI / 2;
+  }
+  return 0;
 }
 
 function changeDirection(event) {
-    setDirection(event.key);
+  setDirection(event.key);
 }
 
 function setDirection(keyPressed) {
-    if (keyPressed === 'ArrowUp' && direction.y === 0) {
-        direction = { x: 0, y: -1 };
-    } else if (keyPressed === 'ArrowDown' && direction.y === 0) {
-        direction = { x: 0, y: 1 };
-    } else if (keyPressed === 'ArrowLeft' && direction.x === 0) {
-        direction = { x: -1, y: 0 };
-    } else if (keyPressed === 'ArrowRight' && direction.x === 0) {
-        direction = { x: 1, y: 0 };
-    }
+  const goingUp = direction.y === -1;
+  const goingDown = direction.y === 1;
+  const goingRight = direction.x === 1;
+  const goingLeft = direction.x === -1;
+
+  if (keyPressed === 'ArrowUp' && !goingDown) pendingDirection = { x: 0, y: -1 };
+  else if (keyPressed === 'ArrowDown' && !goingUp) pendingDirection = { x: 0, y: 1 };
+  else if (keyPressed === 'ArrowLeft' && !goingRight) pendingDirection = { x: -1, y: 0 };
+  else if (keyPressed === 'ArrowRight' && !goingLeft) pendingDirection = { x: 1, y: 0 };
 }
 
 function setDifficulty(level, speed) {
-    currentDifficultyDisplay.textContent = level;
-    gameSpeed = speed;
+  currentDifficultyDisplay.textContent = level;
+  gameSpeed = speed;
+  if (!gameOver && snake.length) resetLoop();
 }
 
 function placeFood() {
-    food = {
-        x: Math.floor(Math.random() * canvas.width / cellSize) * cellSize,
-        y: Math.floor(Math.random() * canvas.height / cellSize) * cellSize
+  let newFood;
+  do {
+    newFood = {
+      x: Math.floor(Math.random() * (canvas.width / cellSize)) * cellSize,
+      y: Math.floor(Math.random() * (canvas.height / cellSize)) * cellSize
     };
-
-    if (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
-        placeFood();
-    }
+  } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+  food = newFood;
 }
 
 function snakeCollision(head) {
-    return snake.some(segment => segment.x === head.x && segment.y === head.y);
+  return snake.some(segment => segment.x === head.x && segment.y === head.y);
+}
+
+function outOfBounds(p) {
+  return p.x < 0 || p.y < 0 || p.x >= canvas.width || p.y >= canvas.height;
 }
 
 function endGame() {
-    clearInterval(gameInterval);
-    alert(`Game over! Your score is ${score}`);
-    restartButton.style.display = 'inline';
-    startButton.style.display = 'inline';
+  clearInterval(gameInterval);
+  gameOver = true;
+  drawGame();
+  restartButton.style.display = 'inline';
+  startButton.style.display = 'inline';
 }
+
+function drawGameOver() {
+  context.fillStyle = 'rgba(0,0,0,0.7)';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = '#fff';
+  context.font = 'bold 24px Arial';
+  context.fillText(`Game Over! Score: ${score}`, 50, canvas.height / 2 - 10);
+  context.font = '16px Arial';
+  context.fillText('Kliknij Restart, aby zagrać ponownie.', 50, canvas.height / 2 + 20);
+}
+```
