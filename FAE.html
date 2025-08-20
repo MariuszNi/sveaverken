@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,9 @@
   <title>Sveaverken FAE Availability</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet CSS (for the map) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
   <style>
     :root{
@@ -81,6 +85,9 @@
     }
     #upcomingWeekend h3{margin:0 0 10px}
     .muted{color:var(--muted)}
+
+    /* Map box */
+    #map { width:min(1200px,95%); height:420px; margin:16px auto 24px; border:2px solid var(--line); border-radius:12px; box-shadow:var(--shadow); }
   </style>
 </head>
 <body>
@@ -137,6 +144,9 @@
       <tbody id="faeBody"></tbody>
     </table>
   </div>
+
+  <!-- MAP directly under the table -->
+  <div id="map" role="region" aria-label="FAE map"></div>
 
   <div id="upcomingWeekend">
     <h3>Upcoming Weekend Schedule</h3>
@@ -416,6 +426,87 @@
     }
     window.addEventListener('load', init);
   </script>
+
+  <!-- Leaflet JS and map logic -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    // country centroids
+    const COUNTRY_POS = {
+      CN:[35.0,103.0], TR:[39.0,35.0], MX:[23.6,-102.5], PH:[12.8,121.8],
+      BR:[-14.2,-51.9], PL:[52.1,19.4], RS:[44.0,20.9]
+    };
+
+    const map = L.map('map', { zoomControl:true, attributionControl:true }).setView([25,15], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'&copy; OpenStreetMap' }).addTo(map);
+
+    function jitter([lat,lng], i){
+      const d = 0.35 * (i % 5);
+      const a = (i * 137.5) * Math.PI/180;
+      return [lat + d*Math.sin(a), lng + d*Math.cos(a)];
+    }
+
+    const markers = [];
+    const byCountryIndex = {};
+
+    faeData.forEach((f) => {
+      const base = COUNTRY_POS[f.Country];
+      if (!base) return;
+      const idx = (byCountryIndex[f.Country] = (byCountryIndex[f.Country]||0) + 1);
+      const pos = jitter(base, idx);
+
+      const on = isInRangeGMT8(f["GMT+8"]);
+      const pin = L.circleMarker(pos, {
+        radius: 8,
+        weight: 2,
+        color: '#333',
+        fillOpacity: 0.95,
+        fillColor: on ? '#2e7d32' : '#c62828'
+      });
+
+      const html = `
+        <div style="min-width:240px">
+          <strong>${f.Engineer}</strong><br>
+          Country: <b>${f.Country}</b><br>
+          Languages: ${f.Languages}<br>
+          GMT+8: ${f["GMT+8"]}<br>
+          Local: ${f["Local Time"]}<br>
+          <div style="margin-top:8px">
+            <button data-ctry="${f.Country}" class="flt-btn" style="padding:6px 10px;border:1px solid #333;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit">
+              Filter table: ${f.Country}
+            </button>
+          </div>
+        </div>
+      `;
+      pin.bindPopup(html);
+
+      pin.on('popupopen', e => {
+        const btn = e.popup.getElement().querySelector('.flt-btn');
+        if (btn){
+          btn.onclick = () => {
+            countryFilter.value = btn.getAttribute('data-ctry');
+            applyFilters();
+          };
+        }
+      });
+
+      pin.addTo(map);
+      markers.push({ pin, fae:f });
+    });
+
+    try {
+      const group = L.featureGroup(markers.map(m => m.pin));
+      map.fitBounds(group.getBounds().pad(0.25));
+    } catch (e) {
+      map.setView([20,0], 2);
+    }
+
+    setInterval(() => {
+      markers.forEach(m => {
+        const on = isInRangeGMT8(m.fae["GMT+8"]);
+        m.pin.setStyle({ fillColor: on ? '#2e7d32' : '#c62828' });
+      });
+    }, 30000);
+  </script>
 </body>
 </html>
-
+```
