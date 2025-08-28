@@ -1,3 +1,4 @@
+20-08-2025 - !!! KRYTYCZNA AKTUALIZACJA !!! - należy jak najszybciej aktualizować wszystkie terminale do wersji aplikacji APP: 24.102.3.28
 07-04-2025 - oficjalnie mamy nową werję oprogramowania V24.102.3(G00) 2025 Spring Version
 12-01-2025 - dostepna jest wersja BETA oprogramowanie przeznaczona do testów. Chętni powinni zgłaszać się do FAE ze swojego regionu. SVEA V24.102.3 (G00_Trial). Wersja ta przeznaczona jest do F100, F100H (steer ready CANBUS, NON-CAN), and F200
 - Nowa linia kombinowana
@@ -40,3 +41,4 @@ htt-ps://forms.gle/MrLdtb3MiV1XdvNZ6
 4. Linie prowadzenia i pola w terminalu wspierają edytowanie nazw i granic
 5. W linii prowadzenia - typ krzywej dodano nową metodę rysowania dowolnej krzywej
 6. Dane linii prowadzenia i pola mogą być udostępniane kontom trzecim przez platformę, co jest podobne do udostępniania z terminala
+
