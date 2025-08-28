@@ -1,1 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sveaverken - Filmy i Instrukcje</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  <style>
+    /* --- style bez zmian --- */
+  </style>
+  <script>
+    /* --- skrypty bez zmian --- */
+  </script>
+</head>
+<body>
+  <!-- 🚜 Animacja traktorka -->
+  <div class="tractor-container" aria-hidden="true">
+    <img src="tractor.png" class="tractor" alt="" />
+    <div class="smoke"></div>
+  </div>
+
+  <!-- 🌐 MENU -->
+  <nav>
+    <div class="nav-inner">
+      <div class="brand">Sveaverken</div>
+      <a href="#home">Strona główna</a>
+      <a href="#getting-started">Pierwsze kroki</a>
+      <a href="#next-step">Funkcje F100</a>
+      <a href="#manuals">Instrukcje</a>
+      <a href="#problemy">Problemy</a>
+      <a href="#stacje-bazowe">Stacje bazowe</a>
+      <a href="#video-list">Filmy YouTube</a>
+      <div id="google_translate_element" style="margin-left:8px"></div>
+    </div>
+  </nav>
+
+  <!-- 🔷 Header -->
+  <header>
+    <!-- zostaje logo i wersja FW -->
+  </header>
+
+  <main id="home">
+    <!-- KP + aktualności -->
+    <div id="kp-widget">Ładowanie danych geomagnetycznych...</div>
+    <div class="card"><canvas id="kpChart"></canvas></div>
+    <button onclick="openPopup()">📰 Sprawdź najnowsze informacje</button>
+    <input type="text" id="search-input" placeholder="Szukaj w treści...">
+
+    <!-- Aktualności popup -->
+    <div id="popup" class="popup"><div class="popup-content"><button onclick="closePopup()">&times;</button><h2>Aktualności</h2><div id="news-content"></div></div></div>
+
+    <!-- Status & mapy -->
+    <section id="solar-status"><h2>Status aktywności słonecznej</h2>
+      <ul><li><a href="https://www.swpc.noaa.gov/communities/global-positioning-system-gps-community-dashboard" target="_blank">Dashboard GPS – NOAA SWPC</a></li></ul>
+    </section>
+    <section id="gps-interference-map"><h2>Mapa zakłóceń sygnału GPS</h2>
+      <ul><li><a href="https://www.flightradar24.com/data/gps-jamming" target="_blank">Flightradar24 – GPS jamming</a></li></ul>
+    </section>
+
+    <!-- NTRIP / NMEA / ISOBUS -->
+    <section id="ntrip"><h2>NTRIP</h2><ul><li><a href="NTRIP.html" target="_blank">Dostawcy NTRIP w Europie</a></li></ul></section>
+    <section id="nmea"><h2>NMEA 0183 v4.1</h2><ul><li><a href="nmea.html" target="_blank">NMEA 0183 v4.1</a></li></ul></section>
+    <section id="isobus"><h2>ISOBUS</h2><ul><li><a href="isobus.html" target="_blank">ISOBUS</a></li></ul></section>
+
+    <!-- Video tutoriale -->
+    <section id="getting-started">...</section>
+    <section id="next-step">...</section>
+
+    <!-- Problemy -->
+    <section id="problemy">...</section>
+
+    <!-- Instrukcje F100 -->
+    <section id="manuals">...</section>
+
+    <!-- F100H + CAN -->
+    <section id="f100h-noncan">...</section>
+
+    <!-- Stacje bazowe -->
+    <section id="stacje-bazowe">...</section>
+
+    <!-- Bonus gry -->
+    <section id="bonus"><h2>BONUS</h2>
+      <ul>
+        <li><a href="tracgame.html" target="_blank">Gra traktor</a></li>
+        <li><a href="Game.html" target="_blank">O&X</a></li>
+        <li><a href="snake.html" target="_blank">Wąż</a></li>
+      </ul>
+    </section>
+
+    <!-- Filmy YT -->
+    <section id="video-list"><h2>Linki do filmów</h2><ul><li><a href="Videos.html" target="_blank">Lista filmów</a></li></ul></section>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Sveaverken — <a href="https://www.sveaverken.com" target="_blank">www.sveaverken.com</a></p>
+    <p>Sugestie: <a href="mailto:mariusz.niezgoda@sveav.com">mariusz.niezgoda@sveav.com</a></p>
+  </footer>
+</body>
+</html>
 
