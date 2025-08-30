@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>SVEA — Nowości 2025 Spring Release</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Opis nowych funkcji w wersji 2025 Spring Release dla SVEA F100/F100H" />
+
+  <!-- Google Translate -->
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
+  <script>
+    function googleTranslateElementInit(){
+      try{
+        new google.translate.TranslateElement({
+          pageLanguage:'pl',
+          includedLanguages:'en,es,fr,de,it,pt,ru,uk,cs,sk,hu,ro,bg,el,tr,zh-CN,ja,ko',
+          layout:google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay:false
+        },'google_translate_element');
+      }catch(e){}
+    }
+  </script>
+
+  <style>
+    :root{
+      --brand:#002b5c; --brand-2:#003366; --text:#111; --muted:#666;
+      --bg:#fff; --card:#f7f9fc; --shadow:0 2px 8px rgba(0,0,0,.12);
+      --radius:12px; --accent:#005bbb;
+    }
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    nav{background:var(--brand);position:sticky;top:0;z-index:1000;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;gap:16px;align-items:center;padding:10px 20px;flex-wrap:wrap}
+    .brand{color:#fff;font-weight:700;font-size:18px;margin-right:auto}
+    nav a{color:#fff;padding:6px 8px;border-radius:8px;text-decoration:none}
+    nav a:hover{text-decoration:underline}
+    #google_translate_element{margin-left:auto}
+
+    header{background:linear-gradient(135deg,var(--brand-2),#004a8f);color:#fff;padding:36px 20px}
+    .hero{max-width:1200px;margin:0 auto}
+    .hero h1{margin:0 0 8px;font-size:28px}
+    .hero p{margin:0;color:#e6eef9}
+
+    main{max-width:1200px;margin:0 auto;padding:24px 20px}
+    section{margin:28px 0}
+    h2{margin:0 0 12px;font-size:22px;color:var(--brand)}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:14px 0}
+    .toc{background:#eef3f9;padding:16px;border-radius:12px;margin-bottom:28px}
+    .toc a{display:block;margin:6px 0;color:var(--accent);text-decoration:none}
+    .toc a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <div class="brand">Sveaverken</div>
+      <a href="index.html">Strona główna</a>
+      <a href="precision.html">Rolnictwo Precyzyjne</a>
+      <a href="noncan.html">F100H NON-CAN</a>
+      <a href="release.html" aria-current="page">Nowości 2025</a>
+      <div id="google_translate_element"></div>
+    </div>
+  </nav>
+
+  <header>
+    <div class="hero">
+      <h1>SVEA — Nowości w wersji 2025 Spring Release</h1>
+      <p>Podsumowanie nowych funkcji w terminalu F100/F100H.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- Spis treści -->
+    <div class="toc">
+      <h2>📑 Spis treści</h2>
+      <a href="#path">🚜 Planowanie ścieżek</a>
+      <a href="#fielddata">📂 Dane pola</a>
+      <a href="#transfer">🔄 Transfer danych</a>
+      <a href="#monitoring">📊 Monitoring i diagnostyka</a>
+      <a href="#vehicle">🚜 Funkcje pojazdu</a>
+      <a href="#isobus">🌐 ISOBUS</a>
+      <a href="#eps">⚡ EPS</a>
+      <a href="#record">📝 Tryby zapisu</a>
+      <a href="#demo">🎮 Tryb demo</a>
+      <a href="#optim">⚙️ Optymalizacje</a>
+      <a href="#ota">📥 Aktualizacje OTA</a>
+      <a href="#gnss">📡 GNSS</a>
+      <a href="#account">👤 Konto</a>
+      <a href="#language">🌍 Języki</a>
+      <a href="#other">📌 Inne</a>
+    </div>
+
+    <!-- Sekcje -->
+    <section id="path">
+      <h2>🚜 Planowanie ścieżek</h2>
+      <div class="card"><h3>Linie kombinowane</h3><p>Możliwość łączenia odcinków prostych i krzywych w jedną linię prowadzenia.</p></div>
+      <div class="card"><h3>Auto Record dla granic</h3><p>Przy nagrywaniu granic automatycznie rejestrowana jest powierzchnia pola.</p></div>
+      <div class="card"><h3>Uproszczone komunikaty</h3><p>Usunięto zbędny popup o zastąpieniu linii.</p></div>
+    </section>
+
+    <section id="fielddata">
+      <h2>📂 Dane pola</h2>
+      <div class="card"><h3>Kasowanie</h3><p>Możliwość usuwania linii prowadzenia i granic pól.</p></div>
+      <div class="card"><h3>Wysokość pola</h3><p>Dodano zapis wysokości (elevation).</p></div>
+      <div class="card"><h3>Nazwy linii</h3><p>Linie można nazywać i edytować.</p></div>
+    </section>
+
+    <section id="transfer">
+      <h2>🔄 Transfer danych</h2>
+      <div class="card"><h3>Eksport PDF</h3><p>Raporty zadań można zapisać do pliku PDF.</p></div>
+      <div class="card"><h3>Topcon</h3><p>Wsparcie eksportu danych do systemów Topcon.</p></div>
+      <div class="card"><h3>Shapefile</h3><p>Eksport danych w formacie .shp (GIS).</p></div>
+    </section>
+
+    <section id="monitoring">
+      <h2>📊 Monitoring i diagnostyka</h2>
+      <div class="card"><h3>Kąt skrętu</h3><p>Podgląd rzeczywistego kąta skrętu kół.</p></div>
+      <div class="card"><h3>Karty pamięci</h3><p>Monitorowanie stanu kart SD.</p></div>
+      <div class="card"><h3>Status pracy</h3><p>Nowe okno „Running status”.</p></div>
+    </section>
+
+    <section id="vehicle">
+      <h2>🚜 Funkcje pojazdu</h2>
+      <div class="card"><h3>OBD</h3><p>Obsługa danych OBD w wybranych modelach.</p></div>
+      <div class="card"><h3>Auto-debug</h3><p>Automatyczne sprawdzanie poprawności konfiguracji.</p></div>
+      <div class="card"><h3>Modele sterowania</h3><p>Dodano nowe modele sterowania.</p></div>
+      <div class="card"><h3>Ultra low speed</h3><p>Obsługa bardzo niskich prędkości.</p></div>
+    </section>
+
+    <section id="isobus">
+      <h2>🌐 ISOBUS</h2>
+      <div class="card"><h3>VT</h3><p>Obsługa nowych implementów Virtual Terminal.</p></div>
+      <div class="card"><h3>TC i TC-GEO</h3><p>Rozszerzone funkcje Task Controller.</p></div>
+      <div class="card"><h3>AUX-N</h3><p>Wsparcie joysticków AUX-N.</p></div>
+      <div class="card"><h3>Optymalizacje</h3><p>Szybsze działanie ISOBUS.</p></div>
+    </section>
+
+    <section id="eps">
+      <h2>⚡ Electric Power Steering</h2>
+      <div class="card"><h3>Nowy tryb EPS</h3><p>Wspomaganie kierownicy w wybranych pojazdach.</p></div>
+    </section>
+
+    <section id="record">
+      <h2>📝 Tryby zapisu powierzchni</h2>
+      <div class="card"><h3>Lift sensor</h3><p>Automatyczny zapis wg czujnika podnoszenia.</p></div>
+      <div class="card"><h3>Acre sensor</h3><p>Obsługa czujnika powierzchni.</p></div>
+      <div class="card"><h3>Section</h3><p>Zapis wg sekcji roboczych.</p></div>
+      <div class="card"><h3>Rate</h3><p>Zapis wg dawki aplikacji.</p></div>
+    </section>
+
+    <section id="demo">
+      <h2>🎮 Tryb demo</h2>
+      <div class="card"><h3>Symulacja</h3><p>Nowy tryb demonstracyjny pracy systemu.</p></div>
+    </section>
+
+    <section id="optim">
+      <h2>⚙️ Optymalizacje</h2>
+      <div class="card"><h3>UI</h3><p>Lepsza czytelność menu.</p></div>
+      <div class="card"><h3>Szybkość</h3><p>Krótszy czas uruchamiania.</p></div>
+    </section>
+
+    <section id="ota">
+      <h2>📥 Aktualizacje OTA</h2>
+      <div class="card"><h3>OTA Update</h3><p>Uproszczona aktualizacja online.</p></div>
+    </section>
+
+    <section id="gnss">
+      <h2>📡 GNSS</h2>
+      <div class="card"><h3>Nowa płyta L3</h3><p>Obsługa sygnałów L3.</p></div>
+      <div class="card"><h3>Monitoring zakłóceń</h3><p>Podgląd zakłóceń GNSS.</p></div>
+    </section>
+
+    <section id="account">
+      <h2>👤 Konto</h2>
+      <div class="card"><h3>Dostęp</h3><p>Nowe ograniczenia dostępu do konta.</p></div>
+    </section>
+
+    <section id="language">
+      <h2>🌍 Języki</h2>
+      <div class="card"><h3>Nowe języki</h3><p>Dodano obsługę nowych języków interfejsu.</p></div>
+    </section>
+
+    <section id="other">
+      <h2>📌 Inne</h2>
+      <div class="card"><h3>Mirror Camera</h3><p>Obsługa kamer bocznych.</p></div>
+      <div class="card"><h3>Alerty</h3><p>Nowe komunikaty ostrzegawcze.</p></div>
+      <div class="card"><h3>U-Turn</h3><p>Nowe tryby zawracania.</p></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Sveaverken — <a href="https://www.sveaverken.com" target="_blank" rel="noopener">sveaverken.com</a></p>
+  </footer>
+</body>
+</html>
