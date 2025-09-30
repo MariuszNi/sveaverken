@@ -1,3 +1,5 @@
+Masz solidną bazę. Dorzuciłem kilka rzeczy: normalizacja linków (wycina śmieci typu `utm_*`, `fbclid`, zachowuje `v`, `list`, `t` itd.), zapamiętywanie i udostępnianie filtra przez URL (`?q=`) i `localStorage`, „Otwórz wszystkie widoczne”, prosty toast, drag&drop/plik do dogrania własnych XLSX, lepsze lazy-thumb przez `IntersectionObserver`, małe poprawki a11y i drobny polish UI. Jeden plik, gotowy.
+
 ```html
 <!DOCTYPE html>
 <html lang="pl">
@@ -14,14 +16,9 @@
 
   <style>
     :root{
-      --blue:#0076bd;
-      --blue-2:#005a96;
-      --ink:#222;
-      --muted:#666;
-      --card:#f7f9fc;
-      --line:#e5e7eb;
-      --radius:12px;
-      --shadow:0 2px 12px rgba(0,0,0,.12);
+      --blue:#0076bd; --blue-2:#005a96; --ink:#222; --muted:#666;
+      --card:#f7f9fc; --line:#e5e7eb; --radius:12px; --shadow:0 2px 12px rgba(0,0,0,.12);
+      --ok:#10b981; --warn:#f59e0b;
     }
     *{box-sizing:border-box}
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--ink);background:#fff}
@@ -29,50 +26,40 @@
     header .wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
     #google_translate_element{justify-self:end}
     header h1{margin:0;font-size:24px}
-    #filter-input{
-      width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px; font-size:16px; margin-top:10px
-    }
-
+    #filter-input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-size:16px;margin-top:10px}
     main{max-width:1100px;margin:24px auto;padding:0 16px}
     .channels{margin:0 0 10px}
     .channel-buttons{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-    .channel-buttons a{
-      background:var(--blue);color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:600;box-shadow:var(--shadow)
-    }
+    .channel-buttons a{background:var(--blue);color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:600;box-shadow:var(--shadow)}
     .channel-buttons a:hover{background:var(--blue-2)}
-
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin:12px 0}
     .toolbar .left, .toolbar .right{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    button{
-      background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)
-    }
+    button{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
     button.secondary{background:#fff;color:var(--blue);border:1px solid var(--blue)}
     .chip{background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-weight:600;box-shadow:var(--shadow)}
-
     .list{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     @media (max-width:768px){ .list{grid-template-columns:1fr} }
-
-    .item{
-      display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);
-      border-radius:12px;padding:10px;box-shadow:var(--shadow)
-    }
-    .thumb{width:72px;min-width:72px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+    .item{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:var(--shadow)}
+    .thumb{width:72px;min-width:72px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#fff}
     .meta{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
     .title{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .url{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .actions a{ text-decoration:none }
+    .actions a{text-decoration:none}
     .small{font-size:12px;color:var(--muted)}
     .hidden{display:none !important}
-
     .section{margin:28px 0}
     .section h2{color:var(--blue); margin:0 0 10px}
-
     .loading{display:flex;gap:10px;align-items:center;color:var(--muted);padding:10px}
     .spinner{width:16px;height:16px;border:3px solid #ddd;border-top-color:var(--blue);border-radius:50%;animation:spin 1s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
-
     footer{background:#eee;text-align:center;padding:15px;margin-top:28px;font-size:14px}
+    .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:999px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s, transform .2s}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+    .dz{margin-top:6px;border:2px dashed var(--line);border-radius:12px;padding:10px;text-align:center;color:var(--muted)}
+    .dz.drag{border-color:var(--blue);background:#f0f8ff}
+    .badge-ok{color:#fff;background:var(--ok);padding:2px 8px;border-radius:999px;font-size:12px}
+    .badge-warn{color:#111;background:#fde68a;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid #fbbf24}
   </style>
 
   <script>
@@ -94,15 +81,16 @@
     <div class="wrap">
       <div>
         <h1>Lista Filmów Sveaverken</h1>
-        <input id="filter-input" type="text" placeholder="Filtruj filmy (tytuł lub link)..." autocomplete="off" />
+        <input id="filter-input" type="text" placeholder="Filtruj filmy (tytuł lub link)..." autocomplete="off" aria-label="Filtruj listę filmów" />
+        <div class="dz" id="dropzone" aria-label="Przeciągnij .xlsx aby dodać">Przeciągnij tutaj własny plik .xlsx (kolumny: Tytuł, URL) lub <label style="text-decoration:underline;cursor:pointer"><input id="fileInput" type="file" accept=".xlsx" style="display:none"> wybierz plik</label></div>
       </div>
-      <div id="google_translate_element"></div>
+      <div id="google_translate_element" aria-label="Tłumaczenie Google"></div>
     </div>
   </header>
 
   <main>
     <section class="channels">
-      <div class="channel-buttons">
+      <div class="channel-buttons" role="navigation" aria-label="Kanały YouTube">
         <a href="https://www.youtube.com/@Sveaverken-FAE" target="_blank" rel="noopener">FAE</a>
         <a href="https://www.youtube.com/@Sveaverken-Global" target="_blank" rel="noopener">Global</a>
         <a href="https://www.youtube.com/@SveaF100" target="_blank" rel="noopener">F100</a>
@@ -112,21 +100,22 @@
       </div>
     </section>
 
-    <div class="toolbar">
+    <div class="toolbar" role="toolbar" aria-label="Akcje listy">
       <div class="left">
         <button id="btnExcel">Eksportuj widoczne → Excel</button>
         <button id="btnPDF" class="secondary">Eksportuj widoczne → PDF</button>
         <button id="btnCopy" class="secondary">Kopiuj widoczne linki</button>
+        <button id="btnOpenAll" class="secondary" title="Otwórz każdy widoczny link w nowej karcie">Otwórz wszystkie</button>
       </div>
       <div class="right">
         <span class="chip">Wszystkie: <strong id="totalCount">0</strong></span>
         <span class="chip">Widoczne: <strong id="visibleCount">0</strong></span>
-        <span class="chip">Źródła: <strong id="loadedSheets">0/3</strong></span>
+        <span class="chip">Źródła: <strong id="loadedSheets">0/3</strong> <span id="sourcesStatus" class="badge-ok hidden">OK</span> <span id="sourcesWarn" class="badge-warn hidden">Błędy</span></span>
       </div>
     </div>
 
     <section id="video-list-section" class="section">
-      <div id="loading" class="loading">
+      <div id="loading" class="loading" role="status" aria-live="polite">
         <span class="spinner" aria-hidden="true"></span>
         <span>Wczytywanie list…</span>
       </div>
@@ -148,8 +137,10 @@
   </main>
 
   <footer>
-    <p>&copy; 2024 Sveaverken</p>
+    <p>&copy; 2025 Sveaverken</p>
   </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">Skopiowano</div>
 
   <script>
     // ---------- Data sources ----------
@@ -163,7 +154,8 @@
     const state = {
       all: [],          // {title, url}
       visible: [],      // filtered
-      loaded: 0
+      loaded: 0,
+      failed: 0
     };
 
     // ---------- DOM ----------
@@ -177,38 +169,83 @@
       loading: document.getElementById('loading'),
       btnExcel: document.getElementById('btnExcel'),
       btnPDF: document.getElementById('btnPDF'),
-      btnCopy: document.getElementById('btnCopy')
+      btnCopy: document.getElementById('btnCopy'),
+      btnOpenAll: document.getElementById('btnOpenAll'),
+      toast: document.getElementById('toast'),
+      sourcesStatus: document.getElementById('sourcesStatus'),
+      sourcesWarn: document.getElementById('sourcesWarn'),
+      dz: document.getElementById('dropzone'),
+      fileInput: document.getElementById('fileInput')
     };
 
     // ---------- Utils ----------
     function isYouTube(u){
       try{
         const url = new URL(u);
-        return /(^|\.)youtube\.com$/.test(url.hostname) || /(^|\.)youtu\.be$/.test(url.hostname);
+        return /(^|\.)youtube\.com$/i.test(url.hostname) || /^youtu\.be$/i.test(url.hostname);
       }catch{ return false }
     }
     function getYouTubeId(u){
       try{
         const url = new URL(u);
-        if (/youtu\.be$/.test(url.hostname)) return url.pathname.slice(1);
-        if (/youtube\.com$/.test(url.hostname)){
+        if (/^youtu\.be$/i.test(url.hostname)) return url.pathname.slice(1);
+        if (/youtube\.com$/i.test(url.hostname)){
           if (url.pathname.startsWith('/watch')) return url.searchParams.get('v') || '';
-          if (url.pathname.startsWith('/shorts/')) return url.pathname.split('/')[2] || '';
-          if (url.pathname.startsWith('/embed/')) return url.pathname.split('/')[2] || '';
+          if (url.pathname.startsWith('/shorts/')) return (url.pathname.split('/')[2] || '').slice(0,11);
+          if (url.pathname.startsWith('/embed/')) return (url.pathname.split('/')[2] || '').slice(0,11);
         }
       }catch{}
-      const m = u.match(/(?:v=|\/shorts\/|\/embed\/|youtu\.be\/)([0-9A-Za-z_-]{11})/);
+      const m = u.match(/(?:[?&]v=|\/shorts\/|\/embed\/|youtu\.be\/)([0-9A-Za-z_-]{11})/);
       return m ? m[1] : '';
+    }
+    // keep only meaningful params for YT; strip tracking for all
+    function normalizeUrl(u){
+      try{
+        const url = new URL(u);
+        const keepParams = new Set(['v','list','t','si','index','start','end']);
+        const tracking = [/^utm_/i, /^fbclid$/i, /^gclid$/i, /^mc_eid$/i, /^igshid$/i];
+        const kept = new URLSearchParams();
+        for (const [k,v] of url.searchParams.entries()){
+          const isTrack = tracking.some(re => re.test(k));
+          if (isTrack) continue;
+          if (isYouTube(url.href)){
+            if (keepParams.has(k)) kept.set(k,v);
+          } else {
+            kept.set(k,v);
+          }
+        }
+        url.search = kept.toString();
+        url.hash = ''; // no hash for dedupe
+        // remove trailing slash normalization
+        if (url.pathname !== '/' && url.pathname.endsWith('/')) {
+          url.pathname = url.pathname.replace(/\/+$/,'');
+        }
+        return url.toString();
+      }catch{ return u.trim() }
     }
     function uniqueByUrl(arr){
       const seen = new Set();
       return arr.filter(({url})=>{
-        if(!url || seen.has(url)) return false;
-        seen.add(url);
+        const norm = normalizeUrl(url);
+        if(!norm || seen.has(norm)) return false;
+        seen.add(norm);
         return true;
-      });
+      }).map(v => ({...v, url: normalizeUrl(v.url)}));
     }
     function deb(fn, ms=250){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); } }
+    function toast(msg='OK'){ el.toast.textContent = msg; el.toast.classList.add('show'); setTimeout(()=>el.toast.classList.remove('show'), 1400); }
+
+    // Lazy thumbs via IO
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          const img = e.target;
+          const src = img.getAttribute('data-src');
+          if(src){ img.src = src; img.removeAttribute('data-src'); }
+          io.unobserve(img);
+        }
+      });
+    }, {rootMargin:'200px'});
 
     // ---------- Render ----------
     function render(){
@@ -219,12 +256,14 @@
 
         const youtube = isYouTube(url);
         const vid = youtube ? getYouTubeId(url) : '';
-        const thumb = youtube && vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : '';
+        const thumb = youtube && vid ? `https://img.youtube.com/vi/${vid}/hqdefault.jpg` : `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(url)}`;
         const img = document.createElement('img');
         img.className = 'thumb';
         img.loading = 'lazy';
-        img.alt = 'Miniatura';
-        img.src = thumb || 'https://www.google.com/s2/favicons?sz=64&domain_url='+encodeURIComponent(url);
+        img.alt = youtube ? 'Miniatura YouTube' : 'Favicon';
+        // use IO for real lazy load
+        img.setAttribute('data-src', thumb);
+        io.observe(img);
 
         const meta = document.createElement('div'); meta.className = 'meta';
         const titleEl = document.createElement('div'); titleEl.className = 'title'; titleEl.textContent = title;
@@ -234,7 +273,7 @@
         const open = document.createElement('a'); open.href = url; open.target = '_blank'; open.rel='noopener';
         open.innerHTML = '<button>Otwórz</button>';
         const copy = document.createElement('button'); copy.className='secondary'; copy.textContent='Kopiuj link';
-        copy.addEventListener('click', ()=>navigator.clipboard?.writeText(url));
+        copy.addEventListener('click', async ()=>{ await navigator.clipboard?.writeText(url); toast('Skopiowano link'); });
 
         actions.append(open, copy);
         meta.append(titleEl, urlEl, actions);
@@ -246,48 +285,67 @@
       el.total.textContent = state.all.length;
       el.visible.textContent = state.visible.length;
       el.empty.classList.toggle('hidden', state.visible.length !== 0);
+
+      // update sources status badges
+      const totalSources = SOURCES.length + extraSources.size;
+      el.loaded.textContent = `${state.loaded}/${totalSources}`;
+      el.sourcesStatus.classList.toggle('hidden', state.failed !== 0 || state.loaded === 0);
+      el.sourcesWarn.classList.toggle('hidden', state.failed === 0);
     }
 
     // ---------- Filter ----------
-    function applyFilter(){
+    function applyFilter(pushUrl=true){
       const q = el.filter.value.trim().toLowerCase();
       if (!q){
         state.visible = [...state.all];
-        render();
-        return;
+      } else {
+        const terms = q.split(/\s+/).filter(Boolean);
+        state.visible = state.all.filter(({title,url})=>{
+          const hay = (title+' '+url).toLowerCase();
+          return terms.every(t => hay.includes(t));
+        });
       }
-      const terms = q.split(/\s+/).filter(Boolean);
-      state.visible = state.all.filter(({title,url})=>{
-        const hay = (title+' '+url).toLowerCase();
-        return terms.every(t => hay.includes(t));
-      });
+      if (pushUrl){
+        const u = new URL(location.href);
+        if (q) { u.searchParams.set('q', q); } else { u.searchParams.delete('q'); }
+        history.replaceState(null,'',u.toString());
+        localStorage.setItem('videos_filter', q);
+      }
       render();
     }
 
     // ---------- Loaders ----------
+    async function parseWorkbook(buf){
+      const wb = XLSX.read(buf, {type:'array'});
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1});
+      const out = [];
+      rows.slice(1).forEach(r=>{
+        const title = (r[0] ?? '').toString().trim();
+        const link = (r[1] ?? '').toString().trim();
+        if (title && link) out.push({title, url: link});
+      });
+      return out;
+    }
+
     async function fetchSheet(url){
       try{
         const res = await fetch(url, {cache:'no-store'});
         if(!res.ok) throw new Error(res.status+' '+res.statusText);
         const buf = await res.arrayBuffer();
-        const wb = XLSX.read(buf, {type:'array'});
-        const ws = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(ws, {header:1});
-        const out = [];
-        rows.slice(1).forEach(r=>{
-          const title = (r[0] ?? '').toString().trim();
-          const link = (r[1] ?? '').toString().trim();
-          if (title && link) out.push({title, url: link});
-        });
+        const out = await parseWorkbook(buf);
         return out;
       }catch(e){
         console.warn('Błąd pobierania', url, e);
+        state.failed += 1;
         return [];
       }finally{
         state.loaded += 1;
-        el.loaded.textContent = `${state.loaded}/${SOURCES.length}`;
+        render();
       }
     }
+
+    const extraSources = new Set(); // names from drag&drop
 
     async function loadAll(){
       const batches = await Promise.all(SOURCES.map(fetchSheet));
@@ -297,6 +355,14 @@
       state.visible = [...state.all];
       el.loading.classList.add('hidden');
       render();
+      // initial filter from URL/localStorage
+      const urlQ = new URL(location.href).searchParams.get('q');
+      const saved = localStorage.getItem('videos_filter');
+      const startQ = urlQ ?? saved ?? '';
+      if (startQ){
+        el.filter.value = startQ;
+        applyFilter(false);
+      }
     }
 
     // ---------- Export ----------
@@ -330,16 +396,67 @@
     async function copyVisible(){
       const text = state.visible.map(v=>v.url).join('\n');
       await navigator.clipboard?.writeText(text);
+      toast('Skopiowano listę linków');
+    }
+
+    function openAllVisible(){
+      if (state.visible.length === 0) return;
+      const confirmOpen = confirm(`Otworzyć ${state.visible.length} kart? Przeglądarka może to zablokować.`);
+      if (!confirmOpen) return;
+      state.visible.forEach(({url})=> window.open(url, '_blank', 'noopener'));
+    }
+
+    // ---------- Drag & Drop .xlsx ----------
+    function bindDropzone(){
+      ['dragenter','dragover'].forEach(ev=>{
+        el.dz.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); el.dz.classList.add('drag'); });
+      });
+      ['dragleave','drop'].forEach(ev=>{
+        el.dz.addEventListener(ev, e=>{ e.preventDefault(); e.stopPropagation(); el.dz.classList.remove('drag'); });
+      });
+      el.dz.addEventListener('drop', async e=>{
+        const file = e.dataTransfer.files?.[0];
+        if (!file) return;
+        await addXlsxFile(file);
+      });
+      el.fileInput.addEventListener('change', async e=>{
+        const file = e.target.files?.[0];
+        if (!file) return;
+        await addXlsxFile(file);
+        el.fileInput.value = '';
+      });
+    }
+
+    async function addXlsxFile(file){
+      try{
+        const buf = await file.arrayBuffer();
+        const items = await parseWorkbook(buf);
+        extraSources.add(file.name);
+        state.loaded += 1;
+        const merged = uniqueByUrl([...state.all, ...items]);
+        merged.sort((a,b)=> a.title.localeCompare(b.title, 'pl', {sensitivity:'base'}));
+        state.all = merged;
+        applyFilter(false);
+        toast(`Dodano: ${file.name}`);
+      }catch(e){
+        state.failed += 1;
+        render();
+        alert('Nie udało się wczytać pliku .xlsx');
+      }
     }
 
     // ---------- Events ----------
-    el.filter.addEventListener('input', deb(applyFilter, 150));
+    el.filter.addEventListener('input', deb(()=>applyFilter(true), 150));
     el.btnExcel.addEventListener('click', exportExcel);
     el.btnPDF.addEventListener('click', exportPDF);
     el.btnCopy.addEventListener('click', copyVisible);
+    el.btnOpenAll.addEventListener('click', openAllVisible);
 
     // ---------- Init ----------
-    window.addEventListener('load', loadAll);
+    window.addEventListener('load', ()=>{
+      bindDropzone();
+      loadAll();
+    });
   </script>
 </body>
 </html>
