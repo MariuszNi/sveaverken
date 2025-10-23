@@ -45,7 +45,7 @@
     /* Header */
     header{background:var(--brand-2); color:#fff; padding:36px 20px}
     .header-wrap{
-      max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(2,minmax(280px,1fr)); gap:32px; align-items:start;
+      max-width:1200px; margin:0 auto; display:grid; ggrid-template-columns: repeat(auto-fit, minmax(280px, 1fr));gap:32px; align-items:start;
     }
     .logo-card,.fw-card{background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:12px}
     .logo-card img{max-width:160px; width:100%; height:auto}
@@ -294,6 +294,22 @@
         </div>
       </div>
     </div>
+          <!-- F200Max FW card -->
+      <div class="fw-card" aria-labelledby="f200max-fw-title">
+        <h2 id="f200max-fw-title" style="text-align:center; font-size:22px; margin:0 0 14px">
+          F200Max – wersje oprogramowania
+        </h2>
+        <div role="list">
+          <p><strong>SYSTEM2:</strong> 24.118.3.8</p>
+          <p><strong>MOTOR2:</strong> 2.1.1.108</p>
+          <p><strong>APP:</strong> 24.118.3.8</p>
+          <p><strong>IMU1:</strong> 3.0.0.79</p>
+          <p><strong>ECU2:</strong> 103.0.4.12</p>
+          <p><strong>boardl3:</strong> L3_11491</p>
+          <p><strong>MOTOR:</strong> 1.1.13.10</p>
+        </div>
+      </div>
+
   </header>
 
   <main id="home">
