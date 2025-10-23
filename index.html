@@ -43,13 +43,42 @@
     nav a:focus-visible, nav a:hover{text-decoration:underline; outline:none}
 
     /* Header */
-    header{background:var(--brand-2); color:#fff; padding:36px 20px}
-    .header-wrap{
-      max-width:1200px; margin:0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));gap:32px; align-items:start;
-    }
-    .logo-card,.fw-card{background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:12px}
-    .logo-card img{max-width:160px; width:100%; height:auto}
-    .fw-card{background:#004080; color:#fff}
+header{
+  background: var(--brand-2);
+  color:#fff;
+  padding:36px 20px;
+}
+
+.header-wrap{
+  max-width:1200px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap:32px;
+  align-items:start;
+}
+
+.logo-card,
+.fw-card{
+  background:#fff;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:12px;
+}
+
+.logo-card img{
+  max-width:160px;
+  width:100%;
+  height:auto;
+}
+
+/* Jeśli chcesz zachować białe tło kart, zostaw tak jak jest.
+   Jeśli karta FW ma mieć ciemne tło – użyj poniższego zamiast powyższego */
+.fw-card{
+  background:#004080;
+  color:#fff;
+}
+
 
     /* Tables */
     table{width:100%; border-collapse:collapse; margin-top:16px; font-size:15px}
