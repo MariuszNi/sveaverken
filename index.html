@@ -78,6 +78,23 @@ header{
   background:#004080;
   color:#fff;
 }
+.fw-wrap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:24px;
+  justify-content:center;
+  margin-top:20px;
+}
+
+.fw-wrap .fw-card{
+  flex:1 1 360px;
+  background:#004080;
+  color:#fff;
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;
+  max-width:480px;
+}
 
 
     /* Tables */
@@ -298,46 +315,43 @@ header{
         </div>
       </div>
 
-      <div class="fw-card" aria-labelledby="fw-title">
-        <h2 id="fw-title" style="text-align:center; font-size:22px; margin:0 0 14px">Aktualna wersja oprogramowania</h2>
-        <div role="list">
-          <p><strong>APP:</strong> 24.102.3.28</p>
-          <p><strong>ECU1 old:</strong> 3.0.5.3</p>
-          <p><strong>ECU2 new:</strong> 103.0.4.12</p>
-          <p><strong>IMU:</strong> 3.0.0.79</p>
-          <p><strong>Motor old:</strong> 1.1.13.9</p>
-          <p><strong>Motor NEW:</strong> 2.1.1.8</p>
-          <p><strong>Board L1 old:</strong> 23005</p>
-          <p><strong>Board L3 new:</strong> 11491</p>
-          <p><strong>System:</strong> 202501081622</p>
-          <p><strong>Radio 1:</strong> J017.00.05.0</p>
-          <p><strong>Radio 2:</strong> 35.0.0.0</p>
-          <p style="text-align:center; margin-top:16px">
-            <a href="https://drive.google.com/open?id=1uJQWm-xcmF6pWdEW7Yk3eFrCqWcOeGNa&usp=drive_fs"
-               target="_blank" rel="noopener noreferrer"
-               style="font-size:18px; font-weight:700; color:#fff; text-decoration:underline">Release note</a>
-            <a href="release.html"
-               target="_blank" rel="noopener noreferrer"
-               style="font-size:18px; font-weight:700; color:#fff; text-decoration:underline">Release note opis</a>
-          </p>
-        </div>
-      </div>
+      <!-- Sekcja wersji oprogramowania -->
+<div class="fw-wrap">
+  <div class="fw-card" aria-labelledby="fw-title">
+    <h2 id="fw-title" style="text-align:center; font-size:22px; margin:0 0 14px">
+      F100 – wersje oprogramowania
+    </h2>
+    <div role="list">
+      <p><strong>APP:</strong> 24.102.3.28</p>
+      <p><strong>ECU1 old:</strong> 3.0.5.3</p>
+      <p><strong>ECU2 new:</strong> 103.0.4.12</p>
+      <p><strong>IMU:</strong> 3.0.0.79</p>
+      <p><strong>Motor old:</strong> 1.1.13.9</p>
+      <p><strong>Motor NEW:</strong> 2.1.1.8</p>
+      <p><strong>Board L1 old:</strong> 23005</p>
+      <p><strong>Board L3 new:</strong> 11491</p>
+      <p><strong>System:</strong> 202501081622</p>
+      <p><strong>Radio 1:</strong> J017.00.05.0</p>
+      <p><strong>Radio 2:</strong> 35.0.0.0</p>
     </div>
-          <!-- F200Max FW card -->
-      <div class="fw-card" aria-labelledby="f200max-fw-title">
-        <h2 id="f200max-fw-title" style="text-align:center; font-size:22px; margin:0 0 14px">
-          F200Max – wersje oprogramowania
-        </h2>
-        <div role="list">
-          <p><strong>SYSTEM2:</strong> 24.118.3.8</p>
-          <p><strong>MOTOR2:</strong> 2.1.1.108</p>
-          <p><strong>APP:</strong> 24.118.3.8</p>
-          <p><strong>IMU1:</strong> 3.0.0.79</p>
-          <p><strong>ECU2:</strong> 103.0.4.12</p>
-          <p><strong>boardl3:</strong> L3_11491</p>
-          <p><strong>MOTOR:</strong> 1.1.13.10</p>
-        </div>
-      </div>
+  </div>
+
+  <div class="fw-card" aria-labelledby="f200max-fw-title">
+    <h2 id="f200max-fw-title" style="text-align:center; font-size:22px; margin:0 0 14px">
+      F200Max – wersje oprogramowania
+    </h2>
+    <div role="list">
+      <p><strong>SYSTEM2:</strong> 24.118.3.8</p>
+      <p><strong>MOTOR2:</strong> 2.1.1.108</p>
+      <p><strong>APP:</strong> 24.118.3.8</p>
+      <p><strong>IMU1:</strong> 3.0.0.79</p>
+      <p><strong>ECU2:</strong> 103.0.4.12</p>
+      <p><strong>boardl3:</strong> L3_11491</p>
+      <p><strong>MOTOR:</strong> 1.1.13.10</p>
+    </div>
+  </div>
+</div>
+
 
   </header>
 
