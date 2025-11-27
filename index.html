@@ -158,10 +158,93 @@ header{
       .tractor-container,.tractor,.smoke{animation:none}
     }
 
+    /* Redirect banner */
+    .redirect-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.75);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:3000;
+    }
+    .redirect-box{
+      position:relative;
+      background:#fff;
+      max-width:520px;
+      width:92vw;
+      border-radius:18px;
+      padding:24px 20px 18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      text-align:left;
+    }
+    .redirect-box h2{
+      margin:0 0 12px;
+      font-size:22px;
+      color:var(--brand);
+    }
+    .redirect-box p{
+      margin:6px 0;
+      font-size:15px;
+      color:var(--text);
+    }
+    .redirect-count{
+      font-weight:700;
+    }
+    .redirect-actions{
+      margin-top:16px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+    .redirect-primary,
+    .redirect-secondary{
+      border:0;
+      border-radius:999px;
+      padding:9px 16px;
+      font-weight:600;
+      cursor:pointer;
+      font-size:14px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+    .redirect-primary{
+      background:#007bff;
+      color:#fff;
+    }
+    .redirect-secondary{
+      background:#e5e7eb;
+      color:#111;
+    }
+    .redirect-close{
+      position:absolute;
+      top:10px;
+      right:14px;
+      border:0;
+      background:transparent;
+      font-size:20px;
+      cursor:pointer;
+      color:#666;
+      line-height:1;
+    }
+    .redirect-close:focus-visible{
+      outline:3px solid #99c2ff;
+      border-radius:999px;
+    }
+
     footer{padding:24px 20px; text-align:center; color:var(--muted)}
   </style>
 
   <script>
+    const NEW_SITE_URL = 'https://www.sveaverken.com.pl';
+    let redirectTimeoutId = null;
+    let redirectIntervalId = null;
+    let redirectCancelled = false;
+    let redirectSeconds = 10;
+
     // ---- Google Translate ----
     function googleTranslateElementInit() {
       try {
@@ -178,7 +261,6 @@ header{
       try{
         var userLang = (navigator.language || navigator.userLanguage || 'pl').split('-')[0];
         if(userLang==='pl') return;
-        // Let the user choose in the widget; auto-click in the banner is brittle across updates – skipped.
       }catch(e){}
     }
 
@@ -265,6 +347,54 @@ header{
       });
     }
 
+    // ---- Redirect banner ----
+    function updateRedirectCounter(){
+      document.querySelectorAll('.redirect-count').forEach(el=>{
+        el.textContent = redirectSeconds;
+      });
+    }
+
+    function startRedirectCountdown(){
+      const overlay = document.getElementById('redirect-overlay');
+      if (!overlay) return;
+      overlay.style.display = 'flex';
+      redirectSeconds = 10;
+      redirectCancelled = false;
+      updateRedirectCounter();
+
+      redirectTimeoutId = setTimeout(()=>{
+        if(!redirectCancelled) goToNewSite();
+      }, redirectSeconds * 1000);
+
+      redirectIntervalId = setInterval(()=>{
+        if(redirectCancelled) return;
+        redirectSeconds--;
+        if(redirectSeconds <= 0){
+          clearInterval(redirectIntervalId);
+          return;
+        }
+        updateRedirectCounter();
+      },1000);
+    }
+
+    function cancelRedirect(hide){
+      redirectCancelled = true;
+      if(redirectTimeoutId) clearTimeout(redirectTimeoutId);
+      if(redirectIntervalId) clearInterval(redirectIntervalId);
+      if(hide){
+        const overlay = document.getElementById('redirect-overlay');
+        if(overlay) overlay.style.display = 'none';
+      }
+    }
+
+    function goToNewSite(){
+      window.location.href = NEW_SITE_URL;
+    }
+
+    function initRedirectBanner(){
+      startRedirectCountdown();
+    }
+
     // ---- DOM Ready ----
     document.addEventListener('DOMContentLoaded', ()=>{
       translatePageToBrowserLanguage();
@@ -272,6 +402,7 @@ header{
       updateKpIndex();
       document.getElementById('search-input').addEventListener('input', filterContent);
       window.addEventListener('click', (e)=>{ if(e.target.id==='popup') closePopup(); });
+      initRedirectBanner();
     });
   </script>
 </head>
@@ -281,6 +412,33 @@ header{
   <div class="tractor-container" aria-hidden="true">
     <img src="tractor.png" class="tractor" alt="" />
     <div class="smoke"></div>
+  </div>
+
+  <!-- 🔔 Banner z przekierowaniem na nową stronę -->
+  <div id="redirect-overlay" class="redirect-overlay" role="dialog" aria-modal="true" aria-labelledby="redirect-title">
+    <div class="redirect-box">
+      <button type="button" class="redirect-close" aria-label="Zamknij / Close" onclick="cancelRedirect(true)">×</button>
+      <h2 id="redirect-title">Nowa strona Sveaverken Polska</h2>
+      <p>
+        Nowa oficjalna strona Sveaverken Polska działa pod adresem
+        <strong>www.sveaverken.com.pl</strong>.<br>
+        Za <span class="redirect-count">10</span> sekund zostaniesz automatycznie przekierowany.
+      </p>
+      <hr style="margin:14px 0;">
+      <p>
+        <strong>EN:</strong> The new official website for Sveaverken Poland is available at
+        <strong>www.sveaverken.com.pl</strong>.<br>
+        You will be redirected automatically in <span class="redirect-count">10</span> seconds.
+      </p>
+      <div class="redirect-actions">
+        <button type="button" class="redirect-secondary" onclick="cancelRedirect(true)">
+          Zostań tutaj / Stay here
+        </button>
+        <button type="button" class="redirect-primary" onclick="goToNewSite()">
+          Przejdź teraz / Go now
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- 🌐 MENU -->
@@ -452,7 +610,7 @@ header{
         <li><a href="https://drive.google.com/open?id=1rmRgQdd9gllM8B2ZP1Am1Lx8PK1q930S&usp=drive_fs" target="_blank" rel="noopener noreferrer">Tworzenie linii A+</a></li>
         <li><a href="https://drive.google.com/open?id=1ivJ7IShm1mD2mFCmUGy57WFG-frVvZqP&usp=drive_fs" target="_blank" rel="noopener noreferrer">Aktywacja wersji zaawansowanej</a></li>
         <li><a href="https://drive.google.com/open?id=1y8kDSdNkR4DEmHL6pNwXaK_vEQ8GnghS&usp=drive_fs" target="_blank" rel="noopener noreferrer">Tworzenie linii AB</a></li>
-        <li><a href="https://drive.google.com/open?id=1NisnfxnpapIbf6-mazX_Xe9kD2rbevkh&usp=drive_fs" target="_blank" rel="noopener noreferrer">Granica (wersja zaawansowana)</a></li>
+        <li><a href="https://drive.google.com/open?id=1NisnfxnpapIbf6-mazX_Xe9d2rbevkh&usp=drive_fs" target="_blank" rel="noopener noreferrer">Granica (wersja zaawansowana)</a></li>
         <li><a href="https://drive.google.com/open?id=1yhdT3AMTf3S35sQCb-qeyZARXfH-G7xj&usp=drive_fs" target="_blank" rel="noopener noreferrer">Linia krzywa</a></li>
         <li><a href="https://drive.google.com/open?id=1_iLGofWV_muD7Ur6MbfnX_tb95BbBR2t&usp=drive_fs" target="_blank" rel="noopener noreferrer">Okrąg</a></li>
         <li><a href="https://drive.google.com/open?id=1Png_pEral-C1vqtbyJ0IFWmTGFx08Uw2&usp=drive_fs" target="_blank" rel="noopener noreferrer">Operacje na granicach</a></li>
@@ -621,4 +779,3 @@ header{
   </footer>
 </body>
 </html>
-
